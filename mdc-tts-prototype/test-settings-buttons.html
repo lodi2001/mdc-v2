@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Settings Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Settings Buttons Language Test</h2>
+        
+        <!-- Language Toggle -->
+        <div class="language-toggle mb-4">
+            <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+            <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+        </div>
+        
+        <!-- Test Buttons (exact copy from settings.html) -->
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" onclick="resetToDefaults()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>
+                <span data-original-text="Reset to Defaults">إعادة تعيين الافتراضيات</span>
+            </button>
+            <button class="btn btn-success" onclick="saveAllSettings()">
+                <i class="bi bi-check-circle me-1"></i>
+                <span data-original-text="Save All Settings">حفظ جميع الإعدادات</span>
+            </button>
+        </div>
+        
+        <hr>
+        
+        <!-- Debug Info -->
+        <div id="debug" class="mt-4">
+            <h4>Debug Information:</h4>
+            <p>Current Language: <strong id="currentLang"></strong></p>
+            <p>Language in localStorage: <strong id="storedLang"></strong></p>
+            <p>Reset Button Text: <strong id="resetText"></strong></p>
+            <p>Save Button Text: <strong id="saveText"></strong></p>
+        </div>
+    </div>
+    
+    <script src="js/translations.js"></script>
+    <script>
+        // Simple language toggle implementation for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDebugInfo();
+            
+            // Preserve original text on load
+            if (window.preserveOriginalText) {
+                window.preserveOriginalText();
+            }
+            
+            // Apply saved language preference
+            const savedLang = localStorage.getItem('language') || 'ar';
+            setTimeout(() => {
+                setLanguage(savedLang);
+                updateButtonState(savedLang);
+            }, 100);
+            
+            // Handle language toggle buttons
+            document.querySelectorAll('[data-lang]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    setLanguage(lang);
+                    updateButtonState(lang);
+                    localStorage.setItem('language', lang);
+                    updateDebugInfo();
+                });
+            });
+        });
+        
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            
+            if (window.applyTranslations) {
+                window.applyTranslations(lang);
+            }
+            
+            // Double-check the specific buttons
+            if (lang === 'en') {
+                setTimeout(() => {
+                    const resetBtn = document.querySelector('span[data-original-text="Reset to Defaults"]');
+                    const saveBtn = document.querySelector('span[data-original-text="Save All Settings"]');
+                    if (resetBtn) resetBtn.textContent = 'Reset to Defaults';
+                    if (saveBtn) saveBtn.textContent = 'Save All Settings';
+                    updateDebugInfo();
+                }, 200);
+            }
+        }
+        
+        function updateButtonState(lang) {
+            document.querySelectorAll('[data-lang]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+        
+        function updateDebugInfo() {
+            document.getElementById('currentLang').textContent = document.documentElement.lang;
+            document.getElementById('storedLang').textContent = localStorage.getItem('language') || 'not set';
+            
+            const resetBtn = document.querySelector('span[data-original-text="Reset to Defaults"]');
+            const saveBtn = document.querySelector('span[data-original-text="Save All Settings"]');
+            
+            document.getElementById('resetText').textContent = resetBtn ? resetBtn.textContent : 'Not found';
+            document.getElementById('saveText').textContent = saveBtn ? saveBtn.textContent : 'Not found';
+        }
+        
+        // Stub functions to prevent errors
+        function resetToDefaults() {
+            alert('Reset to Defaults clicked');
+        }
+        
+        function saveAllSettings() {
+            alert('Save All Settings clicked');
+        }
+    </script>
+</body>
+</html>

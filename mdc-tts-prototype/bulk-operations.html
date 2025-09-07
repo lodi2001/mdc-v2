@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Operations - MDC TTS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/transactions.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/grid-view.css">
+    
+    <style>
+        .bulk-toolbar {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 100px;
+            z-index: 10;
+        }
+        
+        .bulk-toolbar.show {
+            display: flex;
+        }
+        
+        .bulk-toolbar .selected-count {
+            font-weight: 600;
+            color: #1a5f3f;
+            margin-right: 16px;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .bulk-progress {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .bulk-progress.show {
+            display: block;
+        }
+        
+        .progress-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        
+        .progress-item.processing {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .progress-item.completed {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .progress-item.error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        
+        .progress-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .progress-text {
+            flex: 1;
+        }
+        
+        .progress-status {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .operation-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .operation-card:hover {
+            border-color: #1a5f3f;
+            box-shadow: 0 4px 12px rgba(26, 95, 63, 0.1);
+        }
+        
+        .operation-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+        
+        .operation-description {
+            color: #636e72;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .operation-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+        
+        .advanced-filters {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        
+        .result-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-stat {
+            text-align: center;
+        }
+        
+        .result-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .result-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .bulk-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .operation-stats {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block" data-original-text="Transaction Tracking System">نظام تتبع المعاملات</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="البحث عن المعاملات..." data-original-placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">Admin User</div>
+                                <small class="text-muted" id="userRole">Administrator</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> <span data-original-text="Profile">الملف الشخصي</span></a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> <span data-original-text="Settings">الإعدادات</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> <span data-original-text="Logout">تسجيل الخروج</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard-admin.html">
+                            <i class="bi bi-speedometer2"></i>
+                            <span data-original-text="Dashboard">لوحة التحكم</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transactions.html">
+                            <i class="bi bi-receipt"></i>
+                            <span data-original-text="All Transactions">جميع المعاملات</span>
+                            <span class="badge bg-primary ms-auto">234</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transaction-form.html">
+                            <i class="bi bi-plus-square"></i>
+                            <span data-original-text="Create Transaction">إنشاء معاملة</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="users-list.html">
+                            <i class="bi bi-people"></i>
+                            <span data-original-text="User Management">إدارة المستخدمين</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="bulk-operations.html">
+                            <i class="bi bi-collection"></i>
+                            <span data-original-text="Bulk Operations">العمليات الجماعية</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.html">
+                            <i class="bi bi-graph-up"></i>
+                            <span data-original-text="Reports & Analytics">التقارير والتحليلات</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="assignments.html">
+                            <i class="bi bi-person-check"></i>
+                            <span data-original-text="Assignments">التعيينات</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="email-templates.html">
+                            <i class="bi bi-envelope"></i>
+                            <span data-original-text="Email Templates">قوالب البريد الإلكتروني</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="audit-logs.html">
+                            <i class="bi bi-clock-history"></i>
+                            <span data-original-text="Audit Logs">سجلات التدقيق</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="settings.html">
+                            <i class="bi bi-gear"></i>
+                            <span data-original-text="System Settings">إعدادات النظام</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="Bulk Operations">العمليات الجماعية</h2>
+                            <p class="text-muted mb-0" data-original-text="Perform operations on multiple transactions simultaneously">تنفيذ عمليات على معاملات متعددة في وقت واحد</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary" onclick="resetFilters()">
+                                    <i class="bi bi-arrow-clockwise me-1"></i> <span data-original-text="Reset Filters">إعادة تعيين الفلاتر</span>
+                                </button>
+                                <a href="transactions.html" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> <span data-original-text="Back to Transactions">العودة إلى المعاملات</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Operation Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="operation-card" onclick="selectOperation('status')">
+                            <div class="operation-title">
+                                <i class="bi bi-arrow-repeat text-primary me-2"></i>
+                                <span data-original-text="Bulk Status Update">تحديث الحالة الجماعي</span>
+                            </div>
+                            <div class="operation-description" data-original-text="Change the status of multiple transactions at once">تغيير حالة معاملات متعددة دفعة واحدة</div>
+                            <div class="operation-stats">
+                                <div class="stat-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    <span data-original-text="Quick & Efficient">سريع وفعال</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="bi bi-shield-check text-info"></i>
+                                    <span data-original-text="Audit Trail">سجل التدقيق</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-play me-1"></i> <span data-original-text="Select Operation">اختر العملية</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="operation-card" onclick="selectOperation('assignment')">
+                            <div class="operation-title">
+                                <i class="bi bi-person-plus text-warning me-2"></i>
+                                <span data-original-text="Bulk Assignment">التعيين الجماعي</span>
+                            </div>
+                            <div class="operation-description" data-original-text="Assign multiple transactions to users or teams">تعيين معاملات متعددة للمستخدمين أو الفرق</div>
+                            <div class="operation-stats">
+                                <div class="stat-item">
+                                    <i class="bi bi-people text-primary"></i>
+                                    <span data-original-text="Team Management">إدارة الفريق</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="bi bi-speedometer text-success"></i>
+                                    <span data-original-text="Load Balancing">توزيع العبء</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-warning btn-sm">
+                                <i class="bi bi-play me-1"></i> <span data-original-text="Select Operation">اختر العملية</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="operation-card" onclick="selectOperation('export')">
+                            <div class="operation-title">
+                                <i class="bi bi-download text-success me-2"></i>
+                                <span data-original-text="Bulk Export">التصدير الجماعي</span>
+                            </div>
+                            <div class="operation-description" data-original-text="Export multiple transactions with their data and attachments">تصدير معاملات متعددة مع بياناتها ومرفقاتها</div>
+                            <div class="operation-stats">
+                                <div class="stat-item">
+                                    <i class="bi bi-file-earmark-zip text-info"></i>
+                                    <span data-original-text="ZIP Archive">أرشيف ZIP</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="bi bi-table text-primary"></i>
+                                    <span data-original-text="Excel Format">تنسيق Excel</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-success btn-sm">
+                                <i class="bi bi-play me-1"></i> <span data-original-text="Select Operation">اختر العملية</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div class="advanced-filters">
+                    <h5 class="mb-3" data-original-text="Advanced Transaction Filters">فلاتر المعاملات المتقدمة</h5>
+                    <p class="text-muted mb-4" data-original-text="Select the criteria to filter transactions for bulk operations">حدد المعايير لتصفية المعاملات للعمليات الجماعية</p>
+                    
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="filter-section">
+                                <label class="filter-label" data-original-text="Transaction Status">حالة المعاملة</label>
+                                <div class="checkbox-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="draft" id="statusDraft">
+                                        <label class="form-check-label" for="statusDraft" data-original-text="Draft">مسودة</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="submitted" id="statusSubmitted">
+                                        <label class="form-check-label" for="statusSubmitted" data-original-text="Submitted">تم الإرسال</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="approved" id="statusApproved">
+                                        <label class="form-check-label" for="statusApproved" data-original-text="Approved">معتمد</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="in-progress" id="statusInProgress">
+                                        <label class="form-check-label" for="statusInProgress" data-original-text="In Progress">قيد التنفيذ</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="completed" id="statusCompleted">
+                                        <label class="form-check-label" for="statusCompleted" data-original-text="Completed">مكتمل</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="cancelled" id="statusCancelled">
+                                        <label class="form-check-label" for="statusCancelled" data-original-text="Cancelled">ملغى</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-section">
+                                <label class="filter-label" data-original-text="Priority Level">مستوى الأولوية</label>
+                                <div class="checkbox-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="urgent" id="priorityUrgent">
+                                        <label class="form-check-label" for="priorityUrgent" data-original-text="Urgent">عاجل</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="high" id="priorityHigh">
+                                        <label class="form-check-label" for="priorityHigh" data-original-text="High">عالي</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="medium" id="priorityMedium">
+                                        <label class="form-check-label" for="priorityMedium" data-original-text="Medium">متوسط</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="low" id="priorityLow">
+                                        <label class="form-check-label" for="priorityLow" data-original-text="Low">منخفض</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12 col-lg-6">
+                            <div class="filter-section">
+                                <label class="filter-label" data-original-text="Transaction Type">نوع المعاملة</label>
+                                <div class="checkbox-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="document-review" id="typeDocumentReview">
+                                        <label class="form-check-label" for="typeDocumentReview" data-original-text="Document Review">مراجعة المستندات</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="approval-request" id="typeApprovalRequest">
+                                        <label class="form-check-label" for="typeApprovalRequest" data-original-text="Approval Request">طلب موافقة</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="submission" id="typeSubmission">
+                                        <label class="form-check-label" for="typeSubmission" data-original-text="Submission">تقديم</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="information-request" id="typeInformationRequest">
+                                        <label class="form-check-label" for="typeInformationRequest" data-original-text="Information Request">طلب معلومات</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-checkbox" type="checkbox" value="status-update" id="typeStatusUpdate">
+                                        <label class="form-check-label" for="typeStatusUpdate" data-original-text="Status Update">تحديث الحالة</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-section">
+                                <label class="filter-label" data-original-text="Date Range">نطاق التاريخ</label>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <input type="date" class="form-control" id="dateFrom">
+                                        <small class="text-muted" data-original-text="From Date">من تاريخ</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="date" class="form-control" id="dateTo">
+                                        <small class="text-muted" data-original-text="To Date">إلى تاريخ</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <span data-original-text="Use filters to narrow down transactions before performing bulk operations">استخدم الفلاتر لتضييق نطاق المعاملات قبل تنفيذ العمليات الجماعية</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="applyFilters()">
+                            <i class="bi bi-funnel me-1"></i> <span data-original-text="Apply Filters">تطبيق الفلاتر</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Summary -->
+                <div class="result-summary" id="resultSummary" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h4 data-original-text="Filtered Results">النتائج المفلترة</h4>
+                            <p class="mb-0 opacity-75" data-original-text="Based on your selected criteria">بناءً على المعايير المحددة</p>
+                        </div>
+                        <button class="btn btn-light btn-sm" onclick="showTransactionList()">
+                            <i class="bi bi-eye me-1"></i> <span data-original-text="View List">عرض القائمة</span>
+                        </button>
+                    </div>
+                    
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="totalTransactions">0</div>
+                            <div class="result-stat-label" data-original-text="Total Found">إجمالي الموجود</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="selectedForOperation">0</div>
+                            <div class="result-stat-label" data-original-text="Selected">المحدد</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="estimatedTime">-</div>
+                            <div class="result-stat-label" data-original-text="Est. Time">الوقت المتوقع</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Operations Toolbar -->
+                <div class="bulk-toolbar" id="bulkToolbar">
+                    <div class="selected-count" id="selectedCount">0 transactions selected</div>
+                    <div class="bulk-actions">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-primary btn-sm" onclick="showStatusModal()" id="statusUpdateBtn">
+                                <i class="bi bi-arrow-repeat me-1"></i> <span data-original-text="Update Status">تحديث الحالة</span>
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="showAssignmentModal()" id="assignmentBtn">
+                                <i class="bi bi-person-plus me-1"></i> <span data-original-text="Assign">تعيين</span>
+                            </button>
+                            <button class="btn btn-success btn-sm" onclick="exportSelected()" id="exportBtn">
+                                <i class="bi bi-download me-1"></i> <span data-original-text="Export">تصدير</span>
+                            </button>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="clearSelection()">
+                            <i class="bi bi-x me-1"></i> <span data-original-text="Clear Selection">مسح التحديد</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="card" id="transactionsList" style="display: none;">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0" data-original-text="Matching Transactions">المعاملات المطابقة</h5>
+                            <small class="text-muted" id="transactionCount">0 transactions found</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-primary" onclick="selectAllVisible()">
+                                <i class="bi bi-check-all me-1"></i> <span data-original-text="Select All">تحديد الكل</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="deselectAll()">
+                                <i class="bi bi-x-square me-1"></i> <span data-original-text="Deselect All">إلغاء تحديد الكل</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th width="40">
+                                            <input type="checkbox" class="form-check-input" id="selectAllHeader">
+                                        </th>
+                                        <th data-original-text="Transaction ID">رقم المعاملة</th>
+                                        <th data-original-text="Client">العميل</th>
+                                        <th data-original-text="Type">النوع</th>
+                                        <th data-original-text="Status">الحالة</th>
+                                        <th data-original-text="Priority">الأولوية</th>
+                                        <th data-original-text="Date">التاريخ</th>
+                                        <th data-original-text="Assigned To">معين إلى</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsTableBody">
+                                    <!-- Transactions will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Progress -->
+                <div class="bulk-progress" id="bulkProgress">
+                    <h5 data-original-text="Bulk Operation Progress">تقدم العملية الجماعية</h5>
+                    <div class="progress mb-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="operationProgress" style="width: 0%"></div>
+                    </div>
+                    <div id="progressDetails">
+                        <!-- Progress details will be added here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div class="modal fade" id="statusUpdateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Bulk Status Update">تحديث الحالة الجماعي</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <span data-original-text="This will update the status of">سيتم تحديث حالة</span> <strong id="statusUpdateCount">0</strong> <span data-original-text="selected transactions">معاملة محددة</span>
+                    </div>
+                    <form id="bulkStatusForm">
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="New Status">الحالة الجديدة</label>
+                            <select class="form-select" id="newBulkStatus" required>
+                                <option value="" data-original-text="Select new status">اختر الحالة الجديدة</option>
+                                <option value="approved" data-original-text="Approved">معتمد</option>
+                                <option value="in-progress" data-original-text="In Progress">قيد التنفيذ</option>
+                                <option value="completed" data-original-text="Completed">مكتمل</option>
+                                <option value="on-hold" data-original-text="On Hold">معلق</option>
+                                <option value="cancelled" data-original-text="Cancelled">ملغى</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Reason for Change">سبب التغيير</label>
+                            <textarea class="form-control" id="statusChangeReason" rows="3" placeholder="أدخل سبب تغيير الحالة (اختياري)" data-original-placeholder="Enter reason for status change (optional)"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="notifyUsers" checked>
+                            <label class="form-check-label" for="notifyUsers" data-original-text="Send notification to users">إرسال إشعار للمستخدمين</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-original-text="Cancel">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="performBulkStatusUpdate()">
+                        <i class="bi bi-check me-1"></i> <span data-original-text="Update Status">تحديث الحالة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Modal -->
+    <div class="modal fade" id="assignmentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Bulk Assignment">التعيين الجماعي</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <span data-original-text="This will assign">سيتم تعيين</span> <strong id="assignmentCount">0</strong> <span data-original-text="transactions to the selected user">معاملة للمستخدم المحدد</span>
+                    </div>
+                    <form id="bulkAssignmentForm">
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Assign To">تعيين إلى</label>
+                            <select class="form-select" id="assignUser" required>
+                                <option value="" data-original-text="Select user">اختر المستخدم</option>
+                                <option value="editor1">Ahmed Mohammed - Senior Editor</option>
+                                <option value="editor2">Sarah Ahmed - Editor</option>
+                                <option value="editor3">Mohammed Ali - Editor</option>
+                                <option value="editor4">Fatima Hassan - Senior Editor</option>
+                                <option value="editor5">Omar Khalid - Editor</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Due Date (Optional)">تاريخ الاستحقاق (اختياري)</label>
+                            <input type="date" class="form-control" id="assignmentDueDate">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Assignment Notes">ملاحظات التعيين</label>
+                            <textarea class="form-control" id="assignmentNotes" rows="3" placeholder="أضف أي تعليمات أو ملاحظات خاصة..." data-original-placeholder="Add any special instructions or notes..."></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="notifyAssignee" checked>
+                            <label class="form-check-label" for="notifyAssignee" data-original-text="Send notification to assignee">إرسال إشعار للشخص المعين</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-original-text="Cancel">إلغاء</button>
+                    <button type="button" class="btn btn-warning" onclick="performBulkAssignment()">
+                        <i class="bi bi-person-plus me-1"></i> <span data-original-text="Assign Transactions">تعيين المعاملات</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dashboard JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+
+    <script>
+        // Sample transaction data
+        const allTransactions = [
+            { id: 'TRX-2024-001', client: 'Ahmed Al-Rashid', type: 'document-review', status: 'submitted', priority: 'high', date: '2024-01-15', assignedTo: 'editor1' },
+            { id: 'TRX-2024-002', client: 'Fatima Al-Zahrani', type: 'approval-request', status: 'in-progress', priority: 'urgent', date: '2024-01-16', assignedTo: 'editor2' },
+            { id: 'TRX-2024-003', client: 'Mohammed Al-Qahtani', type: 'submission', status: 'draft', priority: 'medium', date: '2024-01-14', assignedTo: null },
+            { id: 'TRX-2024-004', client: 'Sara Al-Mutairi', type: 'information-request', status: 'approved', priority: 'low', date: '2024-01-13', assignedTo: 'editor3' },
+            { id: 'TRX-2024-005', client: 'Abdullah Al-Dosari', type: 'status-update', status: 'completed', priority: 'medium', date: '2024-01-12', assignedTo: 'editor1' },
+            // Add more sample data to demonstrate bulk operations
+            { id: 'TRX-2024-006', client: 'Noura Al-Mansouri', type: 'document-review', status: 'submitted', priority: 'high', date: '2024-01-17', assignedTo: null },
+            { id: 'TRX-2024-007', client: 'Khalid Al-Otaibi', type: 'approval-request', status: 'pending', priority: 'urgent', date: '2024-01-18', assignedTo: 'editor4' },
+            { id: 'TRX-2024-008', client: 'Amal Al-Zahra', type: 'submission', status: 'in-progress', priority: 'medium', date: '2024-01-19', assignedTo: 'editor2' }
+        ];
+
+        let filteredTransactions = [];
+        let selectedTransactions = new Set();
+        let currentOperation = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+
+        function initializePage() {
+            // Set up event listeners
+            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateFilterCount);
+            });
+            
+            document.getElementById('dateFrom').addEventListener('change', updateFilterCount);
+            document.getElementById('dateTo').addEventListener('change', updateFilterCount);
+            
+            // Initialize with all transactions visible
+            filteredTransactions = [...allTransactions];
+            updateFilterCount();
+        }
+
+        function selectOperation(operationType) {
+            currentOperation = operationType;
+            
+            // Update UI to show selected operation
+            document.querySelectorAll('.operation-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-primary', 'text-white');
+            });
+            
+            event.target.closest('.operation-card').classList.add('border-primary');
+            
+            // Enable relevant buttons
+            updateToolbarButtons();
+            
+            showNotification(`${getOperationName(operationType)} operation selected`, 'info');
+        }
+
+        function getOperationName(type) {
+            const names = {
+                'status': 'Status Update',
+                'assignment': 'Assignment',
+                'export': 'Export'
+            };
+            return names[type] || type;
+        }
+
+        function updateFilterCount() {
+            // This would typically make an API call to get filtered count
+            // For demo, we'll simulate filtering locally
+            
+            setTimeout(() => {
+                const count = Math.floor(Math.random() * 150) + 50; // Simulate 50-200 results
+                document.getElementById('totalTransactions').textContent = count;
+                document.getElementById('selectedForOperation').textContent = selectedTransactions.size;
+                document.getElementById('estimatedTime').textContent = calculateEstimatedTime(selectedTransactions.size);
+                
+                // Show result summary if filters are applied
+                const hasFilters = document.querySelectorAll('.filter-checkbox:checked').length > 0 ||
+                                  document.getElementById('dateFrom').value ||
+                                  document.getElementById('dateTo').value;
+                
+                if (hasFilters) {
+                    document.getElementById('resultSummary').style.display = 'block';
+                }
+            }, 500);
+        }
+
+        function calculateEstimatedTime(count) {
+            if (count === 0) return '-';
+            const secondsPerTransaction = 2;
+            const totalSeconds = count * secondsPerTransaction;
+            if (totalSeconds < 60) return `${totalSeconds}s`;
+            const minutes = Math.floor(totalSeconds / 60);
+            return `${minutes}m`;
+        }
+
+        function applyFilters() {
+            // Simulate filtering
+            filteredTransactions = allTransactions.filter(transaction => {
+                // Apply status filters
+                const statusFilters = Array.from(document.querySelectorAll('input[id^="status"]:checked')).map(cb => cb.value);
+                if (statusFilters.length > 0 && !statusFilters.includes(transaction.status)) {
+                    return false;
+                }
+                
+                // Apply priority filters
+                const priorityFilters = Array.from(document.querySelectorAll('input[id^="priority"]:checked')).map(cb => cb.value);
+                if (priorityFilters.length > 0 && !priorityFilters.includes(transaction.priority)) {
+                    return false;
+                }
+                
+                // Apply type filters
+                const typeFilters = Array.from(document.querySelectorAll('input[id^="type"]:checked')).map(cb => cb.value);
+                if (typeFilters.length > 0 && !typeFilters.includes(transaction.type)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            updateTransactionsList();
+            showNotification(`Found ${filteredTransactions.length} matching transactions`, 'success');
+        }
+
+        function showTransactionList() {
+            updateTransactionsList();
+            document.getElementById('transactionsList').style.display = 'block';
+            
+            // Scroll to the list
+            document.getElementById('transactionsList').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function updateTransactionsList() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+            
+            document.getElementById('transactionCount').textContent = `${filteredTransactions.length} transactions found`;
+            
+            filteredTransactions.forEach(transaction => {
+                const row = createTransactionRow(transaction);
+                tbody.appendChild(row);
+            });
+        }
+
+        function createTransactionRow(transaction) {
+            const tr = document.createElement('tr');
+            tr.dataset.transactionId = transaction.id;
+            
+            const statusClass = getStatusClass(transaction.status);
+            const priorityClass = getPriorityClass(transaction.priority);
+            const typeLabel = getTypeLabel(transaction.type);
+            const assignedUser = getUserName(transaction.assignedTo);
+            
+            tr.innerHTML = `
+                <td>
+                    <input type="checkbox" class="form-check-input transaction-checkbox" value="${transaction.id}" onchange="updateSelection()">
+                </td>
+                <td class="fw-semibold">${transaction.id}</td>
+                <td>${transaction.client}</td>
+                <td>${typeLabel}</td>
+                <td><span class="badge ${statusClass}">${capitalizeFirst(transaction.status)}</span></td>
+                <td><span class="badge ${priorityClass}">${capitalizeFirst(transaction.priority)}</span></td>
+                <td>${formatDate(transaction.date)}</td>
+                <td>${assignedUser}</td>
+            `;
+            
+            return tr;
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'draft': 'bg-secondary',
+                'submitted': 'bg-info',
+                'approved': 'bg-primary',
+                'in-progress': 'bg-warning text-dark',
+                'pending': 'bg-warning text-dark',
+                'completed': 'bg-success',
+                'cancelled': 'bg-danger'
+            };
+            return classes[status] || 'bg-secondary';
+        }
+
+        function getPriorityClass(priority) {
+            const classes = {
+                'urgent': 'bg-danger',
+                'high': 'bg-warning text-dark',
+                'medium': 'bg-info',
+                'low': 'bg-secondary'
+            };
+            return classes[priority] || 'bg-secondary';
+        }
+
+        function getTypeLabel(type) {
+            const labels = {
+                'document-review': 'Document Review',
+                'approval-request': 'Approval Request',
+                'submission': 'Submission',
+                'information-request': 'Information Request',
+                'status-update': 'Status Update'
+            };
+            return labels[type] || type;
+        }
+
+        function getUserName(userId) {
+            const users = {
+                'editor1': 'Ahmed Mohammed',
+                'editor2': 'Sarah Ahmed',
+                'editor3': 'Mohammed Ali',
+                'editor4': 'Fatima Hassan',
+                'editor5': 'Omar Khalid'
+            };
+            return users[userId] || 'Unassigned';
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).replace('-', ' ');
+        }
+
+        function updateSelection() {
+            const checkboxes = document.querySelectorAll('.transaction-checkbox');
+            selectedTransactions.clear();
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedTransactions.add(cb.value);
+                }
+            });
+            
+            const count = selectedTransactions.size;
+            document.getElementById('selectedCount').textContent = `${count} transactions selected`;
+            document.getElementById('selectedForOperation').textContent = count;
+            document.getElementById('estimatedTime').textContent = calculateEstimatedTime(count);
+            
+            // Show/hide bulk toolbar
+            const toolbar = document.getElementById('bulkToolbar');
+            if (count > 0) {
+                toolbar.classList.add('show');
+                updateToolbarButtons();
+            } else {
+                toolbar.classList.remove('show');
+            }
+        }
+
+        function updateToolbarButtons() {
+            const hasSelection = selectedTransactions.size > 0;
+            const hasOperation = currentOperation !== null;
+            
+            document.getElementById('statusUpdateBtn').style.display = 
+                (hasSelection && (!hasOperation || currentOperation === 'status')) ? 'inline-block' : 'none';
+            document.getElementById('assignmentBtn').style.display = 
+                (hasSelection && (!hasOperation || currentOperation === 'assignment')) ? 'inline-block' : 'none';
+            document.getElementById('exportBtn').style.display = 
+                (hasSelection && (!hasOperation || currentOperation === 'export')) ? 'inline-block' : 'none';
+        }
+
+        function selectAllVisible() {
+            document.querySelectorAll('.transaction-checkbox').forEach(cb => {
+                cb.checked = true;
+            });
+            updateSelection();
+        }
+
+        function deselectAll() {
+            document.querySelectorAll('.transaction-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            updateSelection();
+        }
+
+        function clearSelection() {
+            deselectAll();
+        }
+
+        function showStatusModal() {
+            document.getElementById('statusUpdateCount').textContent = selectedTransactions.size;
+            const modal = new bootstrap.Modal(document.getElementById('statusUpdateModal'));
+            modal.show();
+        }
+
+        function showAssignmentModal() {
+            document.getElementById('assignmentCount').textContent = selectedTransactions.size;
+            const modal = new bootstrap.Modal(document.getElementById('assignmentModal'));
+            modal.show();
+        }
+
+        function performBulkStatusUpdate() {
+            const newStatus = document.getElementById('newBulkStatus').value;
+            const reason = document.getElementById('statusChangeReason').value;
+            const notify = document.getElementById('notifyUsers').checked;
+            
+            if (!newStatus) {
+                showNotification('Please select a status', 'error');
+                return;
+            }
+            
+            // Hide modal
+            bootstrap.Modal.getInstance(document.getElementById('statusUpdateModal')).hide();
+            
+            // Show progress
+            startBulkOperation('status-update', selectedTransactions.size);
+            
+            // Simulate bulk operation
+            simulateBulkOperation(Array.from(selectedTransactions), 'Status Updated');
+        }
+
+        function performBulkAssignment() {
+            const assignUser = document.getElementById('assignUser').value;
+            const dueDate = document.getElementById('assignmentDueDate').value;
+            const notes = document.getElementById('assignmentNotes').value;
+            const notify = document.getElementById('notifyAssignee').checked;
+            
+            if (!assignUser) {
+                showNotification('Please select a user', 'error');
+                return;
+            }
+            
+            // Hide modal
+            bootstrap.Modal.getInstance(document.getElementById('assignmentModal')).hide();
+            
+            // Show progress
+            startBulkOperation('assignment', selectedTransactions.size);
+            
+            // Simulate bulk operation
+            simulateBulkOperation(Array.from(selectedTransactions), 'Assigned');
+        }
+
+        function exportSelected() {
+            if (selectedTransactions.size === 0) {
+                showNotification('No transactions selected', 'warning');
+                return;
+            }
+            
+            // Show progress
+            startBulkOperation('export', selectedTransactions.size);
+            
+            // Simulate export operation
+            simulateBulkOperation(Array.from(selectedTransactions), 'Exported', () => {
+                // Simulate file download
+                const blob = new Blob(['Transaction Export Data'], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `transactions_export_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            });
+        }
+
+        function startBulkOperation(operation, count) {
+            document.getElementById('bulkProgress').classList.add('show');
+            document.getElementById('operationProgress').style.width = '0%';
+            document.getElementById('progressDetails').innerHTML = '';
+            
+            // Scroll to progress section
+            document.getElementById('bulkProgress').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function simulateBulkOperation(transactionIds, actionLabel, onComplete = null) {
+            const total = transactionIds.length;
+            let completed = 0;
+            let failed = 0;
+            
+            const progressBar = document.getElementById('operationProgress');
+            const progressDetails = document.getElementById('progressDetails');
+            
+            function processNext() {
+                if (completed + failed >= total) {
+                    // Operation complete
+                    progressBar.style.width = '100%';
+                    progressBar.classList.remove('progress-bar-animated');
+                    
+                    setTimeout(() => {
+                        showNotification(`Bulk operation completed: ${completed} successful, ${failed} failed`, 
+                                       failed > 0 ? 'warning' : 'success');
+                        
+                        if (onComplete) onComplete();
+                        
+                        // Hide progress after a delay
+                        setTimeout(() => {
+                            document.getElementById('bulkProgress').classList.remove('show');
+                        }, 3000);
+                    }, 1000);
+                    
+                    return;
+                }
+                
+                const currentId = transactionIds[completed + failed];
+                const isSuccess = Math.random() > 0.1; // 90% success rate
+                
+                // Update progress
+                const progress = ((completed + failed + 1) / total) * 100;
+                progressBar.style.width = progress + '%';
+                
+                // Add progress item
+                const progressItem = document.createElement('div');
+                progressItem.className = `progress-item ${isSuccess ? 'completed' : 'error'}`;
+                progressItem.innerHTML = `
+                    <i class="bi bi-${isSuccess ? 'check-circle text-success' : 'x-circle text-danger'} progress-icon"></i>
+                    <div class="progress-text">${currentId}</div>
+                    <div class="progress-status">${isSuccess ? actionLabel : 'Failed'}</div>
+                `;
+                progressDetails.appendChild(progressItem);
+                
+                // Scroll to latest item
+                progressItem.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                
+                if (isSuccess) {
+                    completed++;
+                } else {
+                    failed++;
+                }
+                
+                // Process next after delay
+                setTimeout(processNext, Math.random() * 500 + 200); // Random delay 200-700ms
+            }
+            
+            processNext();
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('.filter-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('resultSummary').style.display = 'none';
+            document.getElementById('transactionsList').style.display = 'none';
+            
+            filteredTransactions = [...allTransactions];
+            selectedTransactions.clear();
+            currentOperation = null;
+            
+            document.getElementById('bulkToolbar').classList.remove('show');
+            
+            showNotification('Filters reset', 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const notification = document.createElement('div');
+            notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 100px; right: 20px; z-index: 1050; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+
+        // Initialize select all functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllHeader = document.getElementById('selectAllHeader');
+            if (selectAllHeader) {
+                selectAllHeader.addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.transaction-checkbox');
+                    checkboxes.forEach(cb => {
+                        cb.checked = this.checked;
+                    });
+                    updateSelection();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

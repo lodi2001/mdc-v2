@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Dashboard - MDC TTS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block" data-original-text="Transaction Tracking System">نظام تتبع المعاملات</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="البحث عن المعاملات..." data-original-placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            8
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold">جون المحرر</div>
+                                <small class="text-muted" data-original-text="Editor">محرر</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> <span data-original-text="Profile">الملف الشخصي</span></a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> <span data-original-text="Settings">الإعدادات</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> <span data-original-text="Logout">تسجيل الخروج</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Title -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="Editor Dashboard">لوحة تحكم المحرر</h2>
+                            <p class="text-muted mb-0" data-original-text="Welcome back, John! You have 12 pending tasks.">مرحباً بعودتك، جون! لديك 12 مهمة معلقة.</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-primary">
+                                    <i class="bi bi-calendar3 me-1"></i> <span data-original-text="Today">اليوم</span>
+                                </button>
+                                <button class="btn btn-outline-primary">
+                                    <i class="bi bi-clock me-1"></i> <span data-original-text="This Week">هذا الأسبوع</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary-subtle">
+                                <i class="bi bi-receipt text-primary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">42</h3>
+                                <p class="stat-label" data-original-text="My Transactions">معاملاتي</p>
+                                <span class="stat-change text-success">
+                                    <i class="bi bi-arrow-up"></i> <span data-original-text="5 this week">5 هذا الأسبوع</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning-subtle">
+                                <i class="bi bi-list-task text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">12</h3>
+                                <p class="stat-label" data-original-text="Pending Tasks">المهام المعلقة</p>
+                                <span class="stat-change text-danger">
+                                    <i class="bi bi-exclamation-circle"></i> <span data-original-text="3 urgent">3 عاجلة</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success-subtle">
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">28</h3>
+                                <p class="stat-label" data-original-text="Completed">المكتملة</p>
+                                <span class="stat-change text-success">
+                                    <i class="bi bi-arrow-up"></i> <span data-original-text="Well done!">أحسنت!</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-secondary-subtle">
+                                <i class="bi bi-file-earmark text-secondary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">5</h3>
+                                <p class="stat-label" data-original-text="Drafts">المسودات</p>
+                                <span class="stat-change text-muted">
+                                    <i class="bi bi-clock"></i> <span data-original-text="Auto-saved">حفظ تلقائي</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Row -->
+                <div class="row g-3">
+                    <!-- Assigned Tasks - Full Width -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0" data-original-text="Assigned Tasks">المهام المخصصة</h5>
+                                <div>
+                                    <span class="badge bg-danger me-2" data-original-text="3 Urgent">3 عاجلة</span>
+                                    <a href="assigned-tasks.html" class="btn btn-sm btn-link" data-original-text="View All">عرض الكل</a>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th data-original-text="Priority">الأولوية</th>
+                                                <th data-original-text="External ID">المعرف الخارجي</th>
+                                                <th data-original-text="Internal ID">المعرف الداخلي</th>
+                                                <th data-original-text="Client">العميل</th>
+                                                <th data-original-text="Type">النوع</th>
+                                                <th data-original-text="Description">الوصف</th>
+                                                <th data-original-text="Status">الحالة</th>
+                                                <th data-original-text="Creation Date">تاريخ الإنشاء</th>
+                                                <th data-original-text="Due Date">تاريخ الاستحقاق</th>
+                                                <th data-original-text="Comments">التعليقات</th>
+                                                <th data-original-text="Actions">الإجراءات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-danger" data-original-text="High">عالية</span>
+                                                </td>
+                                                <td>DOC-2024-006</td>
+                                                <td>TRX-006</td>
+                                                <td>Ahmed Al-Rashid</td>
+                                                <td data-original-text="Document Review">مراجعة المستندات</td>
+                                                <td>Technical specifications review</td>
+                                                <td><span class="badge bg-warning" data-original-text="Pending Review">بانتظار المراجعة</span></td>
+                                                <td data-original-text="Jan 15">يناير 15</td>
+                                                <td class="text-danger" data-original-text="Today">اليوم</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="2 comments">
+                                                        <i class="bi bi-chat-dots"></i> 2
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-danger" data-original-text="High">عالية</span>
+                                                </td>
+                                                <td>APR-2024-007</td>
+                                                <td>TRX-007</td>
+                                                <td>Fatima Al-Zahrani</td>
+                                                <td data-original-text="Approval Processing">معالجة الموافقة</td>
+                                                <td>Design approval workflow</td>
+                                                <td><span class="badge bg-info" data-original-text="In Progress">قيد التنفيذ</span></td>
+                                                <td data-original-text="Jan 15">يناير 15</td>
+                                                <td class="text-danger" data-original-text="Today">اليوم</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="1 comment">
+                                                        <i class="bi bi-chat-dots"></i> 1
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-warning" data-original-text="Medium">متوسطة</span>
+                                                </td>
+                                                <td>UPL-2024-008</td>
+                                                <td>TRX-008</td>
+                                                <td>Mohammed Al-Qahtani</td>
+                                                <td data-original-text="Document Upload">رفع المستندات</td>
+                                                <td>Site survey documents</td>
+                                                <td><span class="badge bg-secondary" data-original-text="Draft">مسودة</span></td>
+                                                <td data-original-text="Jan 14">يناير 14</td>
+                                                <td data-original-text="Tomorrow">غداً</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="No comments">
+                                                        <i class="bi bi-chat-dots"></i> 0
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-info" data-original-text="Low">منخفضة</span>
+                                                </td>
+                                                <td>STA-2024-009</td>
+                                                <td>TRX-009</td>
+                                                <td>Sara Al-Mutairi</td>
+                                                <td data-original-text="Status Update">تحديث الحالة</td>
+                                                <td>Project milestone update</td>
+                                                <td><span class="badge bg-primary" data-original-text="Submitted">تم الإرسال</span></td>
+                                                <td data-original-text="Jan 13">يناير 13</td>
+                                                <td data-original-text="Jan 18">يناير 18</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="3 comments">
+                                                        <i class="bi bi-chat-dots"></i> 3
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span class="badge bg-info" data-original-text="Low">منخفضة</span>
+                                                </td>
+                                                <td>REQ-2024-010</td>
+                                                <td>TRX-010</td>
+                                                <td>Abdullah Al-Dosari</td>
+                                                <td data-original-text="Requirements Gathering">جمع المتطلبات</td>
+                                                <td>Client requirements document</td>
+                                                <td><span class="badge bg-secondary" data-original-text="Draft">مسودة</span></td>
+                                                <td data-original-text="Jan 12">يناير 12</td>
+                                                <td data-original-text="Jan 19">يناير 19</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="5 comments">
+                                                        <i class="bi bi-chat-dots"></i> 5
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="bi bi-check"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row g-3 mt-5">
+                    <!-- Task Status -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0" data-original-text="Task Status">حالة المهام</h5>
+                            </div>
+                            <div class="card-body py-3">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 240px; height: 240px; margin: 0 auto;">
+                                        <canvas id="statusChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="d-flex flex-wrap justify-content-center gap-3" style="max-width: 320px;">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-success me-2" style="font-size: 10px;"></i>
+                                                <span class="small" data-original-text="Completed">مكتملة</span>
+                                                <span class="badge bg-light text-dark ms-1">28</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-warning me-2" style="font-size: 10px;"></i>
+                                                <span class="small" data-original-text="Pending">معلقة</span>
+                                                <span class="badge bg-light text-dark ms-1">12</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-info me-2" style="font-size: 10px;"></i>
+                                                <span class="small" data-original-text="In Progress">قيد التنفيذ</span>
+                                                <span class="badge bg-light text-dark ms-1">5</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-secondary me-2" style="font-size: 10px;"></i>
+                                                <span class="small" data-original-text="Draft">مسودة</span>
+                                                <span class="badge bg-light text-dark ms-1">5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- My Performance -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0" data-original-text="My Performance">أدائي</h5>
+                            </div>
+                            <div class="card-body py-3">
+                                <div style="padding: 20px 0;">
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted" data-original-text="Tasks Completed">المهام المكتملة</span>
+                                            <span class="fw-semibold">28/40</span>
+                                        </div>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-success" style="width: 70%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted" data-original-text="On-Time Delivery">التسليم في الوقت</span>
+                                            <span class="fw-semibold">95%</span>
+                                        </div>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-primary" style="width: 95%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted" data-original-text="Accuracy Rate">معدل الدقة</span>
+                                            <span class="fw-semibold">98%</span>
+                                        </div>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-info" style="width: 98%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-5 text-center">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <h4 class="mb-0">28</h4>
+                                                <small class="text-muted" data-original-text="Completed">مكتملة</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <h4 class="mb-0">12</h4>
+                                                <small class="text-muted" data-original-text="Pending">معلقة</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <h4 class="mb-0">5</h4>
+                                                <small class="text-muted" data-original-text="In Progress">قيد التنفيذ</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Transaction Modal (Quick Create) -->
+    <div class="modal fade" id="newTransactionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Quick Create Transaction">إنشاء معاملة سريع</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" data-original-text="Client Name">اسم العميل</label>
+                                <input type="text" class="form-control" placeholder="أدخل اسم العميل" data-original-placeholder="Enter client name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-original-text="Transaction Type">نوع المعاملة</label>
+                                <select class="form-select">
+                                    <option data-original-text="Invoice">فاتورة</option>
+                                    <option data-original-text="Payment">دفعة</option>
+                                    <option data-original-text="Refund">استرداد</option>
+                                    <option data-original-text="Other">أخرى</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-original-text="Amount (SAR)">المبلغ (ريال)</label>
+                                <input type="number" class="form-control" placeholder="0.00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-original-text="Due Date">تاريخ الاستحقاق</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" data-original-text="Description">الوصف</label>
+                                <textarea class="form-control" rows="3" placeholder="أدخل وصف المعاملة" data-original-placeholder="Enter transaction description"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-original-text="Save as Draft">حفظ كمسودة</button>
+                    <button type="button" class="btn btn-primary" data-original-text="Create Transaction">إنشاء المعاملة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Dashboard JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/charts-editor.js"></script>
+</body>
+</html>

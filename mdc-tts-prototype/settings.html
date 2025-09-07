@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات النظام - MDC TTS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="البحث في المعاملات..." data-original-placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-2 position-relative" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                                5
+                            </span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown">
+                            <div class="dropdown-header d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold" data-original-text="Notifications">الإشعارات</span>
+                                <a href="#" class="text-primary small" data-original-text="Mark all as read">وضع علامة مقروءة على الكل</a>
+                            </div>
+                            <div class="notification-list">
+                                <!-- Notifications will be loaded here by JavaScript -->
+                            </div>
+                            <div class="dropdown-footer text-center">
+                                <a href="notifications.html" class="text-primary" data-original-text="View All Notifications">عرض جميع الإشعارات</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">Admin User</div>
+                                <small class="text-muted" id="userRole">Admin</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> <span data-original-text="Profile">الملف الشخصي</span></a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i> <span data-original-text="Settings">الإعدادات</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> <span data-original-text="Logout">تسجيل الخروج</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Layout Wrapper -->
+    <div class="layout-wrapper">
+        <!-- Sidebar Container -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="System Settings">إعدادات النظام</h2>
+                            <p class="text-muted mb-0" data-original-text="Configure and manage all system settings and preferences">تكوين وإدارة جميع إعدادات النظام والتفضيلات</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary" onclick="resetToDefaults()">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>
+                                    <span data-original-text="Reset to Defaults">Reset to Defaults</span>
+                                </button>
+                                <button class="btn btn-success" onclick="saveAllSettings()">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    <span data-original-text="Save All Settings">Save All Settings</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tabs -->
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="settingsTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                                    <i class="bi bi-gear-wide-connected me-1"></i>
+                                    <span data-original-text="General Settings">الإعدادات العامة</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                                    <i class="bi bi-people me-1"></i>
+                                    <span data-original-text="User Management">إدارة المستخدمين</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions" type="button" role="tab">
+                                    <i class="bi bi-receipt me-1"></i>
+                                    <span data-original-text="Transaction Settings">إعدادات المعاملات</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab">
+                                    <i class="bi bi-bell me-1"></i>
+                                    <span data-original-text="Notification Settings">إعدادات الإشعارات</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab">
+                                    <i class="bi bi-envelope me-1"></i>
+                                    <span data-original-text="Email Configuration">إعدادات البريد الإلكتروني</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="maintenance-tab" data-bs-toggle="tab" data-bs-target="#maintenance" type="button" role="tab">
+                                    <i class="bi bi-tools me-1"></i>
+                                    <span data-original-text="System Maintenance">صيانة النظام</span>
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                                    <i class="bi bi-shield-lock me-1"></i>
+                                    <span data-original-text="Security & Audit">الأمان والتدقيق</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="tab-content" id="settingsTabContent">
+                            <!-- Tab 1: General Settings -->
+                            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                                <!-- Company Information Section -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-building me-2"></i>
+                                        <span data-original-text="Company Information">معلومات الشركة</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Company Name">اسم الشركة</label>
+                                            <input type="text" class="form-control" id="companyName" value="MDC Transaction Tracking System">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Organization Type">نوع المنظمة</label>
+                                            <select class="form-select" id="orgType">
+                                                <option value="government" data-original-text="Government">حكومي</option>
+                                                <option value="private" data-original-text="Private">خاص</option>
+                                                <option value="nonprofit" data-original-text="Non-Profit">غير ربحي</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="System Logo">شعار النظام</label>
+                                            <div class="input-group">
+                                                <input type="file" class="form-control" id="systemLogo" accept="image/*">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="previewLogo()">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Favicon">أيقونة الموقع</label>
+                                            <input type="file" class="form-control" id="favicon" accept="image/x-icon,image/png">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Regional Settings Section -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-globe me-2"></i>
+                                        <span data-original-text="Regional Settings">Regional Settings</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Default Language">اللغة الافتراضية</label>
+                                            <select class="form-select" id="defaultLang">
+                                                <option value="ar" selected>العربية</option>
+                                                <option value="en">English</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Time Zone">المنطقة الزمنية</label>
+                                            <select class="form-select" id="timezone">
+                                                <option value="UTC+3" selected>UTC+3 (الرياض)</option>
+                                                <option value="UTC+4">UTC+4 (دبي)</option>
+                                                <option value="UTC+2">UTC+2 (القاهرة)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Currency">العملة</label>
+                                            <select class="form-select" id="currency">
+                                                <option value="SAR" selected>SAR - ريال سعودي</option>
+                                                <option value="AED">AED - درهم إماراتي</option>
+                                                <option value="USD">USD - دولار أمريكي</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Date Format">تنسيق التاريخ</label>
+                                            <select class="form-select" id="dateFormat">
+                                                <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Time Format">تنسيق الوقت</label>
+                                            <div class="btn-group w-100" role="group">
+                                                <input type="radio" class="btn-check" name="timeFormat" id="time12" checked>
+                                                <label class="btn btn-outline-primary" for="time12" data-original-text="12 Hour">12 ساعة</label>
+                                                <input type="radio" class="btn-check" name="timeFormat" id="time24">
+                                                <label class="btn btn-outline-primary" for="time24" data-original-text="24 Hour">24 ساعة</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Working Hours Section -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-clock me-2"></i>
+                                        <span data-original-text="Working Hours">Working Hours</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Working Days">أيام العمل</label>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="sunday" checked>
+                                                    <label class="form-check-label" for="sunday" data-original-text="Sun">الأحد</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="monday" checked>
+                                                    <label class="form-check-label" for="monday" data-original-text="Mon">الإثنين</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="tuesday" checked>
+                                                    <label class="form-check-label" for="tuesday" data-original-text="Tue">الثلاثاء</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="wednesday" checked>
+                                                    <label class="form-check-label" for="wednesday" data-original-text="Wed">الأربعاء</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="thursday" checked>
+                                                    <label class="form-check-label" for="thursday" data-original-text="Thu">الخميس</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="friday">
+                                                    <label class="form-check-label" for="friday" data-original-text="Fri">الجمعة</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="saturday">
+                                                    <label class="form-check-label" for="saturday" data-original-text="Sat">السبت</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" data-original-text="Start Time">وقت البداية</label>
+                                            <input type="time" class="form-control" id="startTime" value="08:00">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" data-original-text="End Time">وقت النهاية</label>
+                                            <input type="time" class="form-control" id="endTime" value="17:00">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 2: User Management -->
+                            <div class="tab-pane fade" id="users" role="tabpanel">
+                                <!-- Google OAuth Configuration Section -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-google me-2"></i>
+                                        <span data-original-text="Google OAuth Integration">تكامل Google OAuth</span>
+                                    </h5>
+                                    
+                                    <!-- OAuth Enable Toggle -->
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="enableGoogleOAuth" checked>
+                                                <label class="form-check-label" for="enableGoogleOAuth">
+                                                    <span data-original-text="Enable Google Login">تفعيل تسجيل الدخول بحساب Google</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OAuth Credentials -->
+                                    <div class="oauth-settings" id="oauthSettings">
+                                        <div class="alert alert-info mb-3">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            <span data-original-text="Configure these settings in Google Cloud Console">قم بتكوين هذه الإعدادات في Google Cloud Console</span>
+                                            <a href="https://console.cloud.google.com" target="_blank" class="ms-2">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label" data-original-text="Google Client ID">معرف عميل Google</label>
+                                                <input type="text" class="form-control" id="googleClientId" 
+                                                       placeholder="xxx.apps.googleusercontent.com">
+                                                <small class="text-muted" data-original-text="Found in Google Cloud Console > Credentials">
+                                                    موجود في Google Cloud Console > بيانات الاعتماد
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" data-original-text="Google Client Secret">سر عميل Google</label>
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" id="googleClientSecret" 
+                                                           placeholder="GOCSPX-xxxxxxxxxxxx">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="toggleSecretVisibility()">
+                                                        <i class="bi bi-eye" id="secretEyeIcon"></i>
+                                                    </button>
+                                                </div>
+                                                <small class="text-muted" data-original-text="Keep this secret secure">
+                                                    احتفظ بهذا السر آمنًا
+                                                </small>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label" data-original-text="Redirect URI">URI إعادة التوجيه</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="redirectUri" 
+                                                           value="https://yourdomain.com/auth/google/callback" readonly>
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="copyRedirectUri()">
+                                                        <i class="bi bi-clipboard"></i> <span data-original-text="Copy">نسخ</span>
+                                                    </button>
+                                                </div>
+                                                <small class="text-muted" data-original-text="Add this URI to your Google OAuth app">
+                                                    أضف هذا URI إلى تطبيق Google OAuth الخاص بك
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <!-- OAuth Behavior Settings -->
+                                        <h6 class="mt-4 mb-3" data-original-text="OAuth Behavior">سلوك OAuth</h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="autoCreateAccounts" checked>
+                                                    <label class="form-check-label" for="autoCreateAccounts">
+                                                        <span data-original-text="Auto-create accounts on first login">إنشاء حسابات تلقائيًا عند أول تسجيل دخول</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" data-original-text="Default role for OAuth users">الدور الافتراضي لمستخدمي OAuth</label>
+                                                <select class="form-select" id="oauthDefaultRole">
+                                                    <option value="client" selected data-original-text="Client">عميل</option>
+                                                    <option value="editor" data-original-text="Editor">محرر</option>
+                                                    <option value="admin" data-original-text="Admin">مدير</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label" data-original-text="Allowed Email Domains">نطاقات البريد الإلكتروني المسموح بها</label>
+                                                <textarea class="form-control" id="allowedDomains" rows="2" 
+                                                          placeholder="company.com, partner.org"></textarea>
+                                                <small class="text-muted" data-original-text="Leave empty to allow all domains">
+                                                    اتركه فارغًا للسماح بجميع النطاقات
+                                                </small>
+                                            </div>
+                                            <div class="col-12">
+                                                <button class="btn btn-primary" onclick="testOAuthConnection()">
+                                                    <i class="bi bi-plug me-2"></i>
+                                                    <span data-original-text="Test OAuth Connection">اختبار اتصال OAuth</span>
+                                                </button>
+                                                <div id="oauthTestResult" class="mt-2"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- OAuth Setup Guide -->
+                                        <div class="accordion mt-4" id="oauthGuide">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                            data-bs-target="#oauthGuideContent">
+                                                        <i class="bi bi-question-circle me-2"></i>
+                                                        <span data-original-text="OAuth Setup Guide">دليل إعداد OAuth</span>
+                                                    </button>
+                                                </h2>
+                                                <div id="oauthGuideContent" class="accordion-collapse collapse">
+                                                    <div class="accordion-body">
+                                                        <ol>
+                                                            <li data-original-text="Go to Google Cloud Console">انتقل إلى Google Cloud Console</li>
+                                                            <li data-original-text="Create a new project or select existing">أنشئ مشروعًا جديدًا أو حدد مشروعًا موجودًا</li>
+                                                            <li data-original-text="Enable Google+ API">قم بتمكين Google+ API</li>
+                                                            <li data-original-text="Create OAuth 2.0 credentials">أنشئ بيانات اعتماد OAuth 2.0</li>
+                                                            <li data-original-text="Add redirect URI from above">أضف URI إعادة التوجيه من أعلاه</li>
+                                                            <li data-original-text="Copy Client ID and Secret">انسخ معرف العميل والسر</li>
+                                                            <li data-original-text="Save settings here">احفظ الإعدادات هنا</li>
+                                                        </ol>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- User Registration Settings -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-person-plus me-2"></i>
+                                        <span data-original-text="User Registration">تسجيل المستخدمين</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="allowSelfRegister">
+                                                <label class="form-check-label" for="allowSelfRegister">
+                                                    <span data-original-text="Allow self-registration">السماح بالتسجيل الذاتي</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="emailVerification" checked>
+                                                <label class="form-check-label" for="emailVerification">
+                                                    <span data-original-text="Require email verification">طلب التحقق من البريد الإلكتروني</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Password Policy Section -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-key me-2"></i>
+                                        <span data-original-text="Password Policy">سياسة كلمة المرور</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Minimum Length">الحد الأدنى للطول</label>
+                                            <input type="number" class="form-control" id="minPasswordLength" value="8" min="6" max="32">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Max Login Attempts">الحد الأقصى لمحاولات تسجيل الدخول</label>
+                                            <input type="number" class="form-control" id="maxLoginAttempts" value="5" min="3" max="10">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Lockout Duration (minutes)">مدة الحظر (دقائق)</label>
+                                            <input type="number" class="form-control" id="lockoutDuration" value="30" min="5" max="1440">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" data-original-text="Password Requirements">متطلبات كلمة المرور</label>
+                                            <div class="d-flex flex-wrap gap-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="requireUppercase" checked>
+                                                    <label class="form-check-label" for="requireUppercase" data-original-text="Uppercase letter">حرف كبير</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="requireLowercase" checked>
+                                                    <label class="form-check-label" for="requireLowercase" data-original-text="Lowercase letter">حرف صغير</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="requireNumber" checked>
+                                                    <label class="form-check-label" for="requireNumber" data-original-text="Number">رقم</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="requireSpecial" checked>
+                                                    <label class="form-check-label" for="requireSpecial" data-original-text="Special character">رمز خاص</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Session Settings -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-clock-history me-2"></i>
+                                        <span data-original-text="Session Settings">إعدادات الجلسة</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Session Timeout (minutes)">مهلة الجلسة (دقائق)</label>
+                                            <input type="number" class="form-control" id="sessionTimeout" value="30" min="5" max="1440">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Remember Me Duration (days)">مدة تذكرني (أيام)</label>
+                                            <input type="number" class="form-control" id="rememberDuration" value="30" min="1" max="365">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 3: Transaction Settings -->
+                            <div class="tab-pane fade" id="transactions" role="tabpanel">
+                                <!-- Transaction Types Section -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-list-check me-2"></i>
+                                        <span data-original-text="Transaction Types">أنواع المعاملات</span>
+                                    </h5>
+                                    <div class="transaction-types-list">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-original-text="Active">نشط</th>
+                                                    <th data-original-text="Arabic Name">الاسم بالعربية</th>
+                                                    <th data-original-text="English Name">الاسم بالإنجليزية</th>
+                                                    <th data-original-text="Color">اللون</th>
+                                                    <th data-original-text="Actions">الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><input type="checkbox" class="form-check-input" checked></td>
+                                                    <td>التسجيل</td>
+                                                    <td>Registration</td>
+                                                    <td><input type="color" class="form-control form-control-sm" value="#198754"></td>
+                                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox" class="form-check-input" checked></td>
+                                                    <td>نقل الملكية</td>
+                                                    <td>Ownership Transfer</td>
+                                                    <td><input type="color" class="form-control form-control-sm" value="#0dcaf0"></td>
+                                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox" class="form-check-input" checked></td>
+                                                    <td>تراخيص</td>
+                                                    <td>Licenses</td>
+                                                    <td><input type="color" class="form-control form-control-sm" value="#ffc107"></td>
+                                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox" class="form-check-input" checked></td>
+                                                    <td>تصاميم</td>
+                                                    <td>Designs</td>
+                                                    <td><input type="color" class="form-control form-control-sm" value="#6f42c1"></td>
+                                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox" class="form-check-input" checked></td>
+                                                    <td>دراسة</td>
+                                                    <td>Study</td>
+                                                    <td><input type="color" class="form-control form-control-sm" value="#fd7e14"></td>
+                                                    <td><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <button class="btn btn-outline-primary">
+                                            <i class="bi bi-plus-circle me-1"></i>
+                                            <span data-original-text="Add Transaction Type">إضافة نوع معاملة</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction ID Format -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-hash me-2"></i>
+                                        <span data-original-text="Transaction ID Format">تنسيق معرف المعاملة</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="ID Pattern">نمط المعرف</label>
+                                            <input type="text" class="form-control" id="idPattern" value="TRX-{YYYY}-{NNNNN}">
+                                            <small class="text-muted">
+                                                {YYYY} = <span data-original-text="Year">السنة</span>, 
+                                                {MM} = <span data-original-text="Month">الشهر</span>, 
+                                                {NNNNN} = <span data-original-text="Sequential Number">رقم تسلسلي</span>
+                                            </small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" data-original-text="Starting Number">الرقم البدائي</label>
+                                            <input type="number" class="form-control" id="startingNumber" value="1" min="1">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" data-original-text="Current Counter">العداد الحالي</label>
+                                            <input type="number" class="form-control" id="currentCounter" value="234" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Priority Levels -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-flag me-2"></i>
+                                        <span data-original-text="Priority Levels">مستويات الأولوية</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <div class="priority-item">
+                                                <span class="badge bg-danger">عاجل</span>
+                                                <input type="text" class="form-control form-control-sm mt-1" value="عاجل" data-original-value="Urgent">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="priority-item">
+                                                <span class="badge bg-warning">عالية</span>
+                                                <input type="text" class="form-control form-control-sm mt-1" value="عالية" data-original-value="High">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="priority-item">
+                                                <span class="badge bg-info">متوسطة</span>
+                                                <input type="text" class="form-control form-control-sm mt-1" value="متوسطة" data-original-value="Medium">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="priority-item">
+                                                <span class="badge bg-secondary">منخفضة</span>
+                                                <input type="text" class="form-control form-control-sm mt-1" value="منخفضة" data-original-value="Low">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 4: Notification Settings -->
+                            <div class="tab-pane fade" id="notifications" role="tabpanel">
+                                <!-- Notification Channels -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-broadcast me-2"></i>
+                                        <span data-original-text="Notification Channels">قنوات الإشعارات</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                                <label class="form-check-label" for="emailNotifications">
+                                                    <span data-original-text="Email Notifications">إشعارات البريد الإلكتروني</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                                <label class="form-check-label" for="smsNotifications">
+                                                    <span data-original-text="SMS Notifications">إشعارات الرسائل النصية</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="inAppNotifications" checked>
+                                                <label class="form-check-label" for="inAppNotifications">
+                                                    <span data-original-text="In-App Notifications">إشعارات داخل التطبيق</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="pushNotifications">
+                                                <label class="form-check-label" for="pushNotifications">
+                                                    <span data-original-text="Browser Push Notifications">إشعارات المتصفح الفورية</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Notification Events -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        <span data-original-text="Notification Events">أحداث الإشعارات</span>
+                                    </h5>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th data-original-text="Event">الحدث</th>
+                                                <th data-original-text="Email">بريد إلكتروني</th>
+                                                <th data-original-text="SMS">رسالة نصية</th>
+                                                <th data-original-text="In-App">داخل التطبيق</th>
+                                                <th data-original-text="Push">فوري</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td data-original-text="Transaction Created">إنشاء معاملة</td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input"></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input"></td>
+                                            </tr>
+                                            <tr>
+                                                <td data-original-text="Status Changed">تغيير الحالة</td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input"></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                            </tr>
+                                            <tr>
+                                                <td data-original-text="Transaction Completed">اكتمال المعاملة</td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                            </tr>
+                                            <tr>
+                                                <td data-original-text="Due Date Reminder">تذكير بتاريخ الاستحقاق</td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input"></td>
+                                                <td><input type="checkbox" class="form-check-input" checked></td>
+                                                <td><input type="checkbox" class="form-check-input"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Tab 5: Email Configuration -->
+                            <div class="tab-pane fade" id="email" role="tabpanel">
+                                <!-- SMTP Settings -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-server me-2"></i>
+                                        <span data-original-text="SMTP Settings">إعدادات SMTP</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="SMTP Server">خادم SMTP</label>
+                                            <input type="text" class="form-control" id="smtpServer" placeholder="smtp.gmail.com">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" data-original-text="Port">المنفذ</label>
+                                            <input type="number" class="form-control" id="smtpPort" value="587">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" data-original-text="Security">الأمان</label>
+                                            <select class="form-select" id="smtpSecurity">
+                                                <option value="none" data-original-text="None">بدون</option>
+                                                <option value="ssl">SSL</option>
+                                                <option value="tls" selected>TLS</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Username">اسم المستخدم</label>
+                                            <input type="text" class="form-control" id="smtpUsername">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Password">كلمة المرور</label>
+                                            <input type="password" class="form-control" id="smtpPassword">
+                                        </div>
+                                        <div class="col-12">
+                                            <button class="btn btn-primary" onclick="testEmailConnection()">
+                                                <i class="bi bi-envelope-check me-2"></i>
+                                                <span data-original-text="Test Connection">اختبار الاتصال</span>
+                                            </button>
+                                            <button class="btn btn-outline-primary ms-2" onclick="sendTestEmail()">
+                                                <i class="bi bi-send me-2"></i>
+                                                <span data-original-text="Send Test Email">إرسال بريد تجريبي</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email Branding -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-palette me-2"></i>
+                                        <span data-original-text="Email Branding">العلامة التجارية للبريد الإلكتروني</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="From Name">اسم المرسل</label>
+                                            <input type="text" class="form-control" id="fromName" value="MDC TTS">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="From Email">بريد المرسل</label>
+                                            <input type="email" class="form-control" id="fromEmail" value="noreply@mdc-tts.com">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Reply-To Email">بريد الرد</label>
+                                            <input type="email" class="form-control" id="replyToEmail" value="support@mdc-tts.com">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Email Logo">شعار البريد الإلكتروني</label>
+                                            <input type="file" class="form-control" id="emailLogo" accept="image/*">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 6: System Maintenance -->
+                            <div class="tab-pane fade" id="maintenance" role="tabpanel">
+                                <!-- Backup Settings -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-cloud-download me-2"></i>
+                                        <span data-original-text="Backup Settings">إعدادات النسخ الاحتياطي</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="autoBackup" checked>
+                                                <label class="form-check-label" for="autoBackup">
+                                                    <span data-original-text="Enable Automatic Backups">تفعيل النسخ الاحتياطي التلقائي</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Backup Schedule">جدول النسخ الاحتياطي</label>
+                                            <select class="form-select" id="backupSchedule">
+                                                <option value="daily" selected data-original-text="Daily">يومي</option>
+                                                <option value="weekly" data-original-text="Weekly">أسبوعي</option>
+                                                <option value="monthly" data-original-text="Monthly">شهري</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Backup Time">وقت النسخ الاحتياطي</label>
+                                            <input type="time" class="form-control" id="backupTime" value="02:00">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Retention Period (days)">فترة الاحتفاظ (أيام)</label>
+                                            <input type="number" class="form-control" id="retentionPeriod" value="30" min="7" max="365">
+                                        </div>
+                                        <div class="col-12">
+                                            <button class="btn btn-primary" onclick="runManualBackup()">
+                                                <i class="bi bi-play-circle me-2"></i>
+                                                <span data-original-text="Run Manual Backup">تشغيل نسخ احتياطي يدوي</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Data Retention -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-archive me-2"></i>
+                                        <span data-original-text="Data Retention Policy">سياسة الاحتفاظ بالبيانات</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Transaction Data">بيانات المعاملات</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="transactionRetention" value="365">
+                                                <span class="input-group-text" data-original-text="days">أيام</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Audit Logs">سجلات التدقيق</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="auditRetention" value="180">
+                                                <span class="input-group-text" data-original-text="days">أيام</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label" data-original-text="Email Logs">سجلات البريد الإلكتروني</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="emailRetention" value="90">
+                                                <span class="input-group-text" data-original-text="days">أيام</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab 7: Security & Audit -->
+                            <div class="tab-pane fade" id="security" role="tabpanel">
+                                <!-- Security Settings -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-shield-check me-2"></i>
+                                        <span data-original-text="Security Settings">إعدادات الأمان</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                                                <label class="form-check-label" for="twoFactorAuth">
+                                                    <span data-original-text="Enable Two-Factor Authentication">تفعيل المصادقة الثنائية</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="ipWhitelist">
+                                                <label class="form-check-label" for="ipWhitelist">
+                                                    <span data-original-text="Enable IP Whitelist">تفعيل قائمة IP البيضاء</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" data-original-text="Allowed IP Addresses">عناوين IP المسموح بها</label>
+                                            <textarea class="form-control" id="allowedIPs" rows="3" placeholder="192.168.1.1&#10;10.0.0.0/24"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- File Upload Restrictions -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-file-earmark-lock me-2"></i>
+                                        <span data-original-text="File Upload Restrictions">قيود رفع الملفات</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Maximum File Size (MB)">الحد الأقصى لحجم الملف (ميجابايت)</label>
+                                            <input type="number" class="form-control" id="maxFileSize" value="10" min="1" max="100">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Maximum Files Per Transaction">الحد الأقصى للملفات لكل معاملة</label>
+                                            <input type="number" class="form-control" id="maxFilesPerTransaction" value="20" min="1" max="100">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label" data-original-text="Allowed File Types">أنواع الملفات المسموح بها</label>
+                                            <div class="d-flex flex-wrap gap-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="allowPDF" checked>
+                                                    <label class="form-check-label" for="allowPDF">PDF</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="allowDOC" checked>
+                                                    <label class="form-check-label" for="allowDOC">DOC/DOCX</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="allowXLS" checked>
+                                                    <label class="form-check-label" for="allowXLS">XLS/XLSX</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="allowImages" checked>
+                                                    <label class="form-check-label" for="allowImages">Images (JPG, PNG)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Audit Log Settings -->
+                                <div class="settings-section">
+                                    <h5 class="section-title">
+                                        <i class="bi bi-journal-text me-2"></i>
+                                        <span data-original-text="Audit Log Settings">إعدادات سجل التدقيق</span>
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="enableAuditLog" checked>
+                                                <label class="form-check-label" for="enableAuditLog">
+                                                    <span data-original-text="Enable Audit Logging">تفعيل سجل التدقيق</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" data-original-text="Log Level">مستوى السجل</label>
+                                            <select class="form-select" id="logLevel">
+                                                <option value="all" data-original-text="All Events">جميع الأحداث</option>
+                                                <option value="important" selected data-original-text="Important Only">المهم فقط</option>
+                                                <option value="critical" data-original-text="Critical Only">الحرج فقط</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auto-save indicator -->
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
+                    <div id="autoSaveIndicator" class="alert alert-success d-none" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span data-original-text="Settings auto-saved">تم الحفظ التلقائي للإعدادات</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/translations.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

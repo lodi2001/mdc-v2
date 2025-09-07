@@ -1,0 +1,296 @@
+/* Transactions Page Styles */
+
+/* Table Styles */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.sortable:hover {
+    background-color: var(--gray-50);
+}
+
+.sortable i {
+    font-size: 12px;
+    opacity: 0.5;
+    margin-left: 4px;
+}
+
+.sortable.asc i::before {
+    content: "\F128"; /* bi-arrow-up */
+    opacity: 1;
+}
+
+.sortable.desc i::before {
+    content: "\F125"; /* bi-arrow-down */
+    opacity: 1;
+}
+
+/* Filter Tags */
+#activeFilters {
+    min-height: 32px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--gray-700);
+}
+
+.filter-tag .remove-filter {
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--gray-600);
+    transition: color 0.2s;
+}
+
+.filter-tag .remove-filter:hover {
+    color: var(--danger);
+}
+
+/* Status Badge Colors */
+.badge.bg-draft {
+    background-color: var(--status-draft) !important;
+}
+
+.badge.bg-submitted {
+    background-color: var(--status-submitted) !important;
+}
+
+.badge.bg-approved {
+    background-color: var(--status-approved) !important;
+}
+
+.badge.bg-in-progress {
+    background-color: var(--status-in-progress) !important;
+}
+
+.badge.bg-pending {
+    background-color: var(--status-pending) !important;
+}
+
+.badge.bg-paid {
+    background-color: var(--status-paid) !important;
+}
+
+.badge.bg-completed {
+    background-color: var(--status-completed) !important;
+}
+
+.badge.bg-cancelled {
+    background-color: var(--status-cancelled) !important;
+}
+
+.badge.bg-on-hold {
+    background-color: var(--status-on-hold) !important;
+}
+
+/* Attachment Icon */
+.attachment-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+.attachment-count i {
+    font-size: 16px;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.action-buttons .btn {
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+/* Grid View Styles */
+.transactions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.transaction-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.transaction-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.transaction-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.transaction-card-id {
+    font-weight: 600;
+    color: var(--mdc-primary);
+    text-decoration: none;
+}
+
+.transaction-card-body {
+    margin-bottom: 16px;
+}
+
+.transaction-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.transaction-card-row:last-child {
+    border-bottom: none;
+}
+
+.transaction-card-label {
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+.transaction-card-value {
+    font-weight: 500;
+    color: var(--gray-900);
+    font-size: 14px;
+}
+
+.transaction-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Checkbox Styles */
+.form-check-input {
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--mdc-primary);
+    border-color: var(--mdc-primary);
+}
+
+/* Pagination */
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    color: var(--gray-700);
+    border-color: var(--gray-300);
+}
+
+.page-link:hover {
+    background-color: var(--gray-100);
+    border-color: var(--gray-400);
+}
+
+.page-item.active .page-link {
+    background-color: var(--mdc-primary);
+    border-color: var(--mdc-primary);
+}
+
+/* Loading State */
+.table-loading {
+    position: relative;
+    min-height: 300px;
+}
+
+.table-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-300);
+    border-top-color: var(--mdc-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    color: var(--gray-400);
+    margin-bottom: 20px;
+}
+
+.empty-state-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+}
+
+.empty-state-text {
+    color: var(--gray-600);
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .page-header .col-auto {
+        margin-top: 16px;
+    }
+    
+    .page-header .d-flex {
+        flex-wrap: wrap;
+    }
+    
+    .transactions-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+    
+    .table-responsive {
+        font-size: 13px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}

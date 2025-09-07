@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">User</div>
+                                <small class="text-muted" id="userRole">Role</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 data-original-text="Task Assignments">Task Assignments</h2>
+                        <p class="text-muted" data-original-text="Manage and track task assignments across teams">Manage and track task assignments across teams</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignTaskModal">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            <span data-original-text="Assign New Task">Assign New Task</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Total Assignments">Total Assignments</h6>
+                                <h3 class="mb-0">342</h3>
+                                <small class="text-muted" data-original-text="This month">This month</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Pending">Pending</h6>
+                                <h3 class="mb-0 text-warning">87</h3>
+                                <small class="text-muted">25% <span data-original-text="of total">of total</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="In Progress">In Progress</h6>
+                                <h3 class="mb-0 text-info">142</h3>
+                                <small class="text-muted">41% <span data-original-text="of total">of total</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Completed">Completed</h6>
+                                <h3 class="mb-0 text-success">113</h3>
+                                <small class="text-muted">33% <span data-original-text="of total">of total</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label" data-original-text="Search">Search</label>
+                                <input type="text" class="form-control" placeholder="Search assignments..." data-placeholder-ar="البحث عن التعيينات..." data-placeholder-en="Search assignments...">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" data-original-text="Assignee">Assignee</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Users">All Users</option>
+                                    <option>Sarah Mitchell</option>
+                                    <option>John Editor</option>
+                                    <option>Mike Johnson</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" data-original-text="Status">Status</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Status">All Status</option>
+                                    <option value="pending" data-original-text="Pending">Pending</option>
+                                    <option value="in_progress" data-original-text="In Progress">In Progress</option>
+                                    <option value="completed" data-original-text="Completed">Completed</option>
+                                    <option value="overdue" data-original-text="Overdue">Overdue</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" data-original-text="Priority">Priority</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Priorities">All Priorities</option>
+                                    <option value="high" data-original-text="High">High</option>
+                                    <option value="medium" data-original-text="Medium">Medium</option>
+                                    <option value="low" data-original-text="Low">Low</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <button class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-funnel me-2"></i>
+                                    <span data-original-text="Apply Filters">Apply Filters</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignments Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-mobile-card">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" class="form-check-input">
+                                        </th>
+                                        <th data-original-text="Task ID">Task ID</th>
+                                        <th data-original-text="Transaction">Transaction</th>
+                                        <th data-original-text="Assignee">Assignee</th>
+                                        <th data-original-text="Department">Department</th>
+                                        <th data-original-text="Priority">Priority</th>
+                                        <th data-original-text="Due Date">Due Date</th>
+                                        <th data-original-text="Status">Status</th>
+                                        <th data-original-text="Actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td class="task-id">TSK-2024-0087</td>
+                                        <td>
+                                            <div>
+                                                <div class="fw-semibold" data-original-text="Design Review">Design Review</div>
+                                                <small class="text-muted">TRX-2024-0156</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    SM
+                                                </div>
+                                                <div class="assignee-name">Sarah Mitchell</div>
+                                            </div>
+                                        </td>
+                                        <td data-original-text="Operations">Operations</td>
+                                        <td><span class="badge bg-danger" data-original-text="High">High</span></td>
+                                        <td>Jan 28, 2024</td>
+                                        <td><span class="badge bg-warning" data-original-text="In Progress">In Progress</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" onclick="loadTaskDetails(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-eye text-info me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="View Details">View Details</div>
+                                                                <small class="text-muted" data-original-text="View complete task information">View complete task information</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editTaskModal" onclick="loadTaskForEdit(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-pencil text-primary me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Edit">Edit</div>
+                                                                <small class="text-muted" data-original-text="Edit task details">Edit task details</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="openReassignModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087', this.closest('tr').querySelector('.assignee-name')?.textContent || 'Current User')">
+                                                            <i class="bi bi-person-x text-warning me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Reassign">Reassign</div>
+                                                                <small class="text-muted" data-original-text="Assign task to another person">Assign task to another person</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="openExtendDeadlineModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087', '2024-01-28')">
+                                                            <i class="bi bi-clock-history text-secondary me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Extend Deadline">Extend Deadline</div>
+                                                                <small class="text-muted" data-original-text="Change due date">Change due date</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center text-danger" href="#" onclick="openCancelModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-trash me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Cancel Task">Cancel Task</div>
+                                                                <small class="text-muted-50" data-original-text="Cancel this task permanently">Cancel this task permanently</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td class="task-id">TSK-2024-0088</td>
+                                        <td>
+                                            <div>
+                                                <div class="fw-semibold" data-original-text="Technical Approval">Technical Approval</div>
+                                                <small class="text-muted">TRX-2024-0157</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    JE
+                                                </div>
+                                                <div class="assignee-name">John Editor</div>
+                                            </div>
+                                        </td>
+                                        <td>Engineering</td>
+                                        <td><span class="badge bg-warning" data-original-text="Medium">Medium</span></td>
+                                        <td>Jan 30, 2024</td>
+                                        <td><span class="badge bg-info" data-original-text="Pending">Pending</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" onclick="loadTaskDetails(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-eye text-info me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="View Details">View Details</div>
+                                                                <small class="text-muted" data-original-text="View complete task information">View complete task information</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editTaskModal" onclick="loadTaskForEdit(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-pencil text-primary me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Edit">Edit</div>
+                                                                <small class="text-muted" data-original-text="Edit task details">Edit task details</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="openReassignModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087', this.closest('tr').querySelector('.assignee-name')?.textContent || 'Current User')">
+                                                            <i class="bi bi-person-x text-warning me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Reassign">Reassign</div>
+                                                                <small class="text-muted" data-original-text="Assign task to another person">Assign task to another person</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="openExtendDeadlineModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087', '2024-01-28')">
+                                                            <i class="bi bi-clock-history text-secondary me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Extend Deadline">Extend Deadline</div>
+                                                                <small class="text-muted" data-original-text="Change due date">Change due date</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center text-danger" href="#" onclick="openCancelModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-trash me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Cancel Task">Cancel Task</div>
+                                                                <small class="text-muted-50" data-original-text="Cancel this task permanently">Cancel this task permanently</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-danger">
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td class="task-id">TSK-2024-0085</td>
+                                        <td>
+                                            <div>
+                                                <div class="fw-semibold" data-original-text="Documentation Update">Documentation Update</div>
+                                                <small class="text-muted">TRX-2024-0154</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    MJ
+                                                </div>
+                                                <div class="assignee-name">Mike Johnson</div>
+                                            </div>
+                                        </td>
+                                        <td>Engineering</td>
+                                        <td><span class="badge bg-danger" data-original-text="High">High</span></td>
+                                        <td class="text-danger">Jan 20, 2024</td>
+                                        <td><span class="badge bg-danger" data-original-text="Overdue">Overdue</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" onclick="loadTaskDetails(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-eye text-info me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="View Details">View Details</div>
+                                                                <small class="text-muted" data-original-text="View complete task information">View complete task information</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editTaskModal" onclick="loadTaskForEdit(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-pencil text-primary me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Edit">Edit</div>
+                                                                <small class="text-muted" data-original-text="Edit task details">Edit task details</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="openReassignModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087', this.closest('tr').querySelector('.assignee-name')?.textContent || 'Current User')">
+                                                            <i class="bi bi-person-x text-warning me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Reassign">Reassign</div>
+                                                                <small class="text-muted" data-original-text="Assign task to another person">Assign task to another person</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="openExtendDeadlineModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087', '2024-01-28')">
+                                                            <i class="bi bi-clock-history text-secondary me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Extend Deadline">Extend Deadline</div>
+                                                                <small class="text-muted" data-original-text="Change due date">Change due date</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center text-danger" href="#" onclick="openCancelModal(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-trash me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Cancel Task">Cancel Task</div>
+                                                                <small class="text-muted-50" data-original-text="Cancel this task permanently">Cancel this task permanently</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td class="task-id">TSK-2024-0089</td>
+                                        <td>
+                                            <div>
+                                                <div class="fw-semibold">Client Meeting Preparation</div>
+                                                <small class="text-muted">TRX-2024-0158</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    LT
+                                                </div>
+                                                <div class="assignee-name">Lisa Thompson</div>
+                                            </div>
+                                        </td>
+                                        <td>Management</td>
+                                        <td><span class="badge bg-secondary">Low</span></td>
+                                        <td>Feb 2, 2024</td>
+                                        <td><span class="badge bg-success" data-original-text="Completed">Completed</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#viewDetailsModal" onclick="loadTaskDetails(this.closest('tr').querySelector('.task-id')?.textContent || 'TSK-2024-0087')">
+                                                            <i class="bi bi-eye text-info me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="View Details">View Details</div>
+                                                                <small class="text-muted" data-original-text="View complete task information">View complete task information</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                                            <i class="bi bi-download text-success me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" data-original-text="Download Report">Download Report</div>
+                                                                <small class="text-muted" data-original-text="Download completed task report">Download completed task report</small>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="text-muted" data-original-text="Showing 1-4 of 342 assignments">Showing 1-4 of 342 assignments</span>
+                            </div>
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" data-original-text="Previous">Previous</a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">3</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" data-original-text="Next">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workload Distribution -->
+                <div class="row mt-4">
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 text-primary" data-original-text="Workload Distribution">Workload Distribution</h5>
+                            </div>
+                            <div class="card-body p-4" style="min-height: 400px;">
+                                <canvas id="workloadChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0 text-primary" data-original-text="Priority Overview">Priority Overview</h5>
+                            </div>
+                            <div class="card-body p-4" style="min-height: 400px;">
+                                <canvas id="priorityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Details Modal -->
+    <div class="modal fade" id="viewDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Task Details">Task Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted">معرف المهمة:</label>
+                            <p class="fw-bold" id="taskIdDetail">TSK-2024-0087</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">رقم المعاملة:</label>
+                            <p class="fw-bold" id="transactionIdDetail">TRX-2024-0156</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted">العنوان:</label>
+                            <p class="fw-bold" id="taskTitleDetail">Design Review</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">الحالة:</label>
+                            <p><span class="badge bg-warning" id="taskStatusDetail">In Progress</span></p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted">المعيّن إليه:</label>
+                            <p class="fw-bold" id="assigneeDetail">Sarah Mitchell</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">القسم:</label>
+                            <p class="fw-bold" id="departmentDetail">Operations</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="text-muted">الأولوية:</label>
+                            <p><span class="badge bg-danger" id="priorityDetail">High</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">تاريخ الاستحقاق:</label>
+                            <p class="fw-bold" id="dueDateDetail">Jan 28, 2024</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">الوصف:</label>
+                        <p id="descriptionDetail">Review and approve the architectural design documents for the new project phase.</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">الملاحظات:</label>
+                        <p id="notesDetail" class="text-muted">Requires senior architect approval before proceeding.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal" data-bs-dismiss="modal">
+                        <i class="bi bi-pencil me-2"></i><span data-original-text="Edit">Edit</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Edit Task">Edit Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaskForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">معرف المهمة</label>
+                                <input type="text" class="form-control" id="editTaskId" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">رقم المعاملة</label>
+                                <input type="text" class="form-control" id="editTransactionId" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">العنوان</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">المعيّن إليه</label>
+                                <select class="form-select" id="editAssignee">
+                                    <option>Sarah Mitchell</option>
+                                    <option>John Editor</option>
+                                    <option>Mike Johnson</option>
+                                    <option>Lisa Thompson</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">القسم</label>
+                                <select class="form-select" id="editDepartment">
+                                    <option>Operations</option>
+                                    <option>Engineering</option>
+                                    <option>Management</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">الأولوية</label>
+                                <select class="form-select" id="editPriority">
+                                    <option value="low">منخفضة</option>
+                                    <option value="medium">متوسطة</option>
+                                    <option value="high">عالية</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">تاريخ الاستحقاق</label>
+                                <input type="date" class="form-control" id="editDueDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الحالة</label>
+                            <select class="form-select" id="editStatus">
+                                <option value="pending">معلق</option>
+                                <option value="in_progress">قيد التنفيذ</option>
+                                <option value="completed">مكتمل</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الوصف</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTaskChanges()">
+                        <i class="bi bi-save me-2"></i>حفظ التغييرات
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reassign Task Modal -->
+    <div class="modal fade" id="reassignModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Reassign Task">Reassign Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">المهمة الحالية</label>
+                        <input type="text" class="form-control" id="reassignTaskId" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">المعيّن إليه الحالي</label>
+                        <input type="text" class="form-control" id="currentAssignee" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">تعيين إلى</label>
+                        <select class="form-select" id="newAssignee" required>
+                            <option value="">اختر المستخدم...</option>
+                            <option>Sarah Mitchell - Operations</option>
+                            <option>John Editor - Engineering</option>
+                            <option>Mike Johnson - Engineering</option>
+                            <option>Lisa Thompson - Management</option>
+                            <option>Tom Anderson - Finance</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" data-original-text="Reassignment Reason">Reassignment Reason</label>
+                        <textarea class="form-control" id="reassignReason" rows="3" placeholder="Enter reason for reassignment..." data-original-placeholder="Enter reason for reassignment..."></textarea>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="notifyBoth" checked>
+                        <label class="form-check-label" for="notifyBoth">
+                            إرسال إشعار للمستخدمين (الحالي والجديد)
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmReassign()">
+                        <i class="bi bi-person-x me-2"></i><span data-original-text="Reassign">Reassign</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extend Deadline Modal -->
+    <div class="modal fade" id="extendDeadlineModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Extend Deadline">Extend Deadline</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">المهمة</label>
+                        <input type="text" class="form-control" id="extendTaskId" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الموعد النهائي الحالي</label>
+                        <input type="date" class="form-control" id="currentDeadline" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الموعد النهائي الجديد</label>
+                        <input type="date" class="form-control" id="newDeadline" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" data-original-text="Extension Reason">Extension Reason</label>
+                        <textarea class="form-control" id="extensionReason" rows="3" placeholder="Enter reason for deadline extension..." data-original-placeholder="Enter reason for deadline extension..." required></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        سيتم إرسال إشعار للمعيّن إليه بالموعد الجديد
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmExtension()">
+                        <i class="bi bi-clock-history me-2"></i><span data-original-text="Extend Deadline">Extend Deadline</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Task Modal -->
+    <div class="modal fade" id="cancelTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" data-original-text="Cancel Task">Cancel Task</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>تحذير:</strong> هذا الإجراء لا يمكن التراجع عنه
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">المهمة</label>
+                        <input type="text" class="form-control" id="cancelTaskId" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" data-original-text="Cancellation Reason">Cancellation Reason</label>
+                        <select class="form-select" id="cancelReason" required>
+                            <option value="" data-original-text="Select reason...">Select reason...</option>
+                            <option>لم تعد مطلوبة</option>
+                            <option>تم إلغاء المشروع</option>
+                            <option>مكررة</option>
+                            <option>خطأ في التعيين</option>
+                            <option>أخرى</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">ملاحظات إضافية</label>
+                        <textarea class="form-control" id="cancelNotes" rows="3" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmCancel" required>
+                        <label class="form-check-label" for="confirmCancel">
+                            <span data-original-text="I confirm that I want to cancel this task permanently">I confirm that I want to cancel this task permanently</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">تراجع</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmCancelTask()" disabled id="cancelConfirmBtn">
+                        <i class="bi bi-trash me-2"></i><span data-original-text="Cancel Task">Cancel Task</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Task Modal -->
+    <div class="modal fade" id="assignTaskModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Assign New Task">تعيين مهمة جديدة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Transaction">المعاملة</label>
+                            <select class="form-select" required>
+                                <option value="" data-original-text="Select transaction...">اختر المعاملة...</option>
+                                <option>TRX-2024-0159 - New Project Request</option>
+                                <option>TRX-2024-0160 - Design Modification</option>
+                                <option>TRX-2024-0161 - Technical Review</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Assignee">Assignee</label>
+                                <select class="form-select" required>
+                                    <option value="" data-original-text="Select user...">اختر المستخدم...</option>
+                                    <option>Sarah Mitchell - Operations</option>
+                                    <option>John Editor - Engineering</option>
+                                    <option>Mike Johnson - Engineering</option>
+                                    <option>Lisa Thompson - Management</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Due Date">تاريخ الاستحقاق</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Priority">Priority</label>
+                                <select class="form-select" required>
+                                    <option value="low" data-original-text="Low">منخفضة</option>
+                                    <option value="medium" selected data-original-text="Medium">متوسطة</option>
+                                    <option value="high" data-original-text="High">عالية</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Task Type">نوع المهمة</label>
+                                <select class="form-select" required>
+                                    <option data-original-text="Review">مراجعة</option>
+                                    <option data-original-text="Approval">موافقة</option>
+                                    <option data-original-text="Documentation">توثيق</option>
+                                    <option data-original-text="Investigation">تحقيق</option>
+                                    <option data-original-text="Implementation">تنفيذ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Task Description">وصف المهمة</label>
+                            <textarea class="form-control" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sendNotification" checked>
+                                <label class="form-check-label" for="sendNotification" data-original-text="Send email notification to assignee">
+                                    إرسال إشعار بالبريد الإلكتروني للشخص المُعين إليه
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span data-original-text="Cancel">إلغاء</span>
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        <span data-original-text="Assign Task">Assign Task</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    
+    <script>
+        // Workload Distribution Chart
+        const workloadCtx = document.getElementById('workloadChart').getContext('2d');
+        new Chart(workloadCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Sarah Mitchell', 'John Editor', 'Mike Johnson', 'Lisa Thompson', 'Tom Anderson'],
+                datasets: [{
+                    label: document.documentElement.lang === 'ar' ? 'المهام النشطة' : 'Active Tasks',
+                    data: [8, 12, 7, 5, 10],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 5,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 10
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 12
+                            },
+                            stepSize: 2
+                        }
+                    }
+                }
+            }
+        });
+
+        // Priority Chart
+        const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+        new Chart(priorityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: document.documentElement.lang === 'ar' ? 
+                    ['عالية', 'متوسطة', 'منخفضة'] : 
+                    ['High Priority', 'Medium Priority', 'Low Priority'],
+                datasets: [{
+                    data: [45, 78, 32],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#6b7280'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: '500'
+                            },
+                            padding: 20,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    const dataset = data.datasets[0];
+                                    const total = dataset.data.reduce((a, b) => a + b, 0);
+                                    return data.labels.map((label, i) => {
+                                        const value = dataset.data[i];
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return {
+                                            text: `${label}: ${value} (${percentage}%)`,
+                                            fillStyle: dataset.backgroundColor[i],
+                                            strokeStyle: dataset.backgroundColor[i],
+                                            lineWidth: 0,
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 10,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} tasks (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Style for avatars and dropdowns
+        const style = document.createElement('style');
+        style.textContent = `
+            .avatar-sm {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            
+            /* Enhanced dropdown menu styling */
+            .dropdown-menu {
+                min-width: 280px;
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+                border: 1px solid rgba(0,0,0,0.08);
+                border-radius: 8px;
+            }
+            
+            .dropdown-item {
+                padding: 0.75rem 1rem;
+                transition: all 0.2s ease;
+            }
+            
+            .dropdown-item:hover {
+                background-color: #f8f9fa;
+                transform: translateX(-2px);
+            }
+            
+            [dir="rtl"] .dropdown-item:hover {
+                transform: translateX(2px);
+            }
+            
+            .dropdown-item i {
+                font-size: 1.25rem;
+            }
+            
+            .dropdown-item .fw-semibold {
+                font-size: 0.95rem;
+                margin-bottom: 2px;
+            }
+            
+            .dropdown-item small {
+                font-size: 0.75rem;
+                opacity: 0.8;
+            }
+            
+            .dropdown-item.text-danger:hover {
+                background-color: #fee;
+            }
+            
+            .text-muted-50 {
+                opacity: 0.6;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Task management functions
+        window.loadTaskDetails = function(taskId) {
+            // Simulate loading task details
+            document.getElementById('taskIdDetail').textContent = taskId;
+            // In real app, fetch data from server
+        };
+        
+        window.loadTaskForEdit = function(taskId) {
+            // Load task data into edit form
+            document.getElementById('editTaskId').value = taskId;
+            document.getElementById('editTransactionId').value = 'TRX-2024-0156';
+            document.getElementById('editTitle').value = 'Design Review';
+            // In real app, fetch data from server
+        };
+        
+        window.openReassignModal = function(taskId, currentUser) {
+            document.getElementById('reassignTaskId').value = taskId;
+            document.getElementById('currentAssignee').value = currentUser;
+            const modal = new bootstrap.Modal(document.getElementById('reassignModal'));
+            modal.show();
+        };
+        
+        window.openExtendDeadlineModal = function(taskId, currentDate) {
+            document.getElementById('extendTaskId').value = taskId;
+            document.getElementById('currentDeadline').value = currentDate;
+            const modal = new bootstrap.Modal(document.getElementById('extendDeadlineModal'));
+            modal.show();
+        };
+        
+        window.openCancelModal = function(taskId) {
+            document.getElementById('cancelTaskId').value = taskId;
+            const modal = new bootstrap.Modal(document.getElementById('cancelTaskModal'));
+            modal.show();
+        };
+        
+        window.saveTaskChanges = function() {
+            // Save task changes
+            alert('تم حفظ التغييرات بنجاح');
+            bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
+        };
+        
+        window.confirmReassign = function() {
+            const newAssignee = document.getElementById('newAssignee').value;
+            if (newAssignee) {
+                alert('Task reassigned successfully');
+                bootstrap.Modal.getInstance(document.getElementById('reassignModal')).hide();
+            }
+        };
+        
+        window.confirmExtension = function() {
+            const newDeadline = document.getElementById('newDeadline').value;
+            if (newDeadline) {
+                alert('Deadline extended successfully');
+                bootstrap.Modal.getInstance(document.getElementById('extendDeadlineModal')).hide();
+            }
+        };
+        
+        window.confirmCancelTask = function() {
+            if (document.getElementById('confirmCancel').checked) {
+                alert('Task cancelled successfully');
+                bootstrap.Modal.getInstance(document.getElementById('cancelTaskModal')).hide();
+            }
+        };
+        
+        // Enable cancel button when checkbox is checked
+        document.getElementById('confirmCancel')?.addEventListener('change', function() {
+            document.getElementById('cancelConfirmBtn').disabled = !this.checked;
+        });
+    </script>
+</body>
+</html>

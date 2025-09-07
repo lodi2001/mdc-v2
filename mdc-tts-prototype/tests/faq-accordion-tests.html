@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Accordion Tests - MDC TTS</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        .test-results {
+            margin: 20px 0;
+        }
+        
+        .test-case {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+        
+        .test-pass {
+            border-color: #198754;
+            background-color: #d1e7dd;
+        }
+        
+        .test-fail {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        
+        .test-warning {
+            border-color: #ffc107;
+            background-color: #fff3cd;
+        }
+        
+        .test-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .test-details {
+            margin-left: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .accordion-preview {
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 20px;
+        }
+        
+        .log-entry {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            background-color: #f8f9fa;
+            padding: 5px;
+            border-left: 3px solid #6c757d;
+            margin: 5px 0;
+        }
+        
+        .control-panel {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0.375rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">FAQ Accordion Functionality Tests</h1>
+                <p class="text-muted">Comprehensive test suite for support.html FAQ accordion functionality for Client user role</p>
+                
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <h3>Test Controls</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button class="btn btn-primary" onclick="runAllTests()">Run All Tests</button>
+                            <button class="btn btn-secondary ms-2" onclick="clearResults()">Clear Results</button>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Language Test:</label>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-primary" onclick="switchLanguage('ar')">Arabic</button>
+                                <button class="btn btn-outline-primary active" onclick="switchLanguage('en')">English</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Bootstrap Version:</label>
+                            <span class="badge bg-info">5.3.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Test Results Section -->
+                <div id="testResults" class="test-results">
+                    <h3>Test Results</h3>
+                    <div id="testSummary" class="alert alert-info">
+                        <strong>Status:</strong> Ready to run tests
+                    </div>
+                    <div id="testCases"></div>
+                </div>
+                
+                <!-- Live Accordion Preview -->
+                <div class="accordion-preview">
+                    <h3>Live FAQ Accordion Preview</h3>
+                    <p class="text-muted">This is a replica of the FAQ accordion from support.html for testing</p>
+                    
+                    <div class="accordion" id="testFaqAccordion">
+                        <!-- Account & Login -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="testAccountHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testAccountCollapse" aria-expanded="false" aria-controls="testAccountCollapse">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    <span data-original-text="Account & Login">الحساب وتسجيل الدخول</span>
+                                </button>
+                            </h2>
+                            <div id="testAccountCollapse" class="accordion-collapse collapse" aria-labelledby="testAccountHeading" data-bs-parent="#testFaqAccordion">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <strong data-original-text="How do I reset my password?">كيف يمكنني إعادة تعيين كلمة المرور؟</strong>
+                                        <p class="text-muted mb-0" data-original-text="Click on the 'Forgot Password' link on the login page and follow the instructions sent to your email.">انقر على رابط 'نسيت كلمة المرور' في صفحة تسجيل الدخول واتبع التعليمات المرسلة إلى بريدك الإلكتروني.</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong data-original-text="How do I update my profile information?">كيف يمكنني تحديث معلومات ملفي الشخصي؟</strong>
+                                        <p class="text-muted mb-0" data-original-text="Go to Settings > Profile and update your information. Changes will be saved automatically.">انتقل إلى الإعدادات > الملف الشخصي وحدث معلوماتك. سيتم حفظ التغييرات تلقائياً.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transactions -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="testTransactionsHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testTransactionsCollapse" aria-expanded="false" aria-controls="testTransactionsCollapse">
+                                    <i class="bi bi-receipt me-2"></i>
+                                    <span data-original-text="Transactions">المعاملات</span>
+                                </button>
+                            </h2>
+                            <div id="testTransactionsCollapse" class="accordion-collapse collapse" aria-labelledby="testTransactionsHeading" data-bs-parent="#testFaqAccordion">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <strong data-original-text="How do I track my transaction status?">كيف يمكنني تتبع حالة معاملتي؟</strong>
+                                        <p class="text-muted mb-0" data-original-text="Go to 'My Transactions' to view all your transactions and their current status. You can also set up notifications for status updates.">انتقل إلى 'معاملاتي' لعرض جميع معاملاتك وحالتها الحالية. يمكنك أيضاً إعداد إشعارات لتحديثات الحالة.</p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong data-original-text="What do the different status colors mean?">ما معنى ألوان الحالة المختلفة؟</strong>
+                                        <p class="text-muted mb-0" data-original-text="Green = Completed, Blue = In Progress, Yellow = Pending, Red = Requires Attention.">أخضر = مكتمل، أزرق = قيد التنفيذ، أصفر = معلق، أحمر = يتطلب اهتماماً.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documents -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="testDocumentsHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testDocumentsCollapse" aria-expanded="false" aria-controls="testDocumentsCollapse">
+                                    <i class="bi bi-file-earmark me-2"></i>
+                                    <span data-original-text="Documents">المستندات</span>
+                                </button>
+                            </h2>
+                            <div id="testDocumentsCollapse" class="accordion-collapse collapse" aria-labelledby="testDocumentsHeading" data-bs-parent="#testFaqAccordion">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <strong data-original-text="What file formats are supported?">ما هي تنسيقات الملفات المدعومة؟</strong>
+                                        <p class="text-muted mb-0" data-original-text="We support PDF, DOC/DOCX, XLS/XLSX, JPG, PNG, and ZIP files up to 25MB each.">ندعم ملفات PDF و DOC/DOCX و XLS/XLSX و JPG و PNG و ZIP حتى 25 ميجابايت لكل ملف.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Issues -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="testTechnicalHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#testTechnicalCollapse" aria-expanded="false" aria-controls="testTechnicalCollapse">
+                                    <i class="bi bi-gear me-2"></i>
+                                    <span data-original-text="Technical Issues">المشاكل الفنية</span>
+                                </button>
+                            </h2>
+                            <div id="testTechnicalCollapse" class="accordion-collapse collapse" aria-labelledby="testTechnicalHeading" data-bs-parent="#testFaqAccordion">
+                                <div class="accordion-body">
+                                    <div class="mb-3">
+                                        <strong data-original-text="The page is loading slowly, what should I do?">الصفحة تحمل ببطء، ماذا أفعل؟</strong>
+                                        <p class="text-muted mb-0" data-original-text="Try refreshing the page, clearing your browser cache, or check your internet connection. If the issue persists, contact support.">حاول تحديث الصفحة أو مسح ذاكرة التخزين المؤقت للمتصفح أو تحقق من اتصال الإنترنت. إذا استمرت المشكلة، تواصل مع الدعم.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Test Logs -->
+                <div class="mt-4">
+                    <h3>Test Execution Log</h3>
+                    <div id="testLog" class="border rounded p-3" style="background-color: #f8f9fa; height: 300px; overflow-y: scroll; font-family: monospace; font-size: 0.85rem;">
+                        <div>Test suite initialized. Ready to run tests...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Load translation system -->
+    <script src="../js/translations.js"></script>
+    
+    <script>
+        // Test Suite for FAQ Accordion Functionality
+        class FAQAccordionTestSuite {
+            constructor() {
+                this.testResults = [];
+                this.currentLanguage = 'ar'; // Default to Arabic as per requirement
+                this.logElement = document.getElementById('testLog');
+                this.testCasesElement = document.getElementById('testCases');
+                this.testSummaryElement = document.getElementById('testSummary');
+                
+                // Initialize translation system
+                this.initializeTranslations();
+            }
+            
+            initializeTranslations() {
+                // Preserve original text for translation system
+                if (window.preserveOriginalText) {
+                    window.preserveOriginalText();
+                }
+                
+                // Apply initial language (Arabic)
+                this.switchLanguage('ar');
+            }
+            
+            log(message, level = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+                this.logElement.appendChild(logEntry);
+                this.logElement.scrollTop = this.logElement.scrollHeight;
+                console.log(`[FAQ Test] ${message}`);
+            }
+            
+            async runAllTests() {
+                this.log('Starting comprehensive FAQ accordion test suite...');
+                this.testResults = [];
+                this.testCasesElement.innerHTML = '';
+                
+                // Test 1: Bootstrap Structure Validation
+                await this.testBootstrapStructure();
+                
+                // Test 2: Accordion Header Clickability
+                await this.testAccordionHeaders();
+                
+                // Test 3: Expand/Collapse Functionality
+                await this.testExpandCollapse();
+                
+                // Test 4: Content Display Verification
+                await this.testContentDisplay();
+                
+                // Test 5: Language Translation Tests
+                await this.testLanguageTranslations();
+                
+                // Test 6: Accessibility Tests
+                await this.testAccessibility();
+                
+                // Test 7: CSS Class Validation
+                await this.testCSSClasses();
+                
+                // Test 8: Bootstrap Data Attributes
+                await this.testBootstrapDataAttributes();
+                
+                // Generate summary
+                this.generateTestSummary();
+            }
+            
+            async testBootstrapStructure() {
+                this.log('Testing Bootstrap accordion structure...');
+                
+                const testName = "Bootstrap Structure Validation";
+                let passed = true;
+                let details = [];
+                
+                // Check if accordion container exists
+                const accordion = document.getElementById('testFaqAccordion');
+                if (!accordion) {
+                    passed = false;
+                    details.push('❌ Accordion container not found');
+                } else {
+                    details.push('✅ Accordion container found');
+                    
+                    // Check Bootstrap accordion class
+                    if (!accordion.classList.contains('accordion')) {
+                        passed = false;
+                        details.push('❌ Missing Bootstrap "accordion" class');
+                    } else {
+                        details.push('✅ Bootstrap "accordion" class present');
+                    }
+                    
+                    // Check for accordion items
+                    const accordionItems = accordion.querySelectorAll('.accordion-item');
+                    if (accordionItems.length !== 4) {
+                        passed = false;
+                        details.push(`❌ Expected 4 accordion items, found ${accordionItems.length}`);
+                    } else {
+                        details.push('✅ All 4 accordion items found');
+                        
+                        // Check each item structure
+                        accordionItems.forEach((item, index) => {
+                            const header = item.querySelector('.accordion-header');
+                            const button = item.querySelector('.accordion-button');
+                            const collapse = item.querySelector('.accordion-collapse');
+                            const body = item.querySelector('.accordion-body');
+                            
+                            if (!header || !button || !collapse || !body) {
+                                passed = false;
+                                details.push(`❌ Item ${index + 1} missing required elements`);
+                            } else {
+                                details.push(`✅ Item ${index + 1} structure complete`);
+                            }
+                        });
+                    }
+                }
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testAccordionHeaders() {
+                this.log('Testing accordion header clickability...');
+                
+                const testName = "Accordion Header Clickability";
+                let passed = true;
+                let details = [];
+                
+                const expectedHeaders = [
+                    'الحساب وتسجيل الدخول',
+                    'المعاملات', 
+                    'المستندات',
+                    'المشاكل الفنية'
+                ];
+                
+                const accordionButtons = document.querySelectorAll('#testFaqAccordion .accordion-button');
+                
+                if (accordionButtons.length !== 4) {
+                    passed = false;
+                    details.push(`❌ Expected 4 clickable headers, found ${accordionButtons.length}`);
+                } else {
+                    details.push('✅ All 4 accordion headers found');
+                    
+                    accordionButtons.forEach((button, index) => {
+                        // Check if button is clickable
+                        if (button.disabled) {
+                            passed = false;
+                            details.push(`❌ Header ${index + 1} is disabled`);
+                        } else {
+                            details.push(`✅ Header ${index + 1} is clickable`);
+                        }
+                        
+                        // Check for required Bootstrap attributes
+                        const requiredAttrs = ['data-bs-toggle', 'data-bs-target', 'aria-expanded', 'aria-controls'];
+                        requiredAttrs.forEach(attr => {
+                            if (!button.hasAttribute(attr)) {
+                                passed = false;
+                                details.push(`❌ Header ${index + 1} missing ${attr} attribute`);
+                            } else {
+                                details.push(`✅ Header ${index + 1} has ${attr} attribute`);
+                            }
+                        });
+                        
+                        // Check header text content
+                        const span = button.querySelector('span');
+                        if (span && span.textContent.trim()) {
+                            details.push(`✅ Header ${index + 1} has text content: "${span.textContent.trim()}"`);
+                        } else {
+                            passed = false;
+                            details.push(`❌ Header ${index + 1} missing text content`);
+                        }
+                    });
+                }
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testExpandCollapse() {
+                this.log('Testing expand/collapse functionality...');
+                
+                const testName = "Expand/Collapse Functionality";
+                let passed = true;
+                let details = [];
+                
+                const accordionButtons = document.querySelectorAll('#testFaqAccordion .accordion-button');
+                const collapseElements = document.querySelectorAll('#testFaqAccordion .accordion-collapse');
+                
+                for (let i = 0; i < accordionButtons.length; i++) {
+                    const button = accordionButtons[i];
+                    const collapse = collapseElements[i];
+                    
+                    try {
+                        // Test click to expand
+                        this.log(`Testing expand for accordion item ${i + 1}...`);
+                        
+                        // Check initial state (should be collapsed)
+                        if (collapse.classList.contains('show')) {
+                            details.push(`⚠️ Item ${i + 1} starts expanded (expected collapsed)`);
+                        } else {
+                            details.push(`✅ Item ${i + 1} starts collapsed`);
+                        }
+                        
+                        // Simulate click to expand
+                        button.click();
+                        
+                        // Wait for Bootstrap animation
+                        await this.wait(500);
+                        
+                        // Check if expanded
+                        if (collapse.classList.contains('show')) {
+                            details.push(`✅ Item ${i + 1} expanded successfully`);
+                        } else {
+                            passed = false;
+                            details.push(`❌ Item ${i + 1} failed to expand`);
+                        }
+                        
+                        // Test click to collapse
+                        button.click();
+                        await this.wait(500);
+                        
+                        // Check if collapsed
+                        if (!collapse.classList.contains('show')) {
+                            details.push(`✅ Item ${i + 1} collapsed successfully`);
+                        } else {
+                            passed = false;
+                            details.push(`❌ Item ${i + 1} failed to collapse`);
+                        }
+                        
+                    } catch (error) {
+                        passed = false;
+                        details.push(`❌ Error testing item ${i + 1}: ${error.message}`);
+                    }
+                }
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testContentDisplay() {
+                this.log('Testing content display...');
+                
+                const testName = "Content Display Verification";
+                let passed = true;
+                let details = [];
+                
+                // Expected content for verification
+                const expectedContent = {
+                    'account': {
+                        questions: [
+                            'كيف يمكنني إعادة تعيين كلمة المرور؟',
+                            'كيف يمكنني تحديث معلومات ملفي الشخصي؟'
+                        ],
+                        answer: 'انقر على رابط \'نسيت كلمة المرور\' في صفحة تسجيل الدخول'
+                    },
+                    'transactions': {
+                        questions: [
+                            'كيف يمكنني تتبع حالة معاملتي؟',
+                            'ما معنى ألوان الحالة المختلفة؟'
+                        ],
+                        answer: 'انتقل إلى \'معاملاتي\' لعرض جميع معاملاتك'
+                    },
+                    'documents': {
+                        questions: ['ما هي تنسيقات الملفات المدعومة؟'],
+                        answer: 'ندعم ملفات PDF و DOC/DOCX'
+                    },
+                    'technical': {
+                        questions: ['الصفحة تحمل ببطء، ماذا أفعل؟'],
+                        answer: 'حاول تحديث الصفحة أو مسح ذاكرة التخزين المؤقت'
+                    }
+                };
+                
+                const accordionBodies = document.querySelectorAll('#testFaqAccordion .accordion-body');
+                
+                if (accordionBodies.length !== 4) {
+                    passed = false;
+                    details.push(`❌ Expected 4 accordion bodies, found ${accordionBodies.length}`);
+                } else {
+                    accordionBodies.forEach((body, index) => {
+                        const questions = body.querySelectorAll('strong');
+                        const answers = body.querySelectorAll('p');
+                        
+                        if (questions.length === 0) {
+                            passed = false;
+                            details.push(`❌ Body ${index + 1} has no questions`);
+                        } else {
+                            details.push(`✅ Body ${index + 1} has ${questions.length} question(s)`);
+                            
+                            // Check if questions have proper styling
+                            questions.forEach((q, qIndex) => {
+                                if (q.textContent.trim()) {
+                                    details.push(`✅ Question ${qIndex + 1} in body ${index + 1} has content`);
+                                } else {
+                                    passed = false;
+                                    details.push(`❌ Question ${qIndex + 1} in body ${index + 1} is empty`);
+                                }
+                            });
+                        }
+                        
+                        if (answers.length === 0) {
+                            passed = false;
+                            details.push(`❌ Body ${index + 1} has no answers`);
+                        } else {
+                            details.push(`✅ Body ${index + 1} has ${answers.length} answer(s)`);
+                            
+                            // Check answer styling
+                            answers.forEach((a, aIndex) => {
+                                if (a.classList.contains('text-muted')) {
+                                    details.push(`✅ Answer ${aIndex + 1} in body ${index + 1} has proper styling`);
+                                } else {
+                                    details.push(`⚠️ Answer ${aIndex + 1} in body ${index + 1} missing text-muted class`);
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testLanguageTranslations() {
+                this.log('Testing language translations...');
+                
+                const testName = "Language Translation Tests";
+                let passed = true;
+                let details = [];
+                
+                // Test Arabic (current state)
+                details.push('Testing Arabic language state:');
+                const arabicHeaders = this.getHeaderTexts();
+                details.push(`✅ Arabic headers: ${arabicHeaders.join(', ')}`);
+                
+                // Switch to English
+                this.log('Switching to English for translation test...');
+                await this.switchLanguage('en');
+                await this.wait(200);
+                
+                // Test English
+                details.push('Testing English language state:');
+                const englishHeaders = this.getHeaderTexts();
+                details.push(`✅ English headers: ${englishHeaders.join(', ')}`);
+                
+                // Verify translations occurred
+                const expectedEnglishHeaders = ['Account & Login', 'Transactions', 'Documents', 'Technical Issues'];
+                const translationsCorrect = englishHeaders.some(header => 
+                    expectedEnglishHeaders.includes(header)
+                );
+                
+                if (translationsCorrect) {
+                    details.push('✅ Language translation working correctly');
+                } else {
+                    passed = false;
+                    details.push('❌ Language translation not working');
+                }
+                
+                // Switch back to Arabic
+                await this.switchLanguage('ar');
+                await this.wait(200);
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testAccessibility() {
+                this.log('Testing accessibility compliance...');
+                
+                const testName = "Accessibility Compliance";
+                let passed = true;
+                let details = [];
+                
+                const accordionButtons = document.querySelectorAll('#testFaqAccordion .accordion-button');
+                const collapseElements = document.querySelectorAll('#testFaqAccordion .accordion-collapse');
+                
+                accordionButtons.forEach((button, index) => {
+                    // Check ARIA attributes
+                    if (button.hasAttribute('aria-expanded')) {
+                        details.push(`✅ Button ${index + 1} has aria-expanded`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Button ${index + 1} missing aria-expanded`);
+                    }
+                    
+                    if (button.hasAttribute('aria-controls')) {
+                        details.push(`✅ Button ${index + 1} has aria-controls`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Button ${index + 1} missing aria-controls`);
+                    }
+                    
+                    // Check button keyboard accessibility
+                    if (button.tabIndex === 0 || !button.hasAttribute('tabindex')) {
+                        details.push(`✅ Button ${index + 1} is keyboard accessible`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Button ${index + 1} not keyboard accessible`);
+                    }
+                });
+                
+                collapseElements.forEach((collapse, index) => {
+                    // Check ARIA labelledby
+                    if (collapse.hasAttribute('aria-labelledby')) {
+                        details.push(`✅ Collapse ${index + 1} has aria-labelledby`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Collapse ${index + 1} missing aria-labelledby`);
+                    }
+                });
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testCSSClasses() {
+                this.log('Testing CSS classes...');
+                
+                const testName = "CSS Class Validation";
+                let passed = true;
+                let details = [];
+                
+                const accordion = document.getElementById('testFaqAccordion');
+                const requiredClasses = {
+                    '.accordion': 1,
+                    '.accordion-item': 4,
+                    '.accordion-header': 4,
+                    '.accordion-button': 4,
+                    '.accordion-collapse': 4,
+                    '.accordion-body': 4
+                };
+                
+                Object.entries(requiredClasses).forEach(([selector, expectedCount]) => {
+                    const elements = accordion.querySelectorAll(selector);
+                    if (elements.length === expectedCount) {
+                        details.push(`✅ Found ${expectedCount} elements with class ${selector}`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Expected ${expectedCount} ${selector} elements, found ${elements.length}`);
+                    }
+                });
+                
+                // Check for Bootstrap Icons
+                const icons = accordion.querySelectorAll('.bi');
+                if (icons.length >= 4) {
+                    details.push(`✅ Found ${icons.length} Bootstrap icons`);
+                } else {
+                    passed = false;
+                    details.push(`❌ Expected at least 4 Bootstrap icons, found ${icons.length}`);
+                }
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            async testBootstrapDataAttributes() {
+                this.log('Testing Bootstrap data attributes...');
+                
+                const testName = "Bootstrap Data Attributes";
+                let passed = true;
+                let details = [];
+                
+                const accordionButtons = document.querySelectorAll('#testFaqAccordion .accordion-button');
+                
+                accordionButtons.forEach((button, index) => {
+                    // Check data-bs-toggle
+                    if (button.getAttribute('data-bs-toggle') === 'collapse') {
+                        details.push(`✅ Button ${index + 1} has correct data-bs-toggle`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Button ${index + 1} missing or incorrect data-bs-toggle`);
+                    }
+                    
+                    // Check data-bs-target
+                    const target = button.getAttribute('data-bs-target');
+                    if (target && target.startsWith('#')) {
+                        const targetElement = document.querySelector(target);
+                        if (targetElement) {
+                            details.push(`✅ Button ${index + 1} has valid data-bs-target`);
+                        } else {
+                            passed = false;
+                            details.push(`❌ Button ${index + 1} data-bs-target points to non-existent element`);
+                        }
+                    } else {
+                        passed = false;
+                        details.push(`❌ Button ${index + 1} missing or invalid data-bs-target`);
+                    }
+                });
+                
+                // Check data-bs-parent
+                const collapseElements = document.querySelectorAll('#testFaqAccordion .accordion-collapse');
+                collapseElements.forEach((collapse, index) => {
+                    const parent = collapse.getAttribute('data-bs-parent');
+                    if (parent === '#testFaqAccordion') {
+                        details.push(`✅ Collapse ${index + 1} has correct data-bs-parent`);
+                    } else {
+                        passed = false;
+                        details.push(`❌ Collapse ${index + 1} missing or incorrect data-bs-parent`);
+                    }
+                });
+                
+                this.addTestResult(testName, passed, details);
+            }
+            
+            getHeaderTexts() {
+                const headers = document.querySelectorAll('#testFaqAccordion .accordion-button span');
+                return Array.from(headers).map(header => header.textContent.trim());
+            }
+            
+            async switchLanguage(lang) {
+                this.currentLanguage = lang;
+                this.log(`Switching to ${lang === 'ar' ? 'Arabic' : 'English'}...`);
+                
+                if (lang === 'ar') {
+                    document.documentElement.lang = 'ar';
+                    document.documentElement.dir = 'rtl';
+                    if (window.applyTranslations) {
+                        window.applyTranslations('ar');
+                    }
+                } else {
+                    document.documentElement.lang = 'en';
+                    document.documentElement.dir = 'ltr';
+                    if (window.applyTranslations) {
+                        window.applyTranslations('en');
+                    }
+                }
+                
+                // Update language toggle buttons
+                const langButtons = document.querySelectorAll('.btn-group .btn');
+                langButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if ((lang === 'ar' && btn.textContent === 'Arabic') || 
+                        (lang === 'en' && btn.textContent === 'English')) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+            
+            addTestResult(testName, passed, details) {
+                this.testResults.push({ testName, passed, details });
+                
+                const testCase = document.createElement('div');
+                testCase.className = `test-case ${passed ? 'test-pass' : 'test-fail'}`;
+                
+                const status = passed ? '✅ PASS' : '❌ FAIL';
+                testCase.innerHTML = `
+                    <div class="test-header">
+                        ${status} - ${testName}
+                    </div>
+                    <div class="test-details">
+                        ${details.map(detail => `<div>${detail}</div>`).join('')}
+                    </div>
+                `;
+                
+                this.testCasesElement.appendChild(testCase);
+                
+                this.log(`${status}: ${testName}`);
+            }
+            
+            generateTestSummary() {
+                const totalTests = this.testResults.length;
+                const passedTests = this.testResults.filter(test => test.passed).length;
+                const failedTests = totalTests - passedTests;
+                
+                const summaryClass = failedTests === 0 ? 'alert-success' : (passedTests > failedTests ? 'alert-warning' : 'alert-danger');
+                
+                this.testSummaryElement.className = `alert ${summaryClass}`;
+                this.testSummaryElement.innerHTML = `
+                    <strong>Test Suite Completed</strong><br>
+                    Total Tests: ${totalTests} | 
+                    Passed: ${passedTests} | 
+                    Failed: ${failedTests} |
+                    Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%
+                `;
+                
+                this.log(`\n=== TEST SUMMARY ===`);
+                this.log(`Total Tests: ${totalTests}`);
+                this.log(`Passed: ${passedTests}`);
+                this.log(`Failed: ${failedTests}`);
+                this.log(`Success Rate: ${((passedTests / totalTests) * 100).toFixed(1)}%`);
+            }
+            
+            clearResults() {
+                this.testResults = [];
+                this.testCasesElement.innerHTML = '';
+                this.logElement.innerHTML = '<div>Test suite initialized. Ready to run tests...</div>';
+                this.testSummaryElement.className = 'alert alert-info';
+                this.testSummaryElement.innerHTML = '<strong>Status:</strong> Ready to run tests';
+            }
+            
+            wait(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+        
+        // Initialize test suite
+        let testSuite;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            testSuite = new FAQAccordionTestSuite();
+        });
+        
+        // Global functions for buttons
+        function runAllTests() {
+            if (testSuite) {
+                testSuite.runAllTests();
+            }
+        }
+        
+        function clearResults() {
+            if (testSuite) {
+                testSuite.clearResults();
+            }
+        }
+        
+        function switchLanguage(lang) {
+            if (testSuite) {
+                testSuite.switchLanguage(lang);
+            }
+        }
+    </script>
+</body>
+</html>

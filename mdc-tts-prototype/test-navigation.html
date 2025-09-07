@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="d-flex align-items-center">
+                    <h1 class="h5 mb-0 text-white" data-original-text="Navigation Test">اختبار التنقل</h1>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-light" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-light active" data-lang="ar">AR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <h2>Navigation Diagnostic Test</h2>
+                
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Current User Role</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="currentRole"></div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary" onclick="setRole('admin')">Set Admin Role</button>
+                            <button class="btn btn-success" onclick="setRole('editor')">Set Editor Role</button>
+                            <button class="btn btn-info" onclick="setRole('client')">Set Client Role</button>
+                            <button class="btn btn-danger" onclick="clearStorage()">Clear Storage</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Admin Navigation Links (Expected)</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Text</th>
+                                    <th>Should Link To</th>
+                                    <th>Icon</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Dashboard</td><td>dashboard-admin.html</td><td>bi-speedometer2</td></tr>
+                                <tr><td>All Transactions</td><td>transactions.html</td><td>bi-receipt</td></tr>
+                                <tr><td>Create Transaction</td><td>transaction-form.html</td><td>bi-plus-square</td></tr>
+                                <tr><td>User Management</td><td>users-list.html</td><td>bi-people</td></tr>
+                                <tr><td>Reports & Analytics</td><td>reports.html</td><td>bi-graph-up</td></tr>
+                                <tr><td>Assignments</td><td>assignments.html</td><td>bi-person-check</td></tr>
+                                <tr><td>Email Templates</td><td>email-templates.html</td><td>bi-envelope</td></tr>
+                                <tr><td>Audit Logs</td><td>audit-logs.html</td><td>bi-clock-history</td></tr>
+                                <tr><td>System Settings</td><td>settings.html</td><td>bi-gear</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Actual Rendered Sidebar Links</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table" id="actualLinks">
+                            <thead>
+                                <tr>
+                                    <th>Index</th>
+                                    <th>Text</th>
+                                    <th>Actual Link</th>
+                                    <th>Icon</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    
+    <script>
+        function setRole(role) {
+            const userData = {
+                name: role === 'admin' ? 'System Admin' : role === 'editor' ? 'John Editor' : 'Ahmed Client',
+                email: role + '@mdc.com',
+                role: role
+            };
+            
+            localStorage.setItem('user', JSON.stringify(userData));
+            sessionStorage.setItem('user', JSON.stringify(userData));
+            location.reload();
+        }
+        
+        function clearStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+            location.reload();
+        }
+        
+        function checkNavigation() {
+            // Show current role
+            const user = sessionStorage.getItem('user') || localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                document.getElementById('currentRole').innerHTML = `
+                    <p><strong>Role:</strong> ${userData.role}</p>
+                    <p><strong>Name:</strong> ${userData.name}</p>
+                    <p><strong>Email:</strong> ${userData.email}</p>
+                `;
+            } else {
+                document.getElementById('currentRole').innerHTML = '<p class="text-danger">No user role set (defaulting to client)</p>';
+            }
+            
+            // Check actual sidebar links
+            const tbody = document.querySelector('#actualLinks tbody');
+            const links = document.querySelectorAll('.sidebar .nav-link');
+            
+            const expected = {
+                'Dashboard': 'dashboard-admin.html',
+                'All Transactions': 'transactions.html',
+                'Create Transaction': 'transaction-form.html',
+                'User Management': 'users-list.html',
+                'Reports & Analytics': 'reports.html',
+                'Assignments': 'assignments.html',
+                'Email Templates': 'email-templates.html',
+                'Audit Logs': 'audit-logs.html',
+                'System Settings': 'settings.html'
+            };
+            
+            links.forEach((link, index) => {
+                const text = link.querySelector('span')?.textContent.trim() || '';
+                const href = link.getAttribute('href');
+                const icon = link.querySelector('i')?.className || '';
+                const expectedHref = expected[text];
+                const status = expectedHref === href ? 
+                    '<span class="text-success">✓ Correct</span>' : 
+                    '<span class="text-danger">✗ Wrong (expected: ' + (expectedHref || 'unknown') + ')</span>';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index}</td>
+                        <td>${text}</td>
+                        <td>${href}</td>
+                        <td>${icon}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        // Run check after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkNavigation, 500);
+        });
+    </script>
+</body>
+</html>

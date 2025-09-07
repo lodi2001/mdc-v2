@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drafts - MDC TTS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/transactions.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <style>
+        .draft-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .draft-card:hover {
+            border-color: #1a5f3f;
+            box-shadow: 0 4px 12px rgba(26, 95, 63, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .draft-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .draft-title {
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 4px;
+        }
+        
+        .draft-subtitle {
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+        
+        .draft-body {
+            padding: 16px;
+        }
+        
+        .draft-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            color: #636e72;
+        }
+        
+        .draft-description {
+            color: #2d3436;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .draft-actions {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .auto-save-badge {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .completion-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .completion-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff7675, #fdcb6e, #00b894);
+            transition: width 0.3s ease;
+        }
+        
+        .draft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .draft-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #636e72;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .bulk-actions-bar {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .bulk-actions-bar.show {
+            display: flex;
+        }
+        
+        .selected-count {
+            font-weight: 600;
+            color: #1a5f3f;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search drafts..." id="searchDrafts">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            3
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">Editor User</div>
+                                <small class="text-muted" id="userRole">Editor</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="Draft Transactions">معاملات المسودة</h2>
+                            <p class="text-muted mb-0" data-original-text="Manage and continue working on your saved drafts">إدارة ومواصلة العمل على مسوداتك المحفوظة</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex gap-2">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="bi bi-funnel me-1"></i> <span data-original-text="Filter">تصفية</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <h6 class="dropdown-header" data-original-text="Sort by">Sort by</h6>
+                                        <a class="dropdown-item" href="#" onclick="sortDrafts('date')" data-original-text="Last Modified">Last Modified</a>
+                                        <a class="dropdown-item" href="#" onclick="sortDrafts('name')" data-original-text="Name">Name</a>
+                                        <a class="dropdown-item" href="#" onclick="sortDrafts('completion')" data-original-text="Completion">Completion</a>
+                                        <div class="dropdown-divider"></div>
+                                        <h6 class="dropdown-header" data-original-text="Show">Show</h6>
+                                        <div class="form-check dropdown-item-text">
+                                            <input class="form-check-input" type="checkbox" value="auto-saved" id="filterAutoSaved" checked>
+                                            <label class="form-check-label" for="filterAutoSaved" data-original-text="Auto-saved">Auto-saved</label>
+                                        </div>
+                                        <div class="form-check dropdown-item-text">
+                                            <input class="form-check-input" type="checkbox" value="manual-saved" id="filterManualSaved" checked>
+                                            <label class="form-check-label" for="filterManualSaved" data-original-text="Manual saved">Manual saved</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-danger" onclick="bulkDelete()" id="bulkDeleteBtn" style="display: none;">
+                                    <i class="bi bi-trash me-1"></i> <span data-original-text="Delete Selected">Delete Selected</span>
+                                </button>
+                                <a href="transaction-form.html" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle me-1"></i> <span data-original-text="New Draft">New Draft</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-secondary-subtle">
+                                <i class="bi bi-file-earmark text-secondary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value" id="totalDrafts">5</h3>
+                                <p class="stat-label" data-original-text="Total Drafts">إجمالي المسودات</p>
+                                <span class="stat-change text-muted">
+                                    <i class="bi bi-clock"></i> <span data-original-text="Auto-saved">حفظ تلقائي</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning-subtle">
+                                <i class="bi bi-hourglass-split text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value text-warning" id="incompleteDrafts">3</h3>
+                                <p class="stat-label" data-original-text="Incomplete">غير مكتملة</p>
+                                <span class="stat-change text-muted">
+                                    <i class="bi bi-exclamation-triangle"></i> <span data-original-text="Need attention">تحتاج انتباه</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success-subtle">
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value text-success" id="readyDrafts">2</h3>
+                                <p class="stat-label" data-original-text="Ready to Submit">جاهزة للإرسال</p>
+                                <span class="stat-change text-success">
+                                    <i class="bi bi-arrow-up-right"></i> <span data-original-text="Can be published">يمكن نشرها</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info-subtle">
+                                <i class="bi bi-clock-history text-info"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value text-info" id="oldDrafts">1</h3>
+                                <p class="stat-label" data-original-text="Older than 7 days">أقدم من 7 أيام</p>
+                                <span class="stat-change text-muted">
+                                    <i class="bi bi-calendar"></i> <span data-original-text="Consider cleanup">فكر في التنظيف</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions Bar -->
+                <div class="bulk-actions-bar" id="bulkActionsBar">
+                    <div class="selected-count">
+                        <span id="selectedCount">0</span> <span data-original-text="drafts selected">drafts selected</span>
+                    </div>
+                    <div class="d-flex gap-2 ms-auto">
+                        <button class="btn btn-sm btn-outline-success" onclick="bulkSubmit()">
+                            <i class="bi bi-send me-1"></i> <span data-original-text="Submit All">إرسال الكل</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="bulkDelete()">
+                            <i class="bi bi-trash me-1"></i> <span data-original-text="Delete All">Delete All</span>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="clearSelection()">
+                            <i class="bi bi-x me-1"></i> <span data-original-text="Clear">Clear</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Drafts Grid -->
+                <div class="draft-grid" id="draftsGrid">
+                    <!-- Draft cards will be generated here -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-file-earmark"></i>
+                    </div>
+                    <h4 data-original-text="No drafts found">No drafts found</h4>
+                    <p data-original-text="You don't have any saved drafts yet. Start creating a new transaction to see drafts here.">You don't have any saved drafts yet. Start creating a new transaction to see drafts here.</p>
+                    <a href="transaction-form.html" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> <span data-original-text="Create New Transaction">Create New Transaction</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Confirm Delete">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p data-original-text="Are you sure you want to delete this draft? This action cannot be undone.">Are you sure you want to delete this draft? This action cannot be undone.</p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong data-original-text="Warning:">Warning:</strong>
+                        <span data-original-text="All unsaved changes will be permanently lost.">All unsaved changes will be permanently lost.</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-original-text="Cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()" data-original-text="Delete Draft">Delete Draft</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dashboard JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+
+    <script>
+        // Sample draft data
+        const sampleDrafts = [
+            {
+                id: 'draft-001',
+                title: 'Commercial Building Permit Application',
+                description: 'Application for commercial building permit in downtown area...',
+                client: 'Ahmed Al-Rashid',
+                type: 'Document Review',
+                priority: 'high',
+                completion: 85,
+                lastModified: new Date('2024-01-16T10:30:00'),
+                autoSaved: true,
+                attachments: 3,
+                estimatedTime: '15 min to complete',
+                requiredFields: ['client_signature', 'final_documents']
+            },
+            {
+                id: 'draft-002',
+                title: 'Residential Design Approval',
+                description: 'Design approval for residential compound project...',
+                client: 'Fatima Al-Zahrani',
+                type: 'Approval Processing',
+                priority: 'medium',
+                completion: 60,
+                lastModified: new Date('2024-01-15T14:22:00'),
+                autoSaved: true,
+                attachments: 7,
+                estimatedTime: '30 min to complete',
+                requiredFields: ['technical_drawings', 'compliance_certificate', 'client_approval']
+            },
+            {
+                id: 'draft-003',
+                title: 'Infrastructure Project Update',
+                description: 'Status update for the infrastructure development project...',
+                client: 'Mohammed Al-Qahtani',
+                type: 'Status Update',
+                priority: 'medium',
+                completion: 45,
+                lastModified: new Date('2024-01-14T09:15:00'),
+                autoSaved: false,
+                attachments: 2,
+                estimatedTime: '45 min to complete',
+                requiredFields: ['progress_report', 'financial_summary', 'next_phase_plan']
+            },
+            {
+                id: 'draft-004',
+                title: 'Site Survey Documentation',
+                description: 'Documentation for recent site survey and measurements...',
+                client: 'Sara Al-Mutairi',
+                type: 'Documentation',
+                priority: 'low',
+                completion: 95,
+                lastModified: new Date('2024-01-16T16:45:00'),
+                autoSaved: true,
+                attachments: 12,
+                estimatedTime: '5 min to complete',
+                requiredFields: ['final_review']
+            },
+            {
+                id: 'draft-005',
+                title: 'Emergency Repair Authorization',
+                description: 'Authorization request for emergency structural repairs...',
+                client: 'Abdullah Al-Dosari',
+                type: 'Authorization Request',
+                priority: 'urgent',
+                completion: 30,
+                lastModified: new Date('2024-01-09T11:20:00'),
+                autoSaved: false,
+                attachments: 1,
+                estimatedTime: '60 min to complete',
+                requiredFields: ['damage_assessment', 'cost_estimate', 'contractor_details', 'timeline']
+            }
+        ];
+
+        let selectedDrafts = new Set();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDrafts();
+            updateStatistics();
+            initializeSearch();
+            
+            // Auto-refresh every 30 seconds to show updated timestamps
+            setInterval(loadDrafts, 30000);
+        });
+
+        function loadDrafts() {
+            const grid = document.getElementById('draftsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (sampleDrafts.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            grid.innerHTML = '';
+            
+            sampleDrafts.forEach(draft => {
+                const draftCard = createDraftCard(draft);
+                grid.appendChild(draftCard);
+            });
+        }
+
+        function createDraftCard(draft) {
+            const card = document.createElement('div');
+            card.className = 'draft-card';
+            card.dataset.draftId = draft.id;
+            
+            const isArabic = document.documentElement.lang === 'ar' || localStorage.getItem('language') === 'ar';
+            const priorityClass = getPriorityClass(draft.priority);
+            const completionColor = getCompletionColor(draft.completion);
+            const timeAgo = getTimeAgo(draft.lastModified);
+            const isOld = isOlderThan7Days(draft.lastModified);
+            
+            card.innerHTML = `
+                <div class="draft-header">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div class="flex-grow-1">
+                            <div class="draft-title">${draft.title}</div>
+                            <div class="draft-subtitle">
+                                ${draft.client} • ${draft.type}
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge ${priorityClass}">${capitalizeFirst(draft.priority)}</span>
+                            <div class="form-check">
+                                <input class="form-check-input draft-checkbox" type="checkbox" value="${draft.id}" onchange="updateSelection()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="draft-body">
+                    <div class="draft-meta">
+                        <div class="meta-item">
+                            <i class="bi bi-clock"></i>
+                            <span>${timeAgo}</span>
+                            ${isOld ? '<i class="bi bi-exclamation-circle text-warning ms-1" title="Old draft"></i>' : ''}
+                        </div>
+                        <div class="meta-item">
+                            <i class="bi bi-paperclip"></i>
+                            <span>${draft.attachments} files</span>
+                        </div>
+                        ${draft.autoSaved ? '<span class="auto-save-badge">Auto-saved</span>' : ''}
+                    </div>
+                    
+                    <div class="draft-description">
+                        ${draft.description}
+                    </div>
+                    
+                    <div class="completion-info">
+                        <div class="completion-bar">
+                            <div class="completion-progress" style="width: ${draft.completion}%; background: ${completionColor};"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">${draft.completion}% complete</small>
+                            <small class="text-success">${draft.estimatedTime}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="draft-actions">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-outline-primary btn-sm" onclick="continueDraft('${draft.id}')" title="Continue">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="previewDraft('${draft.id}')" title="Preview">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" 
+                                    onclick="submitDraft('${draft.id}')" 
+                                    ${draft.completion < 80 ? 'disabled title="Draft must be at least 80% complete"' : 'title="Submit"'}>
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteDraft('${draft.id}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function getPriorityClass(priority) {
+            const classes = {
+                'urgent': 'bg-danger',
+                'high': 'bg-warning text-dark',
+                'medium': 'bg-info',
+                'low': 'bg-secondary'
+            };
+            return classes[priority] || 'bg-secondary';
+        }
+
+        function getCompletionColor(completion) {
+            if (completion >= 80) return '#00b894';
+            if (completion >= 50) return '#fdcb6e';
+            return '#ff7675';
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+            if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            return 'Just now';
+        }
+
+        function isOlderThan7Days(date) {
+            const now = new Date();
+            const diff = now - date;
+            const days = diff / (1000 * 60 * 60 * 24);
+            return days > 7;
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function updateStatistics() {
+            document.getElementById('totalDrafts').textContent = sampleDrafts.length;
+            document.getElementById('incompleteDrafts').textContent = sampleDrafts.filter(d => d.completion < 80).length;
+            document.getElementById('readyDrafts').textContent = sampleDrafts.filter(d => d.completion >= 80).length;
+            document.getElementById('oldDrafts').textContent = sampleDrafts.filter(d => isOlderThan7Days(d.lastModified)).length;
+        }
+
+        function updateSelection() {
+            const checkboxes = document.querySelectorAll('.draft-checkbox');
+            selectedDrafts.clear();
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedDrafts.add(cb.value);
+                }
+            });
+            
+            const count = selectedDrafts.size;
+            document.getElementById('selectedCount').textContent = count;
+            
+            const bulkBar = document.getElementById('bulkActionsBar');
+            const bulkBtn = document.getElementById('bulkDeleteBtn');
+            
+            if (count > 0) {
+                bulkBar.classList.add('show');
+                bulkBtn.style.display = 'inline-block';
+            } else {
+                bulkBar.classList.remove('show');
+                bulkBtn.style.display = 'none';
+            }
+        }
+
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('.draft-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            updateSelection();
+        }
+
+        function continueDraft(draftId) {
+            // In real implementation, this would redirect to the form with the draft data pre-filled
+            showNotification(`Continuing draft ${draftId}...`, 'info');
+            setTimeout(() => {
+                window.location.href = `transaction-form.html?draft=${draftId}`;
+            }, 500);
+        }
+
+        function previewDraft(draftId) {
+            const draft = sampleDrafts.find(d => d.id === draftId);
+            if (!draft) return;
+            
+            // Simple preview - in real app this would open a proper preview modal
+            const preview = `
+                <strong>Title:</strong> ${draft.title}<br>
+                <strong>Client:</strong> ${draft.client}<br>
+                <strong>Type:</strong> ${draft.type}<br>
+                <strong>Priority:</strong> ${draft.priority}<br>
+                <strong>Completion:</strong> ${draft.completion}%<br>
+                <strong>Last Modified:</strong> ${draft.lastModified.toLocaleString()}<br><br>
+                <strong>Description:</strong><br>
+                ${draft.description}<br><br>
+                <strong>Missing Required Fields:</strong><br>
+                ${draft.requiredFields.map(field => `• ${field.replace('_', ' ')}`).join('<br>')}
+            `;
+            
+            showNotificationModal('Draft Preview', preview);
+        }
+
+        function submitDraft(draftId) {
+            const draft = sampleDrafts.find(d => d.id === draftId);
+            if (!draft) return;
+            
+            if (draft.completion < 80) {
+                showNotification('Draft must be at least 80% complete to submit.', 'warning');
+                return;
+            }
+            
+            if (draft.requiredFields.length > 0) {
+                showNotification(`Please complete required fields: ${draft.requiredFields.join(', ')}`, 'warning');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to submit this draft as a transaction?')) {
+                // Simulate submission
+                showNotification('Draft submitted successfully!', 'success');
+                
+                // Remove from drafts
+                const index = sampleDrafts.findIndex(d => d.id === draftId);
+                if (index > -1) {
+                    sampleDrafts.splice(index, 1);
+                    loadDrafts();
+                    updateStatistics();
+                }
+            }
+        }
+
+        let draftToDelete = null;
+
+        function deleteDraft(draftId) {
+            draftToDelete = draftId;
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+        }
+
+        function confirmDelete() {
+            if (!draftToDelete) return;
+            
+            const index = sampleDrafts.findIndex(d => d.id === draftToDelete);
+            if (index > -1) {
+                sampleDrafts.splice(index, 1);
+                loadDrafts();
+                updateStatistics();
+                showNotification('Draft deleted successfully.', 'success');
+            }
+            
+            draftToDelete = null;
+            bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+        }
+
+        function bulkDelete() {
+            if (selectedDrafts.size === 0) {
+                showNotification('Please select drafts to delete.', 'warning');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete ${selectedDrafts.size} selected draft(s)?`)) {
+                selectedDrafts.forEach(draftId => {
+                    const index = sampleDrafts.findIndex(d => d.id === draftId);
+                    if (index > -1) {
+                        sampleDrafts.splice(index, 1);
+                    }
+                });
+                
+                clearSelection();
+                loadDrafts();
+                updateStatistics();
+                showNotification(`${selectedDrafts.size} draft(s) deleted successfully.`, 'success');
+            }
+        }
+
+        function bulkSubmit() {
+            if (selectedDrafts.size === 0) {
+                showNotification('Please select drafts to submit.', 'warning');
+                return;
+            }
+            
+            const eligibleDrafts = Array.from(selectedDrafts).filter(id => {
+                const draft = sampleDrafts.find(d => d.id === id);
+                return draft && draft.completion >= 80 && draft.requiredFields.length === 0;
+            });
+            
+            if (eligibleDrafts.length === 0) {
+                showNotification('No selected drafts are ready for submission (must be 80% complete with all required fields).', 'warning');
+                return;
+            }
+            
+            if (confirm(`Submit ${eligibleDrafts.length} eligible draft(s)?`)) {
+                eligibleDrafts.forEach(draftId => {
+                    const index = sampleDrafts.findIndex(d => d.id === draftId);
+                    if (index > -1) {
+                        sampleDrafts.splice(index, 1);
+                    }
+                });
+                
+                clearSelection();
+                loadDrafts();
+                updateStatistics();
+                showNotification(`${eligibleDrafts.length} draft(s) submitted successfully.`, 'success');
+            }
+        }
+
+        function sortDrafts(criteria) {
+            switch(criteria) {
+                case 'date':
+                    sampleDrafts.sort((a, b) => b.lastModified - a.lastModified);
+                    break;
+                case 'name':
+                    sampleDrafts.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'completion':
+                    sampleDrafts.sort((a, b) => b.completion - a.completion);
+                    break;
+            }
+            
+            loadDrafts();
+            showNotification(`Drafts sorted by ${criteria}.`, 'info');
+        }
+
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchDrafts');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const cards = document.querySelectorAll('.draft-card');
+                
+                cards.forEach(card => {
+                    const title = card.querySelector('.draft-title').textContent.toLowerCase();
+                    const client = card.querySelector('.draft-subtitle').textContent.toLowerCase();
+                    const description = card.querySelector('.draft-description').textContent.toLowerCase();
+                    
+                    const matches = title.includes(searchTerm) || 
+                                   client.includes(searchTerm) || 
+                                   description.includes(searchTerm);
+                    
+                    card.style.display = matches ? '' : 'none';
+                });
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const notification = document.createElement('div');
+            notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 100px; right: 20px; z-index: 1050; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+
+        function showNotificationModal(title, content) {
+            // Create a simple modal for notifications
+            const modalHtml = `
+                <div class="modal fade" id="notificationModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${title}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ${content}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove any existing notification modal
+            const existingModal = document.getElementById('notificationModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add new modal to body
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+            modal.show();
+            
+            // Remove modal from DOM after it's hidden
+            document.getElementById('notificationModal').addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
+        }
+    </script>
+</body>
+</html>

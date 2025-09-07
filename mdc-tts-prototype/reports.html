@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <style>
+        /* Ensure all chart cards have consistent sizing */
+        .card {
+            height: 100%;
+        }
+        
+        .card-body canvas {
+            max-height: 250px !important;
+        }
+        
+        /* Ensure proper spacing for charts */
+        @media (min-width: 992px) {
+            .col-lg-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        
+        /* Add some visual consistency */
+        .card-header.bg-light {
+            background-color: #f8f9fa !important;
+            border-bottom: 2px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">User</div>
+                                <small class="text-muted" id="userRole">Role</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 data-original-text="Reports & Analytics">Reports & Analytics</h2>
+                        <p class="text-muted" data-original-text="System-wide analytics and performance metrics">System-wide analytics and performance metrics</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="exportReport()">
+                            <i class="bi bi-download me-2"></i>
+                            <span data-original-text="Export Report">Export Report</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Date Range Selector -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label" data-original-text="Date Range">Date Range</label>
+                                <select class="form-select" id="dateRange">
+                                    <option value="today" data-original-text="Today">Today</option>
+                                    <option value="week" data-original-text="This Week">This Week</option>
+                                    <option value="month" selected data-original-text="This Month">This Month</option>
+                                    <option value="quarter" data-original-text="This Quarter">This Quarter</option>
+                                    <option value="year" data-original-text="This Year">This Year</option>
+                                    <option value="custom" data-original-text="Custom Range">Custom Range</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label" data-original-text="From Date">From Date</label>
+                                <input type="date" class="form-control" id="fromDate">
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label" data-original-text="To Date">To Date</label>
+                                <input type="date" class="form-control" id="toDate">
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <button class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-funnel me-2"></i>
+                                    <span data-original-text="Apply Filters">Apply Filters</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="text-muted mb-0" data-original-text="Total Transactions">Total Transactions</h6>
+                                    <i class="bi bi-receipt text-primary fs-4"></i>
+                                </div>
+                                <h3 class="mb-0">1,847</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> 23%
+                                    <span class="text-muted" data-original-text="from last month">from last month</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="text-muted mb-0" data-original-text="Average Processing Time">Average Processing Time</h6>
+                                    <i class="bi bi-clock text-warning fs-4"></i>
+                                </div>
+                                <h3 class="mb-0">3.2 <small data-original-text="days">days</small></h3>
+                                <small class="text-danger">
+                                    <i class="bi bi-arrow-up"></i> 0.5
+                                    <span class="text-muted" data-original-text="days increase">days increase</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="text-muted mb-0" data-original-text="Completion Rate">Completion Rate</h6>
+                                    <i class="bi bi-check-circle text-success fs-4"></i>
+                                </div>
+                                <h3 class="mb-0">87.3%</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> 5.2%
+                                    <span class="text-muted" data-original-text="improvement">improvement</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" id="activeUsersCard">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="text-muted mb-0" data-original-text="Active Users">Active Users</h6>
+                                    <i class="bi bi-people text-info fs-4"></i>
+                                </div>
+                                <h3 class="mb-0">128</h3>
+                                <small class="text-muted">
+                                    87% <span data-original-text="of total">of total</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid - All Equal Width -->
+                <div class="row mb-4">
+                    <!-- Transaction Volume Trends -->
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0" data-original-text="Transaction Volume Trends">Transaction Volume Trends</h5>
+                            </div>
+                            <div class="card-body" style="min-height: 300px;">
+                                <canvas id="volumeTrendsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Distribution -->
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0" data-original-text="Status Distribution">Status Distribution</h5>
+                            </div>
+                            <div class="card-body" style="min-height: 300px;">
+                                <canvas id="statusDistChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <!-- Department Performance -->
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0" data-original-text="Department Performance">Department Performance</h5>
+                            </div>
+                            <div class="card-body" style="min-height: 300px;">
+                                <canvas id="deptPerfChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Processing Time by Type -->
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0" data-original-text="Processing Time by Type">Processing Time by Type</h5>
+                            </div>
+                            <div class="card-body" style="min-height: 300px;">
+                                <canvas id="processingTimeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performers Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0" data-original-text="Top Performers">Top Performers</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th data-original-text="Rank">Rank</th>
+                                        <th data-original-text="User">User</th>
+                                        <th data-original-text="Department">Department</th>
+                                        <th data-original-text="Completed">Completed</th>
+                                        <th data-original-text="Avg. Time">Avg. Time</th>
+                                        <th data-original-text="Efficiency">Efficiency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-warning">1</span></td>
+                                        <td>Sarah Mitchell</td>
+                                        <td>Operations</td>
+                                        <td>142</td>
+                                        <td>2.1 days</td>
+                                        <td><div class="progress"><div class="progress-bar bg-success" style="width: 95%">95%</div></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-secondary">2</span></td>
+                                        <td>John Editor</td>
+                                        <td>Engineering</td>
+                                        <td>128</td>
+                                        <td>2.8 days</td>
+                                        <td><div class="progress"><div class="progress-bar bg-success" style="width: 88%">88%</div></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-secondary">3</span></td>
+                                        <td>Mike Johnson</td>
+                                        <td>Engineering</td>
+                                        <td>115</td>
+                                        <td>3.2 days</td>
+                                        <td><div class="progress"><div class="progress-bar bg-info" style="width: 82%">82%</div></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    
+    <script>
+        // Store chart instances globally to destroy them when language changes
+        let chartInstances = {};
+        
+        // Apply translations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check current language and apply translations
+            const isEnglish = document.querySelector('[data-lang="en"]')?.classList.contains('active');
+            if (!isEnglish) {
+                // Apply Arabic translations
+                if (typeof applyTranslations === 'function') {
+                    applyTranslations();
+                }
+            }
+            
+            // Add language toggle event listeners
+            document.querySelectorAll('[data-lang]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('[data-lang]').forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update HTML lang and dir attributes
+                    const isArabic = this.dataset.lang === 'ar';
+                    document.documentElement.lang = isArabic ? 'ar' : 'en';
+                    document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+                    localStorage.setItem('language', isArabic ? 'ar' : 'en');
+                    
+                    // Re-apply customizations based on role
+                    const userData = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
+                    
+                    // Destroy existing charts
+                    Object.values(chartInstances).forEach(chart => {
+                        if (chart) chart.destroy();
+                    });
+                    chartInstances = {};
+                    
+                    // Apply translations based on language
+                    if (isArabic && typeof applyTranslations === 'function') {
+                        applyTranslations();
+                    } else if (!isArabic) {
+                        // Reset to English text for all elements with data-original-text
+                        document.querySelectorAll('[data-original-text]').forEach(element => {
+                            element.textContent = element.getAttribute('data-original-text');
+                        });
+                    }
+                    
+                    // Re-initialize based on role after a delay to ensure translations are applied
+                    setTimeout(() => {
+                        if (userData.role === 'editor') {
+                            customizeForEditor();
+                            // Wait a bit for DOM to update before initializing charts
+                            setTimeout(() => initializeEditorCharts(), 100);
+                        } else {
+                            // Reset to default if switching from editor view
+                            resetToDefaultView();
+                            setTimeout(() => initializeDefaultCharts(), 100);
+                        }
+                    }, 50);
+                });
+            });
+        });
+    </script>
+    
+    <script>
+        // Function to reset to default view (for non-editor roles)
+        function resetToDefaultView() {
+            const englishBtn = document.querySelector('[data-lang="en"]');
+            const arabicBtn = document.querySelector('[data-lang="ar"]');
+            const isArabic = arabicBtn?.classList.contains('active') || 
+                           localStorage.getItem('language') === 'ar' ||
+                           (document.documentElement.lang === 'ar' && !englishBtn?.classList.contains('active'));
+            
+            // Reset page title
+            const pageTitle = document.querySelector('h2');
+            if (pageTitle) {
+                pageTitle.setAttribute('data-original-text', 'Reports & Analytics');
+                pageTitle.textContent = isArabic ? 'التقارير والتحليلات' : 'Reports & Analytics';
+            }
+            
+            // Reset page description
+            const pageDesc = document.querySelector('.text-muted');
+            if (pageDesc) {
+                pageDesc.setAttribute('data-original-text', 'System-wide analytics and performance metrics');
+                pageDesc.textContent = isArabic ? 'تحليلات على مستوى النظام ومقاييس الأداء' : 'System-wide analytics and performance metrics';
+            }
+        }
+        
+        // Check user role and customize reports based on role
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
+            
+            // Wait a bit for translations to be applied first
+            setTimeout(() => {
+                if (userData.role === 'client') {
+                    // Hide Active Users card for Client users
+                    const activeUsersCard = document.getElementById('activeUsersCard');
+                    if (activeUsersCard) {
+                        activeUsersCard.style.display = 'none';
+                    }
+                } else if (userData.role === 'editor') {
+                    // Customize reports for Editor role
+                    customizeForEditor();
+                }
+            }, 100);
+        });
+
+        function customizeForEditor() {
+            // Check if English button is active to determine language
+            const englishBtn = document.querySelector('[data-lang="en"]');
+            const arabicBtn = document.querySelector('[data-lang="ar"]');
+            // Check button state, localStorage, or HTML lang attribute
+            const isArabic = arabicBtn?.classList.contains('active') || 
+                           localStorage.getItem('language') === 'ar' ||
+                           (document.documentElement.lang === 'ar' && !englishBtn?.classList.contains('active'));
+            
+            // Update page title - use h2 directly
+            const pageTitle = document.querySelector('h2');
+            if (pageTitle) {
+                pageTitle.setAttribute('data-original-text', 'My Performance Dashboard');
+                pageTitle.textContent = isArabic ? 'لوحة أدائي' : 'My Performance Dashboard';
+            }
+            
+            // Update page description - find the paragraph after h2
+            const pageDesc = document.querySelector('h2')?.nextElementSibling;
+            if (pageDesc && pageDesc.classList.contains('text-muted')) {
+                pageDesc.setAttribute('data-original-text', 'Track your assigned transactions and performance');
+                pageDesc.textContent = isArabic ? 'تتبع المعاملات المخصصة لك وأدائك' : 'Track your assigned transactions and performance';
+            }
+
+            // Update stat cards for editor
+            updateEditorStatCards();
+            
+            // Update top performers to show editor's recent activity
+            updateEditorActivityTable();
+        }
+
+        function updateEditorStatCards() {
+            const englishBtn = document.querySelector('[data-lang="en"]');
+            const arabicBtn = document.querySelector('[data-lang="ar"]');
+            const isArabic = arabicBtn?.classList.contains('active') || 
+                           localStorage.getItem('language') === 'ar' ||
+                           (document.documentElement.lang === 'ar' && !englishBtn?.classList.contains('active'));
+            
+            // Update Total Transactions to My Assigned Transactions
+            const totalTransCard = document.querySelector('[data-original-text="Total Transactions"]');
+            if (totalTransCard) {
+                totalTransCard.setAttribute('data-original-text', 'My Assigned Transactions');
+                totalTransCard.textContent = isArabic ? 'معاملاتي المخصصة' : 'My Assigned Transactions';
+                // Update the count
+                const countElement = totalTransCard.closest('.card-body').querySelector('h3');
+                if (countElement) countElement.textContent = '47';
+                // Update trend text
+                const trendText = totalTransCard.closest('.card-body').querySelector('[data-original-text="from last month"]');
+                if (trendText) {
+                    trendText.setAttribute('data-original-text', 'this month');
+                    trendText.textContent = isArabic ? 'هذا الشهر' : 'this month';
+                }
+                // Update percentage text  
+                const percentText = totalTransCard.closest('.card-body').querySelector('.text-success');
+                if (percentText) {
+                    percentText.innerHTML = isArabic ? '<i class="bi bi-arrow-up"></i> 23% <span class="text-muted">هذا الشهر</span>' : '<i class="bi bi-arrow-up"></i> 23% <span class="text-muted">this month</span>';
+                }
+            }
+
+            // Update Average Processing Time to My Average Time  
+            const avgTimeCard = document.querySelector('[data-original-text="Average Processing Time"]');
+            if (avgTimeCard) {
+                avgTimeCard.setAttribute('data-original-text', 'My Average Time');
+                avgTimeCard.textContent = isArabic ? 'متوسط وقتي' : 'My Average Time';
+                const timeElement = avgTimeCard.closest('.card-body').querySelector('h3');
+                if (timeElement) timeElement.innerHTML = isArabic ? '2.8 <small data-original-text="days">أيام</small>' : '2.8 <small data-original-text="days">days</small>';
+                // Update days increase text
+                const increaseText = avgTimeCard.closest('.card-body').querySelector('[data-original-text="days increase"]');
+                if (increaseText) {
+                    increaseText.setAttribute('data-original-text', 'days increase');
+                    increaseText.textContent = isArabic ? 'زيادة في الأيام' : 'days increase';
+                }
+            }
+
+            // Update Completion Rate to My Completion Rate
+            const compRateCard = document.querySelector('[data-original-text="Completion Rate"]');
+            if (compRateCard) {
+                compRateCard.setAttribute('data-original-text', 'My Completion Rate');
+                compRateCard.textContent = isArabic ? 'معدل إنجازي' : 'My Completion Rate';
+                const rateElement = compRateCard.closest('.card-body').querySelector('h3');
+                if (rateElement) rateElement.textContent = '89%';
+            }
+
+            // Update Active Users to Pending Reviews
+            const activeUsersCard = document.querySelector('[data-original-text="Active Users"]');
+            if (activeUsersCard) {
+                activeUsersCard.setAttribute('data-original-text', 'Pending Reviews');
+                activeUsersCard.textContent = isArabic ? 'المراجعات المعلقة' : 'Pending Reviews';
+                const icon = activeUsersCard.parentElement.querySelector('.bi');
+                if (icon) {
+                    icon.classList.remove('bi-people');
+                    icon.classList.add('bi-clock-history');
+                }
+                const countElement = activeUsersCard.closest('.card-body').querySelector('h3');
+                if (countElement) countElement.textContent = '12';
+                const subText = activeUsersCard.closest('.card-body').querySelector('.text-muted');
+                if (subText) {
+                    subText.innerHTML = isArabic ? 'في انتظار المراجعة' : 'Awaiting review';
+                }
+            }
+        }
+
+        function updateEditorActivityTable() {
+            const englishBtn = document.querySelector('[data-lang="en"]');
+            const arabicBtn = document.querySelector('[data-lang="ar"]');
+            const isArabic = arabicBtn?.classList.contains('active') || 
+                           localStorage.getItem('language') === 'ar' ||
+                           (document.documentElement.lang === 'ar' && !englishBtn?.classList.contains('active'));
+            const tableHeader = document.querySelector('[data-original-text="Top Performers"]');
+            if (tableHeader) {
+                tableHeader.setAttribute('data-original-text', 'Client Activity on My Transactions');
+                tableHeader.textContent = isArabic ? 'نشاط العملاء على معاملاتي' : 'Client Activity on My Transactions';
+            }
+
+            // Update table headers for client activity metrics
+            const table = document.querySelector('.table');
+            if (table) {
+                const thead = table.querySelector('thead tr');
+                if (thead) {
+                    if (isArabic) {
+                        thead.innerHTML = `
+                            <th>رقم المعاملة</th>
+                            <th>اسم العميل</th>
+                            <th>آخر نشاط</th>
+                            <th>وقت الاستجابة</th>
+                            <th>زيارات المنصة</th>
+                            <th>الحالة</th>
+                        `;
+                    } else {
+                        thead.innerHTML = `
+                            <th>Transaction ID</th>
+                            <th>Client Name</th>
+                            <th>Last Activity</th>
+                            <th>Response Time</th>
+                            <th>Platform Visits</th>
+                            <th>Status</th>
+                        `;
+                    }
+                }
+
+                // Update table body with client activity data
+                const tbody = table.querySelector('tbody');
+                if (tbody) {
+                    if (isArabic) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td>TRX-2024-0847</td>
+                                <td>أحمد الرشيد</td>
+                                <td><span class="text-success">قبل ساعتين</span></td>
+                                <td>< ساعة واحدة</td>
+                                <td><span class="badge bg-info">12</span></td>
+                                <td><span class="badge bg-success">نشط</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0846</td>
+                                <td>فاطمة الزهراني</td>
+                                <td><span class="text-warning">قبل يوم واحد</span></td>
+                                <td>4 ساعات</td>
+                                <td><span class="badge bg-info">8</span></td>
+                                <td><span class="badge bg-warning">في انتظار الرد</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0845</td>
+                                <td>محمد القحطاني</td>
+                                <td><span class="text-success">قبل 30 دقيقة</span></td>
+                                <td>< 30 دقيقة</td>
+                                <td><span class="badge bg-info">24</span></td>
+                                <td><span class="badge bg-success">نشط</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0844</td>
+                                <td>سارة المطيري</td>
+                                <td><span class="text-danger">قبل 3 أيام</span></td>
+                                <td>يومان</td>
+                                <td><span class="badge bg-info">5</span></td>
+                                <td><span class="badge bg-secondary">غير نشط</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0843</td>
+                                <td>عبدالله الدوسري</td>
+                                <td><span class="text-warning">قبل 6 ساعات</span></td>
+                                <td>ساعتان</td>
+                                <td><span class="badge bg-info">15</span></td>
+                                <td><span class="badge bg-info">قيد المراجعة</span></td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td>TRX-2024-0847</td>
+                                <td>Ahmed Al-Rashid</td>
+                                <td><span class="text-success">2 hours ago</span></td>
+                                <td>< 1 hour</td>
+                                <td><span class="badge bg-info">12</span></td>
+                                <td><span class="badge bg-success">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0846</td>
+                                <td>Fatima Al-Zahrani</td>
+                                <td><span class="text-warning">1 day ago</span></td>
+                                <td>4 hours</td>
+                                <td><span class="badge bg-info">8</span></td>
+                                <td><span class="badge bg-warning">Awaiting Response</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0845</td>
+                                <td>Mohammed Al-Qahtani</td>
+                                <td><span class="text-success">30 min ago</span></td>
+                                <td>< 30 min</td>
+                                <td><span class="badge bg-info">24</span></td>
+                                <td><span class="badge bg-success">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0844</td>
+                                <td>Sara Al-Mutairi</td>
+                                <td><span class="text-danger">3 days ago</span></td>
+                                <td>2 days</td>
+                                <td><span class="badge bg-info">5</span></td>
+                                <td><span class="badge bg-secondary">Inactive</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX-2024-0843</td>
+                                <td>Abdullah Al-Dosari</td>
+                                <td><span class="text-warning">6 hours ago</span></td>
+                                <td>2 hours</td>
+                                <td><span class="badge bg-info">15</span></td>
+                                <td><span class="badge bg-info">Reviewing</span></td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+        }
+        
+        // Initialize charts based on user role
+        const userData = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
+        
+        // Wait for DOM to be ready before initializing charts
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (userData.role === 'editor') {
+                    // Editor-specific charts
+                    initializeEditorCharts();
+                } else {
+                    // Default charts for Admin/Client
+                    initializeDefaultCharts();
+                }
+            }, 300);  // Increased delay to ensure customizations are applied first
+        });
+        
+        function initializeEditorCharts() {
+            const englishBtn = document.querySelector('[data-lang="en"]');
+            const arabicBtn = document.querySelector('[data-lang="ar"]');
+            const isArabic = arabicBtn?.classList.contains('active') || 
+                           localStorage.getItem('language') === 'ar' ||
+                           (document.documentElement.lang === 'ar' && !englishBtn?.classList.contains('active'));
+            
+            // Update chart card titles
+            const volumeTrendsCard = document.querySelector('#volumeTrendsChart')?.closest('.card')?.querySelector('.card-header h5');
+            if (volumeTrendsCard) {
+                volumeTrendsCard.setAttribute('data-original-text', 'Transaction Volume Trends');
+                volumeTrendsCard.textContent = isArabic ? 'اتجاهات حجم المعاملات' : 'Transaction Volume Trends';
+            }
+            
+            // My Weekly Workload Chart
+            const volumeCanvas = document.getElementById('volumeTrendsChart');
+            if (!volumeCanvas) return;
+            const volumeCtx = volumeCanvas.getContext('2d');
+            chartInstances.volumeTrends = new Chart(volumeCtx, {
+                type: 'line',
+                data: {
+                    labels: isArabic ? ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: isArabic ? 'المخصصة' : 'Assigned',
+                        data: [8, 12, 10, 15, 11, 5, 3],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: isArabic ? 'المكتملة' : 'Completed',
+                        data: [6, 10, 9, 12, 8, 4, 2],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: isArabic ? 'عبء العمل الأسبوعي' : 'My Weekly Workload'
+                        }
+                    }
+                }
+            });
+
+            // Task Status Distribution Chart
+            const statusCanvas = document.getElementById('statusDistChart');
+            if (!statusCanvas) return;
+            const statusCtx = statusCanvas.getContext('2d');
+            chartInstances.statusDist = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: isArabic ? ['مكتمل', 'قيد التقدم', 'قيد المراجعة', 'معلق'] : ['Completed', 'In Progress', 'Under Review', 'Pending'],
+                    datasets: [{
+                        data: [28, 8, 7, 4],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#6b7280']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: isArabic ? 'توزيع حالة مهامي' : 'My Task Status Distribution'
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // My Performance by Transaction Type
+            const deptCanvas = document.getElementById('deptPerfChart');
+            if (!deptCanvas) return;
+            const deptCtx = deptCanvas.getContext('2d');
+            chartInstances.deptPerf = new Chart(deptCtx, {
+                type: 'bar',
+                data: {
+                    labels: isArabic ? ['مراجعة المستندات', 'الموافقة', 'تحديث الحالة', 'طلب معلومات'] : ['Document Review', 'Approval', 'Status Update', 'Info Request'],
+                    datasets: [{
+                        label: isArabic ? 'المهام المكتملة' : 'Tasks Completed',
+                        data: [12, 8, 15, 10],
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: isArabic ? 'أدائي حسب نوع المعاملة' : 'My Performance by Transaction Type'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Deadline Tracker Chart
+            const timeCanvas = document.getElementById('processingTimeChart');
+            if (!timeCanvas) return;
+            const timeCtx = timeCanvas.getContext('2d');
+            chartInstances.processingTime = new Chart(timeCtx, {
+                type: 'bar',
+                data: {
+                    labels: isArabic ? ['متأخر', 'اليوم', 'غداً', 'هذا الأسبوع', 'الأسبوع القادم'] : ['Overdue', 'Today', 'Tomorrow', 'This Week', 'Next Week'],
+                    datasets: [{
+                        label: isArabic ? 'المعاملات' : 'Transactions',
+                        data: [2, 3, 5, 8, 4],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#eab308', '#3b82f6', '#10b981']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: isArabic ? 'المواعيد النهائية القادمة' : 'Upcoming Deadlines'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        function initializeDefaultCharts() {
+            const englishBtn = document.querySelector('[data-lang="en"]');
+            const arabicBtn = document.querySelector('[data-lang="ar"]');
+            const isArabic = arabicBtn?.classList.contains('active') || 
+                           localStorage.getItem('language') === 'ar' ||
+                           (document.documentElement.lang === 'ar' && !englishBtn?.classList.contains('active'));
+            
+            // Volume Trends Chart
+            const volumeCanvas = document.getElementById('volumeTrendsChart');
+            if (!volumeCanvas) return;
+            const volumeCtx = volumeCanvas.getContext('2d');
+            chartInstances.volumeTrends = new Chart(volumeCtx, {
+            type: 'line',
+            data: {
+                labels: isArabic ? ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'] : ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                datasets: [{
+                    label: isArabic ? 'المعاملات' : 'Transactions',
+                    data: [420, 485, 510, 432],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Status Distribution Chart
+        const statusCanvas = document.getElementById('statusDistChart');
+        if (!statusCanvas) return;
+        const statusCtx = statusCanvas.getContext('2d');
+        chartInstances.statusDist = new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: isArabic ? ['مكتمل', 'قيد التقدم', 'معلق', 'ملغى'] : ['Completed', 'In Progress', 'Pending', 'Cancelled'],
+                datasets: [{
+                    data: [65, 20, 10, 5],
+                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Department Performance Chart
+        const deptCanvas = document.getElementById('deptPerfChart');
+        if (!deptCanvas) return;
+        const deptCtx = deptCanvas.getContext('2d');
+        chartInstances.deptPerf = new Chart(deptCtx, {
+            type: 'bar',
+            data: {
+                labels: isArabic ? ['الهندسة', 'العمليات', 'الإدارة', 'خارجي'] : ['Engineering', 'Operations', 'Management', 'External'],
+                datasets: [{
+                    label: isArabic ? 'مكتمل' : 'Completed',
+                    data: [342, 298, 156, 89],
+                    backgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Processing Time Chart
+        const timeCanvas = document.getElementById('processingTimeChart');
+        if (!timeCanvas) return;
+        const timeCtx = timeCanvas.getContext('2d');
+        chartInstances.processingTime = new Chart(timeCtx, {
+            type: 'bar',
+            data: {
+                labels: isArabic ? ['تقني', 'إداري', 'مالي', 'قانوني'] : ['Technical', 'Administrative', 'Financial', 'Legal'],
+                datasets: [{
+                    label: isArabic ? 'أيام' : 'Days',
+                    data: [2.5, 3.2, 4.1, 5.8],
+                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function exportReport() {
+            alert('Export functionality would be implemented here');
+        }
+
+        // Update date inputs when range selector changes
+        document.getElementById('dateRange').addEventListener('change', function() {
+            const today = new Date();
+            let fromDate = new Date();
+            
+            switch(this.value) {
+                case 'today':
+                    fromDate = today;
+                    break;
+                case 'week':
+                    fromDate.setDate(today.getDate() - 7);
+                    break;
+                case 'month':
+                    fromDate.setMonth(today.getMonth() - 1);
+                    break;
+                case 'quarter':
+                    fromDate.setMonth(today.getMonth() - 3);
+                    break;
+                case 'year':
+                    fromDate.setFullYear(today.getFullYear() - 1);
+                    break;
+            }
+            
+            if (this.value !== 'custom') {
+                document.getElementById('fromDate').value = fromDate.toISOString().split('T')[0];
+                document.getElementById('toDate').value = today.toISOString().split('T')[0];
+            }
+        });
+
+        }
+        
+        // Initialize date range
+        document.getElementById('dateRange').dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>

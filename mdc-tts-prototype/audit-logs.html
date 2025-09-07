@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .log-entry {
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .log-entry:hover {
+            background-color: #f8f9fa;
+        }
+        .log-entry.success { border-left-color: #10b981; }
+        .log-entry.warning { border-left-color: #f59e0b; }
+        .log-entry.error { border-left-color: #ef4444; }
+        .log-entry.info { border-left-color: #3b82f6; }
+        .log-details {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">User</div>
+                                <small class="text-muted" id="userRole">Role</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 data-original-text="Audit Logs">Audit Logs</h2>
+                        <p class="text-muted" data-original-text="System activity and security event tracking">System activity and security event tracking</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary me-2">
+                            <i class="bi bi-download me-2"></i>
+                            <span data-original-text="Export Logs">Export Logs</span>
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            <span data-original-text="Refresh">Refresh</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Total Events">Total Events</h6>
+                                <h3 class="mb-0">12,847</h3>
+                                <small class="text-muted" data-original-text="Last 30 days">Last 30 days</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Security Events">Security Events</h6>
+                                <h3 class="mb-0 text-warning">23</h3>
+                                <small class="text-danger">
+                                    <i class="bi bi-arrow-up"></i> 3 <span data-original-text="today">today</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Failed Logins">Failed Logins</h6>
+                                <h3 class="mb-0 text-danger">7</h3>
+                                <small class="text-muted" data-original-text="Last 24 hours">Last 24 hours</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Active Users">Active Users</h6>
+                                <h3 class="mb-0 text-success">42</h3>
+                                <small class="text-muted" data-original-text="Currently online">Currently online</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label" data-original-text="Search">Search</label>
+                                <input type="text" class="form-control" placeholder="Search logs..." data-placeholder-ar="البحث في السجلات..." data-placeholder-en="Search logs...">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" data-original-text="Event Type">Event Type</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Types">All Types</option>
+                                    <option value="login">Login</option>
+                                    <option value="logout">Logout</option>
+                                    <option value="create">Create</option>
+                                    <option value="update">Update</option>
+                                    <option value="delete">Delete</option>
+                                    <option value="security">Security</option>
+                                    <option value="system">System</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" data-original-text="Severity">Severity</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Levels">All Levels</option>
+                                    <option value="info">Info</option>
+                                    <option value="success">Success</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label" data-original-text="User">User</label>
+                                <input type="text" class="form-control" placeholder="Username">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label" data-original-text="Date Range">Date Range</label>
+                                <div class="input-group">
+                                    <input type="datetime-local" class="form-control">
+                                    <span class="input-group-text">-</span>
+                                    <input type="datetime-local" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button class="btn btn-primary">
+                                    <i class="bi bi-search me-2"></i>
+                                    <span data-original-text="Search">Search</span>
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-2"></i>
+                                    <span data-original-text="Clear Filters">Clear Filters</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs List -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th width="150" data-original-text="Timestamp">Timestamp</th>
+                                        <th data-original-text="Event">Event</th>
+                                        <th data-original-text="User">User</th>
+                                        <th data-original-text="IP Address">IP Address</th>
+                                        <th data-original-text="Module">Module</th>
+                                        <th width="100" data-original-text="Status">Status</th>
+                                        <th width="80" data-original-text="Actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="log-entry success">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>14:32:45</small>
+                                        </td>
+                                        <td>
+                                            <strong>User Login</strong><br>
+                                            <small class="text-muted">Successful authentication</small>
+                                        </td>
+                                        <td>admin@mdc.com</td>
+                                        <td>192.168.1.100</td>
+                                        <td>Authentication</td>
+                                        <td><span class="badge bg-success">Success</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#log1">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="p-0 border-0">
+                                            <div class="collapse" id="log1">
+                                                <div class="log-details m-3">
+                                                    <pre>{
+  "event": "USER_LOGIN",
+  "timestamp": "2024-01-25T14:32:45.123Z",
+  "user": "admin@mdc.com",
+  "ip": "192.168.1.100",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+  "location": "Riyadh, Saudi Arabia",
+  "sessionId": "sess_abc123def456",
+  "result": "SUCCESS"
+}</pre>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="log-entry info">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>14:28:12</small>
+                                        </td>
+                                        <td>
+                                            <strong>Transaction Created</strong><br>
+                                            <small class="text-muted">TRX-2024-0189</small>
+                                        </td>
+                                        <td>editor@mdc.com</td>
+                                        <td>192.168.1.105</td>
+                                        <td>Transactions</td>
+                                        <td><span class="badge bg-info">Info</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#log2">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="p-0 border-0">
+                                            <div class="collapse" id="log2">
+                                                <div class="log-details m-3">
+                                                    <pre>{
+  "event": "TRANSACTION_CREATE",
+  "timestamp": "2024-01-25T14:28:12.456Z",
+  "user": "editor@mdc.com",
+  "transactionId": "TRX-2024-0189",
+  "title": "Technical Review Request",
+  "type": "Review",
+  "priority": "High",
+  "result": "SUCCESS"
+}</pre>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="log-entry warning">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>14:15:33</small>
+                                        </td>
+                                        <td>
+                                            <strong>Failed Login Attempt</strong><br>
+                                            <small class="text-muted">Invalid credentials</small>
+                                        </td>
+                                        <td>unknown@test.com</td>
+                                        <td>185.220.101.45</td>
+                                        <td>Authentication</td>
+                                        <td><span class="badge bg-warning">Warning</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#log3">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="p-0 border-0">
+                                            <div class="collapse" id="log3">
+                                                <div class="log-details m-3">
+                                                    <pre>{
+  "event": "LOGIN_FAILED",
+  "timestamp": "2024-01-25T14:15:33.789Z",
+  "attemptedUser": "unknown@test.com",
+  "ip": "185.220.101.45",
+  "reason": "INVALID_CREDENTIALS",
+  "attempts": 3,
+  "blocked": false
+}</pre>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="log-entry info">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>14:10:22</small>
+                                        </td>
+                                        <td>
+                                            <strong>User Profile Updated</strong><br>
+                                            <small class="text-muted">Phone number changed</small>
+                                        </td>
+                                        <td>client@mdc.com</td>
+                                        <td>192.168.1.110</td>
+                                        <td>User Management</td>
+                                        <td><span class="badge bg-info">Info</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="log-entry error">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>14:05:18</small>
+                                        </td>
+                                        <td>
+                                            <strong>System Error</strong><br>
+                                            <small class="text-muted">Database connection timeout</small>
+                                        </td>
+                                        <td>system</td>
+                                        <td>127.0.0.1</td>
+                                        <td>Database</td>
+                                        <td><span class="badge bg-danger">Error</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="log-entry success">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>13:58:45</small>
+                                        </td>
+                                        <td>
+                                            <strong>Task Assigned</strong><br>
+                                            <small class="text-muted">TSK-2024-0090</small>
+                                        </td>
+                                        <td>admin@mdc.com</td>
+                                        <td>192.168.1.100</td>
+                                        <td>Assignments</td>
+                                        <td><span class="badge bg-success">Success</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="log-entry info">
+                                        <td>
+                                            <small class="text-muted">Jan 25, 2024<br>13:45:30</small>
+                                        </td>
+                                        <td>
+                                            <strong>Report Generated</strong><br>
+                                            <small class="text-muted">Monthly Transaction Report</small>
+                                        </td>
+                                        <td>admin@mdc.com</td>
+                                        <td>192.168.1.100</td>
+                                        <td>Reports</td>
+                                        <td><span class="badge bg-info">Info</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                            <div>
+                                <span class="text-muted">Showing 1-7 of 12,847 events</span>
+                            </div>
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#">Previous</a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">3</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">...</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">1836</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

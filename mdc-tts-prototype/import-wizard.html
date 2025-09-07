@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Wizard - MDC TTS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <style>
+        .import-wizard {
+            margin-top: 20px;
+        }
+        
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .wizard-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 0;
+        }
+        
+        .wizard-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .wizard-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #e9ecef;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+        
+        .wizard-step.active .wizard-step-icon {
+            background: #1a5f3f;
+            border-color: #1a5f3f;
+            color: white;
+        }
+        
+        .wizard-step.completed .wizard-step-icon {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .wizard-step.completed .wizard-step-icon::before {
+            content: '\f26b';
+            font-family: 'bootstrap-icons';
+        }
+        
+        .wizard-step-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .wizard-step.active .wizard-step-label {
+            color: #1a5f3f;
+            font-weight: 600;
+        }
+        
+        .wizard-content {
+            min-height: 500px;
+        }
+        
+        .wizard-pane {
+            display: none;
+        }
+        
+        .wizard-pane.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .file-drop-zone {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .file-drop-zone:hover {
+            border-color: #1a5f3f;
+            background: #f0f8f4;
+        }
+        
+        .file-drop-zone.dragover {
+            border-color: #1a5f3f;
+            background: #e8f5ee;
+            transform: scale(1.02);
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        .file-upload-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .file-upload-hint {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .file-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .mapping-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .mapping-row {
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .mapping-row:last-child {
+            border-bottom: none;
+        }
+        
+        .preview-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .validation-error {
+            background-color: #fff5f5;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .validation-warning {
+            background-color: #fffbf0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .validation-success {
+            background-color: #f0f9f5;
+            border-left: 4px solid #28a745;
+        }
+        
+        .import-progress {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        
+        .progress-step.processing {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .progress-step.completed {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .progress-step.error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        
+        .step-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .step-text {
+            flex: 1;
+        }
+        
+        .step-status {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block" data-original-text="Transaction Tracking System">نظام تتبع المعاملات</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="بحث..." data-original-placeholder="Search...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            3
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">Editor User</div>
+                                <small class="text-muted" id="userRole">Editor</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> <span data-original-text="Profile">الملف الشخصي</span></a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> <span data-original-text="Settings">الإعدادات</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> <span data-original-text="Logout">تسجيل الخروج</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="Bulk Import Wizard">معالج الاستيراد الجماعي</h2>
+                            <p class="text-muted mb-0" data-original-text="Import multiple transactions from CSV or Excel files">استيراد معاملات متعددة من ملفات CSV أو Excel</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-outline-primary" onclick="downloadTemplate()">
+                                    <i class="bi bi-download me-1"></i> <span data-original-text="Download Template">تحميل القالب</span>
+                                </a>
+                                <a href="transactions.html" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> <span data-original-text="Back to Transactions">العودة إلى المعاملات</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Wizard Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="import-wizard">
+                            <!-- Wizard Steps -->
+                            <div class="wizard-steps">
+                                <div class="wizard-step active" data-step="1">
+                                    <div class="wizard-step-icon">1</div>
+                                    <div class="wizard-step-label" data-original-text="Upload File">رفع الملف</div>
+                                </div>
+                                <div class="wizard-step" data-step="2">
+                                    <div class="wizard-step-icon">2</div>
+                                    <div class="wizard-step-label" data-original-text="Map Fields">ربط الحقول</div>
+                                </div>
+                                <div class="wizard-step" data-step="3">
+                                    <div class="wizard-step-icon">3</div>
+                                    <div class="wizard-step-label" data-original-text="Validate Data">التحقق من البيانات</div>
+                                </div>
+                                <div class="wizard-step" data-step="4">
+                                    <div class="wizard-step-icon">4</div>
+                                    <div class="wizard-step-label" data-original-text="Import">استيراد</div>
+                                </div>
+                            </div>
+
+                            <!-- Wizard Content -->
+                            <div class="wizard-content">
+                                <!-- Step 1: Upload File -->
+                                <div class="wizard-pane active" id="step-1">
+                                    <div class="row">
+                                        <div class="col-lg-8 offset-lg-2">
+                                            <h4 class="mb-4" data-original-text="Upload Your Import File">ارفع ملف الاستيراد</h4>
+                                            
+                                            <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('fileInput').click()">
+                                                <div class="file-upload-icon">
+                                                    <i class="bi bi-cloud-upload"></i>
+                                                </div>
+                                                <div class="file-upload-text" data-original-text="Drop your file here or click to browse">اسحب الملف هنا أو انقر للاستعراض</div>
+                                                <div class="file-upload-hint" data-original-text="Supported formats: CSV, Excel (.xlsx, .xls) - Max size: 10MB">التنسيقات المدعومة: CSV, Excel (.xlsx, .xls) - الحجم الأقصى: 10MB</div>
+                                                <input type="file" id="fileInput" hidden accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)">
+                                            </div>
+                                            
+                                            <div id="fileInfo" class="file-info" style="display: none;">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="bi bi-file-earmark-spreadsheet fs-2 text-success me-3"></i>
+                                                            <div>
+                                                                <div class="fw-semibold" id="fileName">filename.xlsx</div>
+                                                                <div class="text-muted">
+                                                                    <span id="fileSize">2.3 MB</span> • 
+                                                                    <span id="fileRows" data-original-text="rows detected">150 صف تم العثور عليها</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button class="btn btn-outline-danger btn-sm" onclick="clearFile()">
+                                                            <i class="bi bi-trash"></i> <span data-original-text="Remove">إزالة</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="alert alert-info mt-4">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                <strong data-original-text="Import Guidelines:">إرشادات الاستيراد:</strong>
+                                                <ul class="mb-0 mt-2" style="list-style-position: inside; padding-right: 0;">
+                                                    <li data-original-text="Use the provided template for best results">استخدم القالب المقدم للحصول على أفضل النتائج</li>
+                                                    <li data-original-text="Ensure all required fields are included">تأكد من تضمين جميع الحقول المطلوبة</li>
+                                                    <li data-original-text="Date format should be DD/MM/YYYY or YYYY-MM-DD">تنسيق التاريخ يجب أن يكون DD/MM/YYYY أو YYYY-MM-DD</li>
+                                                    <li data-original-text="Maximum 1000 rows per import">الحد الأقصى 1000 صف لكل عملية استيراد</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Map Fields -->
+                                <div class="wizard-pane" id="step-2">
+                                    <h4 class="mb-4" data-original-text="Map Your Columns">ربط أعمدتك</h4>
+                                    <p class="text-muted mb-4" data-original-text="Match your file columns with the system fields">طابق أعمدة ملفك مع حقول النظام</p>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table mapping-table">
+                                            <thead>
+                                                <tr>
+                                                    <th width="25%" data-original-text="Your Column">عمودك</th>
+                                                    <th width="15%" data-original-text="Sample Data">عينة بيانات</th>
+                                                    <th width="25%" data-original-text="System Field">حقل النظام</th>
+                                                    <th width="15%" data-original-text="Required">مطلوب</th>
+                                                    <th width="20%" data-original-text="Status">الحالة</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="mappingTableBody">
+                                                <!-- Mapping rows will be generated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="alert alert-warning mt-4">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        <strong data-original-text="Mapping Tips:">نصائح الربط:</strong>
+                                        <ul class="mb-0 mt-2">
+                                            <li data-original-text="Red fields are required and must be mapped">الحقول الحمراء مطلوبة ويجب ربطها</li>
+                                            <li data-original-text="You can skip optional fields if not needed">يمكنك تجاهل الحقول الاختيارية إذا لم تكن مطلوبة</li>
+                                            <li data-original-text="Auto-mapping is applied based on column names">يتم تطبيق الربط التلقائي بناءً على أسماء الأعمدة</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Validate Data -->
+                                <div class="wizard-pane" id="step-3">
+                                    <h4 class="mb-4" data-original-text="Validate Import Data">التحقق من بيانات الاستيراد</h4>
+                                    
+                                    <!-- Validation Summary -->
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 class="text-success mb-0" id="validRowsCount">45</h3>
+                                                    <small class="text-muted" data-original-text="Valid Rows">Valid Rows</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 class="text-warning mb-0" id="warningRowsCount">3</h3>
+                                                    <small class="text-muted" data-original-text="Warnings">Warnings</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 class="text-danger mb-0" id="errorRowsCount">2</h3>
+                                                    <small class="text-muted" data-original-text="Errors">Errors</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card text-center">
+                                                <div class="card-body">
+                                                    <h3 class="text-info mb-0" id="totalRowsCount">50</h3>
+                                                    <small class="text-muted" data-original-text="Total Rows">Total Rows</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Validation Issues -->
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0" data-original-text="Validation Issues">Validation Issues</h5>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="preview-table">
+                                                <div id="validationIssues">
+                                                    <!-- Issues will be generated here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Preview Table -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0" data-original-text="Data Preview">Data Preview</h5>
+                                            <small class="text-muted" data-original-text="First 10 rows of your data">First 10 rows of your data</small>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <div class="preview-table">
+                                                <table class="table table-sm mb-0" id="previewTable">
+                                                    <!-- Preview data will be generated here -->
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4: Import -->
+                                <div class="wizard-pane" id="step-4">
+                                    <div class="row">
+                                        <div class="col-lg-8 offset-lg-2">
+                                            <h4 class="mb-4" data-original-text="Import Progress">Import Progress</h4>
+                                            
+                                            <!-- Import Summary -->
+                                            <div class="card mb-4">
+                                                <div class="card-body">
+                                                    <div class="row text-center">
+                                                        <div class="col-3">
+                                                            <h4 class="text-success mb-0" id="importSuccessCount">0</h4>
+                                                            <small class="text-muted" data-original-text="Imported">Imported</small>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <h4 class="text-warning mb-0" id="importSkippedCount">0</h4>
+                                                            <small class="text-muted" data-original-text="Skipped">Skipped</small>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <h4 class="text-danger mb-0" id="importFailedCount">0</h4>
+                                                            <small class="text-muted" data-original-text="Failed">Failed</small>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <h4 class="text-info mb-0" id="importTotalCount">45</h4>
+                                                            <small class="text-muted" data-original-text="Total">Total</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Import Progress -->
+                                            <div class="import-progress">
+                                                <div class="progress mb-3">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                         id="importProgressBar" style="width: 0%"></div>
+                                                </div>
+                                                
+                                                <div id="importSteps">
+                                                    <div class="progress-step" id="step-validating">
+                                                        <i class="bi bi-hourglass-split step-icon"></i>
+                                                        <div class="step-text" data-original-text="Validating data...">Validating data...</div>
+                                                        <div class="step-status" data-original-text="Pending">Pending</div>
+                                                    </div>
+                                                    <div class="progress-step" id="step-processing">
+                                                        <i class="bi bi-hourglass-split step-icon"></i>
+                                                        <div class="step-text" data-original-text="Processing transactions...">Processing transactions...</div>
+                                                        <div class="step-status" data-original-text="Pending">Pending</div>
+                                                    </div>
+                                                    <div class="progress-step" id="step-notifications">
+                                                        <i class="bi bi-hourglass-split step-icon"></i>
+                                                        <div class="step-text" data-original-text="Sending notifications...">Sending notifications...</div>
+                                                        <div class="step-status" data-original-text="Pending">Pending</div>
+                                                    </div>
+                                                    <div class="progress-step" id="step-completion">
+                                                        <i class="bi bi-hourglass-split step-icon"></i>
+                                                        <div class="step-text" data-original-text="Finalizing import...">Finalizing import...</div>
+                                                        <div class="step-status" data-original-text="Pending">Pending</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Import Complete Message -->
+                                            <div id="importComplete" class="alert alert-success" style="display: none;">
+                                                <i class="bi bi-check-circle me-2"></i>
+                                                <strong data-original-text="Import Completed Successfully!">Import Completed Successfully!</strong>
+                                                <p class="mb-0 mt-2" data-original-text="Your transactions have been imported and are now available in the system.">Your transactions have been imported and are now available in the system.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Wizard Navigation -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;" onclick="previousStep()">
+                                    <span data-original-text="Previous">السابق</span> <i class="bi bi-arrow-right ms-1"></i>
+                                </button>
+                                <div class="ms-auto">
+                                    <button type="button" class="btn btn-outline-danger me-2" onclick="cancelImport()" id="cancelBtn">
+                                        <i class="bi bi-x-circle me-1"></i> <span data-original-text="Cancel">إلغاء</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()" disabled>
+                                        <i class="bi bi-arrow-left me-1"></i> <span data-original-text="Next">التالي</span>
+                                    </button>
+                                    <button type="button" class="btn btn-success" id="importBtn" style="display:none;" onclick="startImport()">
+                                        <i class="bi bi-upload me-1"></i> <span data-original-text="Start Import">بدء الاستيراد</span>
+                                    </button>
+                                    <a href="transactions.html" class="btn btn-primary" id="viewResultsBtn" style="display:none;">
+                                        <i class="bi bi-eye me-1"></i> <span data-original-text="View Results">View Results</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dashboard JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+
+    <script>
+        let currentStep = 1;
+        let uploadedFile = null;
+        let parsedData = [];
+        let columnMappings = {};
+        let validationResults = null;
+
+        // Sample system fields that can be mapped
+        const systemFields = [
+            { key: 'client_name', label: 'Client Name', required: true },
+            { key: 'transaction_type', label: 'Transaction Type', required: true },
+            { key: 'description', label: 'Description', required: false },
+            { key: 'priority', label: 'Priority', required: false },
+            { key: 'due_date', label: 'Due Date', required: false },
+            { key: 'external_id', label: 'External ID', required: false },
+            { key: 'project_id', label: 'Project ID', required: false },
+            { key: 'department', label: 'Department', required: false },
+            { key: 'assigned_to', label: 'Assigned To', required: false },
+            { key: 'tags', label: 'Tags', required: false }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFileUpload();
+            updateWizardUI();
+        });
+
+        function initializeFileUpload() {
+            const dropZone = document.getElementById('fileDropZone');
+            
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+            });
+            
+            // Handle dropped files
+            dropZone.addEventListener('drop', handleDrop, false);
+        }
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            // Validate file type
+            const allowedTypes = [
+                'text/csv',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+            
+            if (!allowedTypes.includes(file.type)) {
+                showNotification('Please select a CSV or Excel file.', 'error');
+                return;
+            }
+            
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                showNotification('File size must be less than 10MB.', 'error');
+                return;
+            }
+            
+            uploadedFile = file;
+            displayFileInfo(file);
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+            
+            showNotification('File uploaded successfully!', 'success');
+        }
+
+        function displayFileInfo(file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileRows').textContent = 'Analyzing...';
+            document.getElementById('fileInfo').style.display = 'block';
+            
+            // Simulate row detection
+            setTimeout(() => {
+                const estimatedRows = Math.floor(Math.random() * 200) + 50;
+                document.getElementById('fileRows').textContent = `${estimatedRows} rows detected`;
+            }, 1000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function clearFile() {
+            uploadedFile = null;
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function nextStep() {
+            if (currentStep < 4) {
+                // Process current step
+                if (currentStep === 1) {
+                    generateFieldMapping();
+                } else if (currentStep === 2) {
+                    validateMappings();
+                } else if (currentStep === 3) {
+                    prepareImport();
+                }
+                
+                // Mark current step as completed
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('completed');
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                currentStep++;
+                
+                // Mark new step as active
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('active');
+                
+                updateWizardUI();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                // Remove active from current step
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                currentStep--;
+                
+                // Mark previous step as active and remove completed status
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.remove('completed');
+                
+                updateWizardUI();
+            }
+        }
+
+        function updateWizardUI() {
+            // Hide all panes
+            document.querySelectorAll('.wizard-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // Show current pane
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'inline-block';
+            document.getElementById('nextBtn').style.display = currentStep === 4 ? 'none' : 'inline-block';
+            document.getElementById('importBtn').style.display = currentStep === 4 ? 'inline-block' : 'none';
+            document.getElementById('cancelBtn').style.display = currentStep === 4 ? 'none' : 'inline-block';
+            
+            // Disable next button on steps that require validation
+            if (currentStep === 2) {
+                document.getElementById('nextBtn').disabled = !validateAllMappings();
+            } else if (currentStep === 3) {
+                document.getElementById('nextBtn').disabled = (validationResults && validationResults.errors > 0);
+            } else {
+                document.getElementById('nextBtn').disabled = false;
+            }
+        }
+
+        function generateFieldMapping() {
+            // Simulate parsing file and detecting columns
+            const sampleColumns = [
+                { name: 'Client', sampleData: 'Ahmed Al-Rashid' },
+                { name: 'Type', sampleData: 'Document Review' },
+                { name: 'Description', sampleData: 'Technical specifications review' },
+                { name: 'Priority', sampleData: 'High' },
+                { name: 'Due Date', sampleData: '2024-01-20' },
+                { name: 'External Ref', sampleData: 'DOC-2024-001' },
+                { name: 'Project', sampleData: 'PRJ-001' }
+            ];
+            
+            const tbody = document.getElementById('mappingTableBody');
+            tbody.innerHTML = '';
+            
+            sampleColumns.forEach((column, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'mapping-row';
+                
+                // Auto-map based on column name similarity
+                const autoMappedField = autoMapField(column.name);
+                
+                tr.innerHTML = `
+                    <td class="fw-semibold">${column.name}</td>
+                    <td class="text-muted small">${column.sampleData}</td>
+                    <td>
+                        <select class="form-select form-select-sm" onchange="updateMapping('${column.name}', this.value)">
+                            <option value="">-- Skip this column --</option>
+                            ${systemFields.map(field => 
+                                `<option value="${field.key}" ${autoMappedField === field.key ? 'selected' : ''}>
+                                    ${field.label}${field.required ? ' *' : ''}
+                                </option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        ${autoMappedField && systemFields.find(f => f.key === autoMappedField)?.required ? 
+                          '<span class="badge bg-danger">Required</span>' : 
+                          '<span class="badge bg-secondary">Optional</span>'}
+                    </td>
+                    <td>
+                        <span class="badge ${autoMappedField ? 'bg-success' : 'bg-warning'}" id="status-${index}">
+                            ${autoMappedField ? 'Mapped' : 'Unmapped'}
+                        </span>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+                
+                // Store auto-mapping
+                if (autoMappedField) {
+                    columnMappings[column.name] = autoMappedField;
+                }
+            });
+        }
+
+        function autoMapField(columnName) {
+            const lowercaseName = columnName.toLowerCase();
+            
+            // Simple auto-mapping based on common column names
+            const mappings = {
+                'client': 'client_name',
+                'client name': 'client_name',
+                'customer': 'client_name',
+                'type': 'transaction_type',
+                'transaction type': 'transaction_type',
+                'category': 'transaction_type',
+                'description': 'description',
+                'desc': 'description',
+                'priority': 'priority',
+                'due date': 'due_date',
+                'duedate': 'due_date',
+                'deadline': 'due_date',
+                'external': 'external_id',
+                'external ref': 'external_id',
+                'reference': 'external_id',
+                'project': 'project_id',
+                'project id': 'project_id',
+                'department': 'department',
+                'dept': 'department',
+                'assigned': 'assigned_to',
+                'assignee': 'assigned_to',
+                'tags': 'tags'
+            };
+            
+            return mappings[lowercaseName] || null;
+        }
+
+        function updateMapping(columnName, fieldKey) {
+            if (fieldKey) {
+                columnMappings[columnName] = fieldKey;
+            } else {
+                delete columnMappings[columnName];
+            }
+            
+            // Update validation status
+            updateMappingValidation();
+            updateWizardUI();
+        }
+
+        function updateMappingValidation() {
+            // Check if all required fields are mapped
+            const mappedFields = Object.values(columnMappings);
+            const requiredFields = systemFields.filter(f => f.required).map(f => f.key);
+            const missingRequired = requiredFields.filter(field => !mappedFields.includes(field));
+            
+            // Update validation status display
+            // This would be implemented based on specific requirements
+        }
+
+        function validateAllMappings() {
+            const mappedFields = Object.values(columnMappings);
+            const requiredFields = systemFields.filter(f => f.required).map(f => f.key);
+            return requiredFields.every(field => mappedFields.includes(field));
+        }
+
+        function validateMappings() {
+            // Simulate data validation
+            validationResults = {
+                valid: 45,
+                warnings: 3,
+                errors: 2,
+                total: 50
+            };
+            
+            // Update validation summary
+            document.getElementById('validRowsCount').textContent = validationResults.valid;
+            document.getElementById('warningRowsCount').textContent = validationResults.warnings;
+            document.getElementById('errorRowsCount').textContent = validationResults.errors;
+            document.getElementById('totalRowsCount').textContent = validationResults.total;
+            
+            // Generate validation issues
+            generateValidationIssues();
+            
+            // Generate preview table
+            generatePreviewTable();
+        }
+
+        function generateValidationIssues() {
+            const issues = [
+                { type: 'error', row: 15, field: 'Client Name', message: 'Required field is empty' },
+                { type: 'error', row: 23, field: 'Due Date', message: 'Invalid date format' },
+                { type: 'warning', row: 8, field: 'Priority', message: 'Unknown priority value, will default to "Medium"' },
+                { type: 'warning', row: 12, field: 'Department', message: 'Department not found, will be created' },
+                { type: 'warning', row: 35, field: 'External ID', message: 'Duplicate external ID detected' }
+            ];
+            
+            const container = document.getElementById('validationIssues');
+            container.innerHTML = '';
+            
+            issues.forEach(issue => {
+                const div = document.createElement('div');
+                div.className = `p-3 border-bottom validation-${issue.type}`;
+                div.innerHTML = `
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-${issue.type === 'error' ? 'exclamation-circle text-danger' : 'exclamation-triangle text-warning'} me-2"></i>
+                        <div>
+                            <strong>Row ${issue.row}</strong> - ${issue.field}
+                            <div class="text-muted">${issue.message}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function generatePreviewTable() {
+            const sampleData = [
+                { client: 'Ahmed Al-Rashid', type: 'Document Review', priority: 'High', due_date: '2024-01-20' },
+                { client: 'Fatima Al-Zahrani', type: 'Approval Processing', priority: 'Medium', due_date: '2024-01-22' },
+                { client: 'Mohammed Al-Qahtani', type: 'Status Update', priority: 'Low', due_date: '2024-01-25' },
+                { client: 'Sara Al-Mutairi', type: 'Document Review', priority: 'High', due_date: '2024-01-18' },
+                { client: '', type: 'Approval Processing', priority: 'Medium', due_date: '2024-01-30' } // Error row
+            ];
+            
+            const table = document.getElementById('previewTable');
+            let html = `
+                <thead class="table-light">
+                    <tr>
+                        <th>Row</th>
+                        <th>Client</th>
+                        <th>Type</th>
+                        <th>Priority</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            sampleData.forEach((row, index) => {
+                const rowClass = !row.client ? 'validation-error' : '';
+                html += `
+                    <tr class="${rowClass}">
+                        <td>${index + 1}</td>
+                        <td>${row.client || '<span class="text-danger">Missing</span>'}</td>
+                        <td>${row.type}</td>
+                        <td>${row.priority}</td>
+                        <td>${row.due_date}</td>
+                        <td>
+                            ${!row.client ? 
+                                '<span class="badge bg-danger">Error</span>' : 
+                                '<span class="badge bg-success">Valid</span>'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function prepareImport() {
+            // Set import total count
+            document.getElementById('importTotalCount').textContent = validationResults.valid;
+        }
+
+        function startImport() {
+            // Hide import button and show progress
+            document.getElementById('importBtn').style.display = 'none';
+            
+            // Start import simulation
+            simulateImport();
+        }
+
+        function simulateImport() {
+            const steps = [
+                { id: 'step-validating', duration: 2000 },
+                { id: 'step-processing', duration: 5000 },
+                { id: 'step-notifications', duration: 1500 },
+                { id: 'step-completion', duration: 1000 }
+            ];
+            
+            let completed = 0;
+            let totalItems = validationResults.valid;
+            
+            function processStep(stepIndex) {
+                if (stepIndex >= steps.length) {
+                    // Import complete
+                    document.getElementById('importComplete').style.display = 'block';
+                    document.getElementById('viewResultsBtn').style.display = 'inline-block';
+                    document.getElementById('importProgressBar').style.width = '100%';
+                    document.getElementById('importProgressBar').classList.remove('progress-bar-animated');
+                    return;
+                }
+                
+                const step = steps[stepIndex];
+                const stepElement = document.getElementById(step.id);
+                
+                // Mark step as processing
+                stepElement.classList.add('processing');
+                stepElement.querySelector('.step-icon').className = 'bi bi-hourglass-split step-icon';
+                stepElement.querySelector('.step-status').textContent = 'Processing...';
+                
+                // Simulate progress during this step
+                const startProgress = (stepIndex / steps.length) * 100;
+                const endProgress = ((stepIndex + 1) / steps.length) * 100;
+                const progressIncrement = (endProgress - startProgress) / 20;
+                
+                let currentProgress = startProgress;
+                const progressInterval = setInterval(() => {
+                    currentProgress += progressIncrement;
+                    document.getElementById('importProgressBar').style.width = currentProgress + '%';
+                    
+                    // Update counters
+                    const itemsToUpdate = Math.floor((currentProgress / 100) * totalItems);
+                    document.getElementById('importSuccessCount').textContent = itemsToUpdate;
+                    
+                    if (currentProgress >= endProgress) {
+                        clearInterval(progressInterval);
+                        
+                        // Mark step as completed
+                        stepElement.classList.remove('processing');
+                        stepElement.classList.add('completed');
+                        stepElement.querySelector('.step-icon').className = 'bi bi-check-circle step-icon text-success';
+                        stepElement.querySelector('.step-status').textContent = 'Completed';
+                        
+                        // Process next step after a short delay
+                        setTimeout(() => processStep(stepIndex + 1), 500);
+                    }
+                }, step.duration / 20);
+            }
+            
+            // Start processing
+            processStep(0);
+        }
+
+        function cancelImport() {
+            if (confirm('Are you sure you want to cancel the import? All progress will be lost.')) {
+                window.location.href = 'transactions.html';
+            }
+        }
+
+        function downloadTemplate() {
+            // Generate CSV template content
+            const headers = systemFields.filter(f => f.required || f.key === 'description' || f.key === 'priority').map(f => f.label);
+            const sampleRow = ['Ahmed Al-Rashid', 'Document Review', 'Technical specifications review', 'High', '2024-01-20'];
+            
+            const csvContent = [
+                headers.join(','),
+                sampleRow.join(','),
+                // Add a few more sample rows
+                'Fatima Al-Zahrani,Approval Processing,Design approval workflow,Medium,2024-01-22',
+                'Mohammed Al-Qahtani,Status Update,Project milestone update,Low,2024-01-25'
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'transaction_import_template.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Template downloaded successfully!', 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            // Simple notification system
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const notification = document.createElement('div');
+            notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 100px; right: 20px; z-index: 1050; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

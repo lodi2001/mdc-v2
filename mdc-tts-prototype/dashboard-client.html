@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - MDC TTS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            2
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold">Ahmed Al-Rashid</div>
+                                <small class="text-muted">Client</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Welcome Section -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="Welcome, Ahmed Al-Rashid">مرحباً، أحمد الراشد</h2>
+                            <p class="text-muted mb-0" data-original-text="Here's an overview of your transactions and account status">إليك نظرة عامة على معاملاتك وحالة حسابك</p>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary">
+                                <i class="bi bi-download me-2"></i>
+                                <span data-original-text="Download Report">تحميل التقرير</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success-subtle">
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">8</h3>
+                                <p class="stat-label">Completed</p>
+                                <span class="stat-change text-muted">
+                                    <small>53% of total</small>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info-subtle">
+                                <i class="bi bi-clock-history text-info"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">4</h3>
+                                <p class="stat-label">In Progress</p>
+                                <span class="stat-change text-muted">
+                                    <small>27% of total</small>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning-subtle">
+                                <i class="bi bi-exclamation-circle text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">2</h3>
+                                <p class="stat-label">Pending</p>
+                                <span class="stat-change text-warning">
+                                    <small>Action needed</small>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary-subtle">
+                                <i class="bi bi-calendar-check text-primary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-value">1</h3>
+                                <p class="stat-label">Due This Week</p>
+                                <span class="stat-change text-primary">
+                                    <small>Jan 18, 2024</small>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Tables Row -->
+                <div class="row g-3">
+                    <!-- Recent Transactions - Full Width -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Recent Transactions</h5>
+                                <a href="my-transactions-client.html" class="btn btn-sm btn-link">View All</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th data-original-text="External ID">المعرف الخارجي</th>
+                                                <th data-original-text="Internal ID">المعرف الداخلي</th>
+                                                <th data-original-text="Type">النوع</th>
+                                                <th data-original-text="Description">الوصف</th>
+                                                <th data-original-text="Status">الحالة</th>
+                                                <th data-original-text="Creation Date">تاريخ الإنشاء</th>
+                                                <th data-original-text="Comments">التعليقات</th>
+                                                <th data-original-text="Actions">الإجراءات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>DOC-2024-001</td>
+                                                <td>TRX-001</td>
+                                                <td>Document Review</td>
+                                                <td>Project specifications</td>
+                                                <td><span class="badge bg-success">Completed</span></td>
+                                                <td>Jan 15, 2024</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="3 comments">
+                                                        <i class="bi bi-chat-dots"></i> 3
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-primary" title="Download">
+                                                            <i class="bi bi-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>APR-2024-002</td>
+                                                <td>TRX-002</td>
+                                                <td>Approval Request</td>
+                                                <td>Design phase approval</td>
+                                                <td><span class="badge bg-warning">Pending</span></td>
+                                                <td>Jan 15, 2024</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="1 comment">
+                                                        <i class="bi bi-chat-dots"></i> 1
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-primary" title="Download">
+                                                            <i class="bi bi-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>REV-2024-003</td>
+                                                <td>TRX-003</td>
+                                                <td>Revision Request</td>
+                                                <td>Drawing modifications</td>
+                                                <td><span class="badge bg-info">In Progress</span></td>
+                                                <td>Jan 14, 2024</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="No comments">
+                                                        <i class="bi bi-chat-dots"></i> 0
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-primary" title="Download">
+                                                            <i class="bi bi-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>SUB-2024-004</td>
+                                                <td>TRX-004</td>
+                                                <td>Submission</td>
+                                                <td>Final drawings</td>
+                                                <td><span class="badge bg-success">Completed</span></td>
+                                                <td>Jan 14, 2024</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="2 comments">
+                                                        <i class="bi bi-chat-dots"></i> 2
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-primary" title="Download">
+                                                            <i class="bi bi-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>REQ-2024-005</td>
+                                                <td>TRX-005</td>
+                                                <td>Information Request</td>
+                                                <td>Technical clarifications</td>
+                                                <td><span class="badge bg-primary">Approved</span></td>
+                                                <td>Jan 13, 2024</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-link p-0" data-bs-toggle="tooltip" title="5 comments">
+                                                        <i class="bi bi-chat-dots"></i> 5
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="View Details">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-primary" title="Download">
+                                                            <i class="bi bi-download"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row g-3 mt-5">
+                    <!-- Transaction Status -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Transaction Status</h5>
+                            </div>
+                            <div class="card-body py-3">
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 180px; height: 180px; margin: 0 auto;">
+                                        <canvas id="statusChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="d-flex flex-wrap justify-content-center gap-3" style="max-width: 320px;">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-success me-2" style="font-size: 10px;"></i>
+                                                <span class="small">Completed</span>
+                                                <span class="badge bg-light text-dark ms-1">8</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-info me-2" style="font-size: 10px;"></i>
+                                                <span class="small">In Progress</span>
+                                                <span class="badge bg-light text-dark ms-1">4</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-warning me-2" style="font-size: 10px;"></i>
+                                                <span class="small">Pending</span>
+                                                <span class="badge bg-light text-dark ms-1">2</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-circle-fill text-primary me-2" style="font-size: 10px;"></i>
+                                                <span class="small">Approved</span>
+                                                <span class="badge bg-light text-dark ms-1">1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Documents -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Recent Documents</h5>
+                                <a href="documents-client.html" class="btn btn-sm btn-link">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="document-list">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="document-icon bg-danger-subtle me-3">
+                                            <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <div class="fw-semibold">Drawing_Rev2_Jan2024.pdf</div>
+                                            <small class="text-muted">2.4 MB • Jan 15, 2024</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="document-icon bg-success-subtle me-3">
+                                            <i class="bi bi-file-earmark-excel text-success"></i>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <div class="fw-semibold">Report_Q4_2023.xlsx</div>
+                                            <small class="text-muted">1.8 MB • Jan 14, 2024</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="document-icon bg-primary-subtle me-3">
+                                            <i class="bi bi-file-earmark-text text-primary"></i>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <div class="fw-semibold">Contract_2024.docx</div>
+                                            <small class="text-muted">856 KB • Jan 13, 2024</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="document-icon bg-warning-subtle me-3">
+                                            <i class="bi bi-file-earmark-image text-warning"></i>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <div class="fw-semibold">Receipt_Scan.jpg</div>
+                                            <small class="text-muted">3.2 MB • Jan 12, 2024</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="row g-3 mt-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-bell me-2"></i>Recent Notifications
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <div class="notification-icon bg-success-subtle">
+                                                    <i class="bi bi-check-circle text-success"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Transaction Completed</h6>
+                                                <p class="mb-1 text-muted">Your transaction #TRX-2024-001 has been completed successfully.</p>
+                                                <small class="text-muted">2 hours ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item px-0">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <div class="notification-icon bg-warning-subtle">
+                                                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1">Approval Reminder</h6>
+                                                <p class="mb-1 text-muted">Approval for transaction #TRX-2024-002 is pending review.</p>
+                                                <small class="text-muted">1 day ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Document Icon Styles -->
+    <style>
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .document-icon i {
+            font-size: 20px;
+        }
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .notification-icon i {
+            font-size: 18px;
+        }
+    </style>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Dashboard JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/charts-client.js"></script>
+</body>
+</html>

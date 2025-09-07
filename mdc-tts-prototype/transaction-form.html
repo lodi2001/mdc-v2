@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Transaction - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <style>
+        .form-wizard {
+            margin-top: 20px;
+        }
+        
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .wizard-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 0;
+        }
+        
+        .wizard-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .wizard-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #e9ecef;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+        
+        .wizard-step.active .wizard-step-icon {
+            background: #1a5f3f;
+            border-color: #1a5f3f;
+            color: white;
+        }
+        
+        .wizard-step.completed .wizard-step-icon {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .wizard-step-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .wizard-step.active .wizard-step-label {
+            color: #1a5f3f;
+            font-weight: 600;
+        }
+        
+        .wizard-content {
+            min-height: 400px;
+        }
+        
+        .wizard-pane {
+            display: none;
+        }
+        
+        .wizard-pane.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .drag-drop-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .drag-drop-area:hover {
+            border-color: #1a5f3f;
+            background: #f0f8f4;
+        }
+        
+        .drag-drop-area.dragover {
+            border-color: #1a5f3f;
+            background: #e8f5ee;
+        }
+        
+        .file-list {
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .file-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-icon {
+            font-size: 24px;
+            color: #6c757d;
+        }
+        
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 6px;
+            display: none;
+            animation: slideUp 0.3s;
+            z-index: 1000;
+        }
+        
+        [dir="rtl"] .auto-save-indicator {
+            right: auto;
+            left: 20px;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .auto-save-indicator.show {
+            display: block;
+        }
+        
+        .qr-preview {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .summary-item {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+        
+        .summary-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .required-field::after {
+            content: ' *';
+            color: #dc3545;
+        }
+    </style>
+    
+    <!-- Language Detection Script - Must run immediately -->
+    <script>
+        (function() {
+            // Get saved language preference from localStorage
+            const savedLanguage = localStorage.getItem('language') || 'en';
+            
+            // Apply language settings immediately
+            document.documentElement.lang = savedLanguage;
+            document.documentElement.dir = savedLanguage === 'ar' ? 'rtl' : 'ltr';
+        })();
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">User</div>
+                                <small class="text-muted" id="userRole">Role</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title" data-original-text="Create Transaction">إنشاء معاملة</h2>
+                            <p class="text-muted mb-0" data-original-text="Fill in the required information to create a new transaction">املأ المعلومات المطلوبة لإنشاء معاملة جديدة</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-wizard">
+                                    <!-- Wizard Steps -->
+                                    <div class="wizard-steps">
+                                        <div class="wizard-step active" data-step="1">
+                                            <div class="wizard-step-icon">1</div>
+                                            <div class="wizard-step-label" data-key="step1">Basic Information</div>
+                                        </div>
+                                        <div class="wizard-step" data-step="2">
+                                            <div class="wizard-step-icon">2</div>
+                                            <div class="wizard-step-label" data-key="step2">Assignment & Schedule</div>
+                                        </div>
+                                        <div class="wizard-step" data-step="3">
+                                            <div class="wizard-step-icon">3</div>
+                                            <div class="wizard-step-label" data-key="step3">Attachments</div>
+                                        </div>
+                                        <div class="wizard-step" data-step="4">
+                                            <div class="wizard-step-icon">4</div>
+                                            <div class="wizard-step-label" data-key="step4">Review & Submit</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Wizard Content -->
+                                    <div class="wizard-content">
+                                        <!-- Step 1: Basic Information -->
+                                        <div class="wizard-pane active" id="step-1">
+                                            <h4 class="mb-4" data-translate="basicInfo">Basic Transaction Information</h4>
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label required-field" for="title" data-translate="transactionTitle">Transaction Title</label>
+                                                    <input type="text" class="form-control" id="title" placeholder="Enter transaction title" data-translate="enterTitle" required>
+                                                    <div class="invalid-feedback" data-translate="pleaseEnterTitle">Please enter a transaction title</div>
+                                                </div>
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label" for="externalId" data-translate="externalRef">External Reference ID</label>
+                                                    <input type="text" class="form-control" id="externalId" placeholder="e.g., REF-2024-XXXX" data-translate="enterExtRef">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <label class="form-label" for="description" data-translate="description">Description</label>
+                                                    <textarea class="form-control" id="description" rows="4" placeholder="Enter detailed description of the transaction" data-translate="enterDescription"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label required-field" for="clientName" data-translate="clientName">Client Name</label>
+                                                    <input type="text" class="form-control" id="clientName" placeholder="Enter client name" data-translate="enterClientName" required>
+                                                    <div class="invalid-feedback" data-translate="pleaseEnterClient">Please enter client name</div>
+                                                </div>
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label required-field" for="priority" data-translate="priority">Priority</label>
+                                                    <select class="form-select" id="priority" required>
+                                                        <option value="low" data-translate="low">Low</option>
+                                                        <option value="normal" selected data-translate="normal">Normal</option>
+                                                        <option value="high" data-translate="high">High</option>
+                                                        <option value="urgent" data-translate="urgent">Urgent</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label required-field" for="type" data-translate="transactionType">Transaction Type</label>
+                                                    <select class="form-select" id="type" required>
+                                                        <option value="" data-translate="selectType">Select type</option>
+                                                        <option value="document-review" data-translate="documentReview">Document Review</option>
+                                                        <option value="approval-request" data-translate="approvalRequest">Approval Request</option>
+                                                        <option value="submission" data-translate="submission">Submission</option>
+                                                        <option value="information-request" data-translate="informationRequest">Information Request</option>
+                                                        <option value="status-update" data-translate="statusUpdate">Status Update</option>
+                                                        <option value="task-assignment" data-translate="taskAssignment">Task Assignment</option>
+                                                        <option value="review-completed" data-translate="reviewCompleted">Review Completed</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label" for="category" data-translate="category">Category</label>
+                                                    <select class="form-select" id="category">
+                                                        <option value="" data-translate="selectCategory">Select category</option>
+                                                        <option value="architecture" data-translate="architecture">Architecture Design</option>
+                                                        <option value="engineering" data-translate="engineering">Engineering</option>
+                                                        <option value="construction" data-translate="construction">Construction</option>
+                                                        <option value="planning" data-translate="planning">Planning</option>
+                                                        <option value="consultation" data-translate="consultation">Consultation</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Step 2: Assignment & Schedule -->
+                                        <div class="wizard-pane" id="step-2">
+                                            <h4 class="mb-4" data-translate="assignment">Assignment & Scheduling</h4>
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label" for="assignTo" data-translate="assignTo">Assign To</label>
+                                                    <select class="form-select" id="assignTo">
+                                                        <option value="" data-translate="selectEditor">Select editor</option>
+                                                        <option value="ahmed">Ahmed Mohammed - Editor</option>
+                                                        <option value="sara">Sarah Ahmed - Editor</option>
+                                                        <option value="mohammed">Mohammed Ali - Editor</option>
+                                                        <option value="fatima">Fatima Hassan - Editor</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label" for="dueDate" data-translate="dueDate">Due Date</label>
+                                                    <input type="date" class="form-control" id="dueDate">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label" for="projectId" data-translate="projectId">Project ID</label>
+                                                    <input type="text" class="form-control" id="projectId" placeholder="Enter project ID (optional)" data-translate="enterProjectId">
+                                                </div>
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label class="form-label" for="department" data-translate="department">Department</label>
+                                                    <select class="form-select" id="department">
+                                                        <option value="" data-translate="selectDepartment">Select department</option>
+                                                        <option value="architecture" data-translate="architectureDept">Architecture</option>
+                                                        <option value="engineering" data-translate="engineeringDept">Engineering</option>
+                                                        <option value="legal" data-translate="legal">Legal</option>
+                                                        <option value="finance" data-translate="finance">Finance</option>
+                                                        <option value="operations" data-translate="operations">Operations</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <label class="form-label" for="tags" data-translate="tags">Tags</label>
+                                                    <input type="text" class="form-control" id="tags" placeholder="Enter tags separated by commas (e.g., urgent, review, phase-2)" data-translate="enterTags">
+                                                    <small class="text-muted" data-translate="tagsHelp">Tags help in searching and filtering transactions</small>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <label class="form-label" for="notes" data-translate="internalNotes">Internal Notes</label>
+                                                    <textarea class="form-control" id="notes" rows="3" placeholder="Enter internal notes (not visible to clients)" data-translate="enterNotes"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Step 3: Attachments -->
+                                        <div class="wizard-pane" id="step-3">
+                                            <h4 class="mb-4" data-translate="uploadAttach">Upload Attachments</h4>
+                                            <div class="drag-drop-area" id="dragDropArea">
+                                                <i class="bi bi-cloud-upload fs-1 text-muted mb-3"></i>
+                                                <p class="mb-2" data-translate="dragDrop">Drag and drop files here or click to browse</p>
+                                                <p class="small text-muted" data-translate="supportedFiles">Supported files: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (Max 10MB per file)</p>
+                                                <input type="file" id="fileInput" multiple hidden accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                                                <button class="btn btn-primary mt-3" onclick="document.getElementById('fileInput').click()">
+                                                    <i class="bi bi-folder-open me-2"></i> <span data-translate="browseFiles">Browse Files</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="file-list" id="fileList"></div>
+                                            
+                                            <div class="row mt-4">
+                                                <div class="col-12">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="clientVisible" checked>
+                                                        <label class="form-check-label" for="clientVisible">
+                                                            <span data-translate="makeVisible">Make attachments visible to client</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Step 4: Review & Submit -->
+                                        <div class="wizard-pane" id="step-4">
+                                            <h4 class="mb-4" data-translate="reviewDetails">Review Transaction Details</h4>
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="card mb-4">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title mb-3" data-translate="transactionSummary">Transaction Summary</h5>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="transactionId">Transaction ID</div>
+                                                                <div class="summary-value">TRX-2024-00234 <span data-translate="autoGenerated">(Auto-generated)</span></div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="title">Title</div>
+                                                                <div class="summary-value" id="summaryTitle">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="client">Client</div>
+                                                                <div class="summary-value" id="summaryClient">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="externalRefId">External Reference ID</div>
+                                                                <div class="summary-value" id="summaryExternalId">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="typeCategory">Type / Category</div>
+                                                                <div class="summary-value" id="summaryType">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="priority">Priority</div>
+                                                                <div class="summary-value" id="summaryPriority">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="assignedTo">Assigned To</div>
+                                                                <div class="summary-value" id="summaryAssigned">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="dueDate">Due Date</div>
+                                                                <div class="summary-value" id="summaryDueDate">-</div>
+                                                            </div>
+                                                            <div class="summary-item">
+                                                                <div class="summary-label" data-translate="attachments">Attachments</div>
+                                                                <div class="summary-value" id="summaryFiles">0 files</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title mb-3" data-translate="qrPreview">QR Code Preview</h5>
+                                                            <div class="qr-preview">
+                                                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TRX-2024-00234" alt="QR Code">
+                                                                <p class="small text-muted mt-2" data-translate="autoGeneratedQr">Auto-generated QR Code</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Wizard Navigation -->
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">
+                                            <span data-translate="previous" data-original-text="Previous">السابق</span> <i class="bi bi-arrow-right ms-1"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary ms-auto me-2" id="saveDraftBtn">
+                                            <i class="bi bi-save me-1"></i> <span data-translate="saveAsDraft" data-original-text="Save as Draft">حفظ كمسودة</span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="nextBtn">
+                                            <i class="bi bi-arrow-left me-1"></i> <span data-translate="next" data-original-text="Next">التالي</span>
+                                        </button>
+                                        <button type="button" class="btn btn-success" id="submitBtn" style="display:none;">
+                                            <i class="bi bi-check-circle me-1"></i> <span data-translate="submitTransaction" data-original-text="Submit Transaction">إنشاء المعاملة</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auto-save Indicator -->
+    <div class="auto-save-indicator" id="autoSaveIndicator">
+        <i class="bi bi-check-circle me-2"></i> <span data-translate="draftSaved">Draft saved automatically</span>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/transaction-form-translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Transaction Form Wizard JavaScript
+        let currentStep = 1;
+        const totalSteps = 4;
+        let uploadedFiles = [];
+        let formData = {};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize form
+            initializeWizard();
+            initializeFileUpload();
+            initializeAutoSave();
+            
+            // Navigation buttons
+            document.getElementById('nextBtn').addEventListener('click', nextStep);
+            document.getElementById('prevBtn').addEventListener('click', prevStep);
+            document.getElementById('submitBtn').addEventListener('click', submitTransaction);
+            document.getElementById('saveDraftBtn').addEventListener('click', saveDraft);
+        });
+
+        function initializeWizard() {
+            updateWizardUI();
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                saveStepData(currentStep);
+                
+                if (currentStep < totalSteps) {
+                    // Mark current step as completed
+                    document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('completed');
+                    document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.remove('active');
+                    
+                    currentStep++;
+                    
+                    // Mark new step as active
+                    document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('active');
+                    
+                    // Update content
+                    updateWizardUI();
+                    
+                    // Update summary if on last step
+                    if (currentStep === totalSteps) {
+                        updateSummary();
+                    }
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                saveStepData(currentStep);
+                
+                // Remove active from current step
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                currentStep--;
+                
+                // Mark previous step as active
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.remove('completed');
+                
+                updateWizardUI();
+            }
+        }
+
+        function updateWizardUI() {
+            // Hide all panes
+            document.querySelectorAll('.wizard-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // Show current pane
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'inline-block';
+            document.getElementById('nextBtn').style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+            document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+            document.getElementById('saveDraftBtn').style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+            const currentPane = document.getElementById(`step-${step}`);
+            
+            // Clear previous validation
+            currentPane.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+            
+            if (step === 1) {
+                // Validate required fields in step 1
+                const title = document.getElementById('title');
+                const clientName = document.getElementById('clientName');
+                const type = document.getElementById('type');
+                
+                if (!title.value.trim()) {
+                    title.classList.add('is-invalid');
+                    isValid = false;
+                }
+                if (!clientName.value.trim()) {
+                    clientName.classList.add('is-invalid');
+                    isValid = false;
+                }
+                if (!type.value) {
+                    type.classList.add('is-invalid');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+
+        function saveStepData(step) {
+            if (step === 1) {
+                formData.title = document.getElementById('title').value;
+                formData.externalId = document.getElementById('externalId').value;
+                formData.description = document.getElementById('description').value;
+                formData.clientName = document.getElementById('clientName').value;
+                formData.type = document.getElementById('type').value;
+                formData.category = document.getElementById('category').value;
+                formData.priority = document.getElementById('priority').value;
+            } else if (step === 2) {
+                formData.assignTo = document.getElementById('assignTo').value;
+                formData.dueDate = document.getElementById('dueDate').value;
+                formData.projectId = document.getElementById('projectId').value;
+                formData.department = document.getElementById('department').value;
+                formData.tags = document.getElementById('tags').value;
+                formData.notes = document.getElementById('notes').value;
+            } else if (step === 3) {
+                formData.files = uploadedFiles;
+                formData.clientVisible = document.getElementById('clientVisible').checked;
+            }
+        }
+
+        function updateSummary() {
+            document.getElementById('summaryTitle').textContent = formData.title || '-';
+            document.getElementById('summaryClient').textContent = formData.clientName || '-';
+            document.getElementById('summaryExternalId').textContent = formData.externalId || 'Not provided';
+            document.getElementById('summaryType').textContent = formData.type && formData.category ? `${formData.type} / ${formData.category}` : '-';
+            document.getElementById('summaryPriority').textContent = formData.priority || 'Normal';
+            
+            const assignToSelect = document.getElementById('assignTo');
+            const selectedOption = assignToSelect.options[assignToSelect.selectedIndex];
+            document.getElementById('summaryAssigned').textContent = selectedOption.text || 'Not assigned';
+            
+            document.getElementById('summaryDueDate').textContent = formData.dueDate || 'Not set';
+            document.getElementById('summaryFiles').textContent = `${uploadedFiles.length} file(s)`;
+        }
+
+        function initializeFileUpload() {
+            const dragDropArea = document.getElementById('dragDropArea');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, () => dragDropArea.classList.add('dragover'), false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, () => dragDropArea.classList.remove('dragover'), false);
+            });
+            
+            // Handle dropped files
+            dragDropArea.addEventListener('drop', handleDrop, false);
+            
+            // Handle file input change
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            [...files].forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+            // Check file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size exceeds 10MB limit');
+                return;
+            }
+            
+            // Check file type
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                  'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                  'image/jpeg', 'image/png'];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('File type not supported');
+                return;
+            }
+            
+            // Add file to uploaded files
+            uploadedFiles.push(file);
+            
+            // Display file in list
+            displayFile(file);
+        }
+
+        function displayFile(file) {
+            const fileList = document.getElementById('fileList');
+            
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            let icon = 'bi-file-earmark';
+            if (file.type.includes('pdf')) icon = 'bi-file-earmark-pdf';
+            else if (file.type.includes('word')) icon = 'bi-file-earmark-word';
+            else if (file.type.includes('excel')) icon = 'bi-file-earmark-excel';
+            else if (file.type.includes('image')) icon = 'bi-file-earmark-image';
+            
+            fileItem.innerHTML = `
+                <div class="file-item-info">
+                    <i class="bi ${icon} file-icon"></i>
+                    <div>
+                        <div class="fw-semibold">${file.name}</div>
+                        <small class="text-muted">${(file.size / 1024).toFixed(2)} KB</small>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline-danger" onclick="removeFile('${file.name}')">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+            
+            // Refresh file list display
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            uploadedFiles.forEach(displayFile);
+        }
+
+        function initializeAutoSave() {
+            // Auto-save every 30 seconds
+            setInterval(() => {
+                if (currentStep < totalSteps) { // Don't auto-save on review step
+                    saveStepData(currentStep);
+                    showAutoSaveIndicator();
+                }
+            }, 30000);
+        }
+
+        function showAutoSaveIndicator() {
+            const indicator = document.getElementById('autoSaveIndicator');
+            indicator.classList.add('show');
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 3000);
+        }
+
+        function saveDraft() {
+            saveStepData(currentStep);
+            // In real implementation, this would save to backend
+            console.log('Saving draft:', formData);
+            alert('Draft saved successfully!');
+        }
+
+        function submitTransaction() {
+            saveStepData(currentStep);
+            // In real implementation, this would submit to backend
+            console.log('Submitting transaction:', formData);
+            
+            if (confirm('Are you sure you want to submit this transaction?')) {
+                alert('Transaction submitted successfully!');
+                // Redirect to transactions list or detail page
+                window.location.href = 'transactions.html';
+            }
+        }
+    </script>
+</body>
+</html>

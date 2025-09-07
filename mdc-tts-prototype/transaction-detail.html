@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Details - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <style>
+        /* Timeline styles removed - not shown to clients for privacy */
+        
+        .attachment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .attachment-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .attachment-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .attachment-icon {
+            font-size: 48px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        
+        .attachment-name {
+            font-size: 12px;
+            word-break: break-word;
+        }
+        
+        .comment-thread {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .comment-item {
+            border-left: 3px solid #e9ecef;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        [dir="rtl"] .comment-item {
+            border-left: none;
+            border-right: 3px solid #e9ecef;
+            padding-left: 0;
+            padding-right: 15px;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .qr-code-container img {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        
+        @media print {
+            .sidebar, .header, .no-print {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">User</div>
+                                <small class="text-muted" id="userRole">Role</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard-editor.html">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="transactions.html">
+                            <i class="bi bi-receipt"></i>
+                            <span>Transactions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transaction-form.html">
+                            <i class="bi bi-plus-square"></i>
+                            <span>Create New</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="assigned-tasks.html">
+                            <i class="bi bi-list-task"></i>
+                            <span>Assigned Transactions</span>
+                            <span class="badge bg-warning ms-auto">12</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="import-wizard.html">
+                            <i class="bi bi-upload"></i>
+                            <span>Bulk Import</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.html">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid">
+                <!-- Transaction Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-lg-8">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <h2 class="h4 mb-0">Transaction #TRX-2024-001</h2>
+                                            <span class="badge bg-warning">Pending Review</span>
+                                            <span class="badge bg-danger">High Priority</span>
+                                        </div>
+                                        <p class="text-muted mb-0 mt-2">Architecture Design Phase 2 - Technical Specifications</p>
+                                    </div>
+                                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 no-print">
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil me-1"></i> Edit
+                                            </button>
+                                            <button class="btn btn-outline-success">
+                                                <i class="bi bi-check-circle me-1"></i> Update Status
+                                            </button>
+                                            <button class="btn btn-outline-secondary" onclick="window.print()">
+                                                <i class="bi bi-printer me-1"></i> Print
+                                            </button>
+                                            <button class="btn btn-outline-secondary">
+                                                <i class="bi bi-download me-1"></i> Export
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-lg-8">
+                        <!-- Transaction Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Transaction Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">External ID</label>
+                                        <p class="fw-semibold">REF-2024-8834</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Internal ID</label>
+                                        <p class="fw-semibold">TRX-2024-001</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Client Name</label>
+                                        <p class="fw-semibold">شركة التطوير المعماري</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Priority</label>
+                                        <p class="fw-semibold"><span class="badge bg-danger">High Priority</span></p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Type</label>
+                                        <p class="fw-semibold">Document Review</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Category</label>
+                                        <p class="fw-semibold">Architecture Design</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Created Date</label>
+                                        <p class="fw-semibold">Jan 15, 2024 10:30 AM</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-muted small">Due Date</label>
+                                        <p class="fw-semibold text-danger">Jan 25, 2024</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="text-muted small">Description</label>
+                                        <p>Review and approval of architectural design phase 2 including technical specifications, structural details, and implementation guidelines. This transaction requires thorough technical review and compliance verification before final approval.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comments Thread -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Comments</h5>
+                                <span class="badge bg-secondary">3</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="comment-thread">
+                                    <div class="comment-item">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <strong>سارة أحمد</strong>
+                                            <small class="text-muted">Jan 15, 2024 11:30 AM</small>
+                                        </div>
+                                        <p class="mb-0">Please review the technical specifications carefully. Pay special attention to sections 3.2 and 4.1.</p>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <strong>أحمد محمد</strong>
+                                            <small class="text-muted">Jan 16, 2024 10:00 AM</small>
+                                        </div>
+                                        <p class="mb-0">I've started reviewing the documents. Found some minor issues in section 3.2 that need clarification.</p>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <strong>Client - شركة التطوير</strong>
+                                            <small class="text-muted">Jan 16, 2024 02:00 PM</small>
+                                        </div>
+                                        <p class="mb-0">We've uploaded the revised specifications addressing the points mentioned. Please check the new attachment.</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Add a comment...">
+                                        <button class="btn btn-primary">
+                                            <i class="bi bi-send"></i> Send
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attachments -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Attachments</h5>
+                                <button class="btn btn-sm btn-primary no-print">
+                                    <i class="bi bi-upload me-1"></i> Upload
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="attachment-grid">
+                                    <div class="attachment-item">
+                                        <i class="bi bi-file-earmark-pdf attachment-icon text-danger"></i>
+                                        <div class="attachment-name">Technical_Specs_v2.pdf</div>
+                                        <small class="text-muted">2.5 MB</small>
+                                    </div>
+                                    <div class="attachment-item">
+                                        <i class="bi bi-file-earmark-pdf attachment-icon text-danger"></i>
+                                        <div class="attachment-name">Architecture_Design.pdf</div>
+                                        <small class="text-muted">4.8 MB</small>
+                                    </div>
+                                    <div class="attachment-item">
+                                        <i class="bi bi-file-earmark-word attachment-icon text-primary"></i>
+                                        <div class="attachment-name">Project_Details.docx</div>
+                                        <small class="text-muted">1.2 MB</small>
+                                    </div>
+                                    <div class="attachment-item">
+                                        <i class="bi bi-file-earmark-excel attachment-icon text-success"></i>
+                                        <div class="attachment-name">Cost_Analysis.xlsx</div>
+                                        <small class="text-muted">856 KB</small>
+                                    </div>
+                                    <div class="attachment-item">
+                                        <i class="bi bi-file-earmark-image attachment-icon text-info"></i>
+                                        <div class="attachment-name">Site_Plan.jpg</div>
+                                        <small class="text-muted">3.2 MB</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-lg-4">
+                        <!-- QR Code -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">QR Code</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="qr-code-container">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TRX-2024-001" alt="QR Code">
+                                    <p class="mb-0 small text-muted">Scan to view transaction details</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card mb-4 no-print">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Quick Actions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success">
+                                        <i class="bi bi-check-circle me-1"></i> Approve Transaction
+                                    </button>
+                                    <button class="btn btn-warning">
+                                        <i class="bi bi-arrow-return-left me-1"></i> Request Revision
+                                    </button>
+                                    <button class="btn btn-info">
+                                        <i class="bi bi-pause-circle me-1"></i> Put On Hold
+                                    </button>
+                                    <button class="btn btn-danger">
+                                        <i class="bi bi-x-circle me-1"></i> Reject Transaction
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audit Trail -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Recent Activity</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="activity-list">
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-upload text-primary me-2"></i>
+                                        <div class="flex-grow-1">
+                                            <small class="d-block">File uploaded</small>
+                                            <small class="text-muted">2 hours ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-chat text-info me-2"></i>
+                                        <div class="flex-grow-1">
+                                            <small class="d-block">Comment added</small>
+                                            <small class="text-muted">4 hours ago</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mb-3">
+                                        <i class="bi bi-pencil text-warning me-2"></i>
+                                        <div class="flex-grow-1">
+                                            <small class="d-block">Status updated</small>
+                                            <small class="text-muted">Yesterday</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Transaction Detail Specific JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Handle attachment clicks
+            document.querySelectorAll('.attachment-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // In real implementation, this would open file preview
+                    console.log('Opening attachment:', this.querySelector('.attachment-name').textContent);
+                });
+            });
+
+            // Handle status update buttons
+            document.querySelectorAll('.btn-success, .btn-warning, .btn-info, .btn-danger').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.closest('.card-body')) {
+                        const action = this.textContent.trim();
+                        if (confirm(`Are you sure you want to: ${action}?`)) {
+                            // In real implementation, this would call API
+                            console.log('Action:', action);
+                        }
+                    }
+                });
+            });
+
+            // Handle comment submission
+            const commentInput = document.querySelector('.input-group input');
+            const commentBtn = document.querySelector('.input-group .btn-primary');
+            
+            if (commentBtn) {
+                commentBtn.addEventListener('click', function() {
+                    if (commentInput.value.trim()) {
+                        // In real implementation, this would save comment
+                        console.log('New comment:', commentInput.value);
+                        commentInput.value = '';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

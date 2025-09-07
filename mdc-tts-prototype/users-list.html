@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Left Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-dark p-0 d-lg-none" id="sidebarToggle">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div class="logo">
+                        <img src="MDC-logo-Black.png" alt="MDC Logo" height="40">
+                    </div>
+                    <h1 class="h5 mb-0 text-muted d-none d-md-block">Transaction Tracking System</h1>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search -->
+                    <div class="search-box d-none d-md-block">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search transactions...">
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <button class="btn btn-link text-dark p-2 position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            5
+                        </span>
+                    </button>
+                    
+                    <!-- Language Toggle -->
+                    <div class="language-toggle">
+                        <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
+                        <button class="btn btn-sm btn-outline-secondary active" data-lang="ar">AR</button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark p-0 d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle fs-3"></i>
+                            </div>
+                            <div class="text-start d-none d-lg-block">
+                                <div class="fw-semibold" id="userName">User</div>
+                                <small class="text-muted" id="userRole">Role</small>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="index.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        <!-- Sidebar will be inserted here by sidebar.js -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container-fluid p-4">
+                <!-- Page Header with Actions -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 data-original-text="User Management">User Management</h2>
+                        <p class="text-muted" data-original-text="Manage system users, roles, and permissions">Manage system users, roles, and permissions</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            <span data-original-text="Add New User">Add New User</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Total Users">Total Users</h6>
+                                <h3 class="mb-0">147</h3>
+                                <small class="text-success">
+                                    <i class="bi bi-arrow-up"></i> 12%
+                                    <span data-original-text="from last month">from last month</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Active Users">Active Users</h6>
+                                <h3 class="mb-0">128</h3>
+                                <small class="text-muted">87% <span data-original-text="of total">of total</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Editors">Editors</h6>
+                                <h3 class="mb-0">42</h3>
+                                <small class="text-muted">29% <span data-original-text="of total">of total</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted mb-2" data-original-text="Clients">Clients</h6>
+                                <h3 class="mb-0">98</h3>
+                                <small class="text-muted">67% <span data-original-text="of total">of total</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters and Search -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label" data-original-text="Search users">Search users</label>
+                                <input type="text" class="form-control" placeholder="Search by name or email..." data-placeholder-ar="البحث بالاسم أو البريد الإلكتروني..." data-placeholder-en="Search by name or email...">
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-2">
+                                <label class="form-label" data-original-text="Role">Role</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Roles">All Roles</option>
+                                    <option value="admin" data-original-text="Admin">Admin</option>
+                                    <option value="editor" data-original-text="Editor">Editor</option>
+                                    <option value="client" data-original-text="Client">Client</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-2">
+                                <label class="form-label" data-original-text="Status">Status</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Status">All Status</option>
+                                    <option value="active" data-original-text="Active">Active</option>
+                                    <option value="inactive" data-original-text="Inactive">Inactive</option>
+                                    <option value="suspended" data-original-text="Suspended">Suspended</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-2">
+                                <label class="form-label" data-original-text="Department">Department</label>
+                                <select class="form-select">
+                                    <option value="" data-original-text="All Departments">All Departments</option>
+                                    <option value="engineering" data-original-text="Engineering">Engineering</option>
+                                    <option value="operations" data-original-text="Operations">Operations</option>
+                                    <option value="management" data-original-text="Management">Management</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-2">
+                                <button class="btn btn-outline-success w-100">
+                                    <i class="bi bi-funnel me-2"></i>
+                                    <span data-original-text="Apply Filters">Apply Filters</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-mobile-card">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" class="form-check-input">
+                                        </th>
+                                        <th data-original-text="Name">Name</th>
+                                        <th data-original-text="Email">Email</th>
+                                        <th data-original-text="Role">Role</th>
+                                        <th data-original-text="Department">Department</th>
+                                        <th data-original-text="Status">Status</th>
+                                        <th data-original-text="Last Active">Last Active</th>
+                                        <th data-original-text="Actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td data-label=""><input type="checkbox" class="form-check-input"></td>
+                                        <td data-label="Name">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    SA
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold" data-original-text="System Administrator">System Administrator</div>
+                                                    <small class="text-muted">ID: USR001</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Email">admin@mdc.com</td>
+                                        <td><span class="badge bg-danger" data-original-text="Admin">Admin</span></td>
+                                        <td data-label="Department" data-original-text="Management">Management</td>
+                                        <td><span class="badge bg-success" data-original-text="Active">Active</span></td>
+                                        <td data-original-text="2 hours ago">2 hours ago</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Edit"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Reset Password"><i class="bi bi-key me-2"></i>Reset Password</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Permissions"><i class="bi bi-shield-lock me-2"></i>Permissions</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" data-original-text="Delete"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label=""><input type="checkbox" class="form-check-input"></td>
+                                        <td data-label="Name">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    JE
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold" data-original-text="John Editor">John Editor</div>
+                                                    <small class="text-muted">ID: USR002</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Email">editor@mdc.com</td>
+                                        <td><span class="badge bg-info" data-original-text="Editor">Editor</span></td>
+                                        <td data-label="Department" data-original-text="Engineering">Engineering</td>
+                                        <td><span class="badge bg-success" data-original-text="Active">Active</span></td>
+                                        <td data-original-text="5 hours ago">5 hours ago</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Edit"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Reset Password"><i class="bi bi-key me-2"></i>Reset Password</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Permissions"><i class="bi bi-shield-lock me-2"></i>Permissions</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" data-original-text="Delete"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label=""><input type="checkbox" class="form-check-input"></td>
+                                        <td data-label="Name">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    AR
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold" data-original-text="Ahmed Al-Rashid">Ahmed Al-Rashid</div>
+                                                    <small class="text-muted">ID: USR003</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Email">client@mdc.com</td>
+                                        <td><span class="badge bg-secondary" data-original-text="Client">Client</span></td>
+                                        <td data-label="Department" data-original-text="External">External</td>
+                                        <td><span class="badge bg-success" data-original-text="Active">Active</span></td>
+                                        <td data-original-text="1 day ago">1 day ago</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Edit"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Reset Password"><i class="bi bi-key me-2"></i>Reset Password</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Permissions"><i class="bi bi-shield-lock me-2"></i>Permissions</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" data-original-text="Delete"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label=""><input type="checkbox" class="form-check-input"></td>
+                                        <td data-label="Name">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    SM
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold" data-original-text="Sarah Mitchell">Sarah Mitchell</div>
+                                                    <small class="text-muted">ID: USR004</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Email">sarah.mitchell@mdc.com</td>
+                                        <td><span class="badge bg-info" data-original-text="Editor">Editor</span></td>
+                                        <td data-label="Department" data-original-text="Operations">Operations</td>
+                                        <td><span class="badge bg-success" data-original-text="Active">Active</span></td>
+                                        <td data-original-text="3 hours ago">3 hours ago</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Edit"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Reset Password"><i class="bi bi-key me-2"></i>Reset Password</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Permissions"><i class="bi bi-shield-lock me-2"></i>Permissions</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" data-original-text="Delete"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td data-label=""><input type="checkbox" class="form-check-input"></td>
+                                        <td data-label="Name">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    MK
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold" data-original-text="Mohammed Khalid">Mohammed Khalid</div>
+                                                    <small class="text-muted">ID: USR005</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Email">mkhalid@company.com</td>
+                                        <td><span class="badge bg-secondary" data-original-text="Client">Client</span></td>
+                                        <td data-label="Department" data-original-text="External">External</td>
+                                        <td><span class="badge bg-warning" data-original-text="Inactive">Inactive</span></td>
+                                        <td data-original-text="1 week ago">1 week ago</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Edit"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Reset Password"><i class="bi bi-key me-2"></i>Reset Password</a></li>
+                                                    <li><a class="dropdown-item" href="#" data-original-text="Permissions"><i class="bi bi-shield-lock me-2"></i>Permissions</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" data-original-text="Delete"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <span class="text-muted" data-original-text="Showing 1-5 of 147 users">Showing 1-5 of 147 users</span>
+                            </div>
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" data-original-text="Previous">Previous</a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">3</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" data-original-text="Next">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-original-text="Add New User">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="First Name">First Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Last Name">Last Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Email">Email</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Phone">Phone</label>
+                                <input type="tel" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Role">Role</label>
+                                <select class="form-select" required>
+                                    <option value="" data-original-text="Select role...">Select role...</option>
+                                    <option value="admin" data-original-text="Admin">Admin</option>
+                                    <option value="editor" data-original-text="Editor">Editor</option>
+                                    <option value="client" data-original-text="Client">Client</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" data-original-text="Department">Department</label>
+                                <select class="form-select">
+                                    <option value="">Select department...</option>
+                                    <option value="engineering">Engineering</option>
+                                    <option value="operations">Operations</option>
+                                    <option value="management">Management</option>
+                                    <option value="external">External</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-original-text="Temporary Password">Temporary Password</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="tempPassword" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="generatePassword()">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                    <span data-original-text="Generate">Generate</span>
+                                </button>
+                            </div>
+                            <small class="text-muted" data-original-text="User will be required to change password on first login">User will be required to change password on first login</small>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sendWelcomeEmail" checked>
+                                <label class="form-check-label" for="sendWelcomeEmail" data-original-text="Send welcome email with login credentials">
+                                    Send welcome email with login credentials
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span data-original-text="Cancel">Cancel</span>
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        <span data-original-text="Add User">Add User</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/translations.js"></script>
+    <script src="js/sidebar.js?v=4.0"></script>
+    <script src="js/dashboard.js"></script>
+    
+    <script>
+        // Generate random password
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('tempPassword').value = password;
+        }
+        
+        // Generate initial password on modal open
+        document.getElementById('addUserModal').addEventListener('show.bs.modal', function() {
+            generatePassword();
+        });
+        
+        // Style for avatars
+        const style = document.createElement('style');
+        style.textContent = `
+            .avatar-sm {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
