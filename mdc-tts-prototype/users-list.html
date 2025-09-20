@@ -50,6 +50,14 @@
                         </span>
                     </button>
                     
+                    <!-- Pending Registrations -->
+                    <button class="btn btn-link text-dark p-2 position-relative" data-bs-toggle="modal" data-bs-target="#pendingRegistrationsModal">
+                        <i class="bi bi-person-plus fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning" id="pendingCount">
+                            3
+                        </span>
+                    </button>
+                    
                     <!-- Language Toggle -->
                     <div class="language-toggle">
                         <button class="btn btn-sm btn-outline-secondary" data-lang="en">EN</button>
@@ -142,6 +150,19 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Pending Registrations Alert -->
+                <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="flex-grow-1">
+                        <strong data-original-text="Pending Registrations">Pending Registrations</strong>
+                        <span data-original-text="You have 3 user registrations awaiting approval.">You have 3 user registrations awaiting approval.</span>
+                    </div>
+                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#pendingRegistrationsModal">
+                        <i class="bi bi-eye me-1"></i>
+                        <span data-original-text="Review">Review</span>
+                    </button>
                 </div>
 
                 <!-- Filters and Search -->
@@ -493,6 +514,215 @@
         </div>
     </div>
 
+    <!-- Pending Registrations Modal -->
+    <div class="modal fade" id="pendingRegistrationsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-plus me-2"></i>
+                        <span data-original-text="Pending User Registrations">Pending User Registrations</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th data-original-text="Registration Date">Registration Date</th>
+                                    <th data-original-text="Full Name">Full Name</th>
+                                    <th data-original-text="Email">Email</th>
+                                    <th data-original-text="Company">Company</th>
+                                    <th data-original-text="Phone">Phone</th>
+                                    <th data-original-text="National ID">National ID</th>
+                                    <th data-original-text="Actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="pending-user-1">
+                                    <td>
+                                        <small class="text-muted">2024-01-15 14:30</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                MA
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">Mohammed Ali</div>
+                                                <small class="text-muted">Pending Approval</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>mohammed.ali@company.com</span>
+                                        <div><small class="text-success"><i class="bi bi-check-circle"></i> Verified</small></div>
+                                    </td>
+                                    <td>
+                                        <div>Al-Fahd Trading Company</div>
+                                        <small class="text-muted">Trading & Logistics</small>
+                                    </td>
+                                    <td>+966501234567</td>
+                                    <td>
+                                        <span class="font-monospace">1234567890</span>
+                                        <div><small class="text-muted">Commercial Reg.</small></div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-success btn-sm" onclick="approveUser('pending-user-1', 'Mohammed Ali')">
+                                                <i class="bi bi-check-lg"></i>
+                                                <span data-original-text="Approve">Approve</span>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#userDetailModal" onclick="viewUserDetails('pending-user-1')">
+                                                <i class="bi bi-eye"></i>
+                                                <span data-original-text="View">View</span>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="rejectUser('pending-user-1', 'Mohammed Ali')">
+                                                <i class="bi bi-x-lg"></i>
+                                                <span data-original-text="Reject">Reject</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="pending-user-2">
+                                    <td>
+                                        <small class="text-muted">2024-01-14 09:15</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                SF
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">Sarah Fatima</div>
+                                                <small class="text-muted">Pending Approval</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>sarah.fatima@techcorp.sa</span>
+                                        <div><small class="text-warning"><i class="bi bi-clock"></i> Pending Verification</small></div>
+                                    </td>
+                                    <td>
+                                        <div>TechCorp Solutions</div>
+                                        <small class="text-muted">IT Services</small>
+                                    </td>
+                                    <td>+966507654321</td>
+                                    <td>
+                                        <span class="font-monospace">9876543210</span>
+                                        <div><small class="text-muted">National ID</small></div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-success btn-sm" onclick="approveUser('pending-user-2', 'Sarah Fatima')">
+                                                <i class="bi bi-check-lg"></i>
+                                                <span data-original-text="Approve">Approve</span>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#userDetailModal" onclick="viewUserDetails('pending-user-2')">
+                                                <i class="bi bi-eye"></i>
+                                                <span data-original-text="View">View</span>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="rejectUser('pending-user-2', 'Sarah Fatima')">
+                                                <i class="bi bi-x-lg"></i>
+                                                <span data-original-text="Reject">Reject</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr id="pending-user-3">
+                                    <td>
+                                        <small class="text-muted">2024-01-13 16:45</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                AH
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">Ahmed Hassan</div>
+                                                <small class="text-muted">Pending Approval</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>ahmed.hassan@buildco.sa</span>
+                                        <div><small class="text-success"><i class="bi bi-check-circle"></i> Verified</small></div>
+                                    </td>
+                                    <td>
+                                        <div>BuildCo Construction</div>
+                                        <small class="text-muted">Construction</small>
+                                    </td>
+                                    <td>+966503456789</td>
+                                    <td>
+                                        <span class="font-monospace">5678901234</span>
+                                        <div><small class="text-muted">Commercial Reg.</small></div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-success btn-sm" onclick="approveUser('pending-user-3', 'Ahmed Hassan')">
+                                                <i class="bi bi-check-lg"></i>
+                                                <span data-original-text="Approve">Approve</span>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#userDetailModal" onclick="viewUserDetails('pending-user-3')">
+                                                <i class="bi bi-eye"></i>
+                                                <span data-original-text="View">View</span>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="rejectUser('pending-user-3', 'Ahmed Hassan')">
+                                                <i class="bi bi-x-lg"></i>
+                                                <span data-original-text="Reject">Reject</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span data-original-text="Close">Close</span>
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="approveAllPending()">
+                        <i class="bi bi-check-all me-1"></i>
+                        <span data-original-text="Approve All">Approve All</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal fade" id="userDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-person-circle me-2"></i>
+                        <span data-original-text="Registration Details">Registration Details</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="userDetailContent">
+                    <!-- User details will be loaded here dynamically -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span data-original-text="Close">Close</span>
+                    </button>
+                    <button type="button" class="btn btn-success" id="approveFromDetailBtn">
+                        <i class="bi bi-check-lg me-1"></i>
+                        <span data-original-text="Approve User">Approve User</span>
+                    </button>
+                    <button type="button" class="btn btn-danger" id="rejectFromDetailBtn">
+                        <i class="bi bi-x-lg me-1"></i>
+                        <span data-original-text="Reject User">Reject User</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
@@ -515,6 +745,245 @@
         document.getElementById('addUserModal').addEventListener('show.bs.modal', function() {
             generatePassword();
         });
+        
+        // Pending registration management functions
+        function approveUser(userId, userName) {
+            if (confirm(`Are you sure you want to approve ${userName}?`)) {
+                // Show loading state
+                const row = document.getElementById(userId);
+                const buttons = row.querySelectorAll('button');
+                buttons.forEach(btn => btn.disabled = true);
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Remove from pending list
+                    row.remove();
+                    
+                    // Update counter
+                    updatePendingCount();
+                    
+                    // Show success message
+                    showToast('Success', `${userName} has been approved and activated.`, 'success');
+                    
+                    // Update statistics (would typically come from API)
+                    updateUserStats();
+                }, 1000);
+            }
+        }
+        
+        function rejectUser(userId, userName) {
+            const reason = prompt(`Please provide a reason for rejecting ${userName}:`);
+            if (reason && reason.trim()) {
+                // Show loading state
+                const row = document.getElementById(userId);
+                const buttons = row.querySelectorAll('button');
+                buttons.forEach(btn => btn.disabled = true);
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Remove from pending list
+                    row.remove();
+                    
+                    // Update counter
+                    updatePendingCount();
+                    
+                    // Show success message
+                    showToast('Rejected', `${userName}'s registration has been rejected.`, 'warning');
+                }, 1000);
+            }
+        }
+        
+        function approveAllPending() {
+            const pendingRows = document.querySelectorAll('#pendingRegistrationsModal tbody tr');
+            if (pendingRows.length === 0) {
+                alert('No pending registrations to approve.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to approve all ${pendingRows.length} pending registrations?`)) {
+                // Show loading overlay
+                const modal = document.getElementById('pendingRegistrationsModal');
+                const overlay = document.createElement('div');
+                overlay.className = 'position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center';
+                overlay.style.backgroundColor = 'rgba(255,255,255,0.8)';
+                overlay.style.zIndex = '1060';
+                overlay.innerHTML = '<div class="spinner-border text-primary" role="status"></div>';
+                modal.querySelector('.modal-content').style.position = 'relative';
+                modal.querySelector('.modal-content').appendChild(overlay);
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Clear all pending registrations
+                    pendingRows.forEach(row => row.remove());
+                    
+                    // Update counter
+                    updatePendingCount();
+                    
+                    // Remove overlay
+                    overlay.remove();
+                    
+                    // Close modal
+                    bootstrap.Modal.getInstance(modal).hide();
+                    
+                    // Show success message
+                    showToast('Success', 'All pending registrations have been approved.', 'success');
+                    
+                    // Update statistics
+                    updateUserStats();
+                }, 2000);
+            }
+        }
+        
+        function viewUserDetails(userId) {
+            // Sample user data (would come from API)
+            const userData = {
+                'pending-user-1': {
+                    name: 'Mohammed Ali',
+                    email: 'mohammed.ali@company.com',
+                    phone: '+966501234567',
+                    company: 'Al-Fahd Trading Company',
+                    nationalId: '1234567890',
+                    registrationDate: '2024-01-15 14:30',
+                    status: 'Email Verified',
+                    ipAddress: '192.168.1.100',
+                    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                },
+                'pending-user-2': {
+                    name: 'Sarah Fatima',
+                    email: 'sarah.fatima@techcorp.sa',
+                    phone: '+966507654321',
+                    company: 'TechCorp Solutions',
+                    nationalId: '9876543210',
+                    registrationDate: '2024-01-14 09:15',
+                    status: 'Pending Email Verification',
+                    ipAddress: '192.168.1.101',
+                    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15'
+                },
+                'pending-user-3': {
+                    name: 'Ahmed Hassan',
+                    email: 'ahmed.hassan@buildco.sa',
+                    phone: '+966503456789',
+                    company: 'BuildCo Construction',
+                    nationalId: '5678901234',
+                    registrationDate: '2024-01-13 16:45',
+                    status: 'Email Verified',
+                    ipAddress: '192.168.1.102',
+                    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+                }
+            };
+            
+            const user = userData[userId];
+            if (user) {
+                document.getElementById('userDetailContent').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-semibold">Personal Information</h6>
+                            <table class="table table-sm">
+                                <tr><td class="fw-medium">Full Name:</td><td>${user.name}</td></tr>
+                                <tr><td class="fw-medium">Email:</td><td>${user.email}</td></tr>
+                                <tr><td class="fw-medium">Phone:</td><td>${user.phone}</td></tr>
+                                <tr><td class="fw-medium">National ID:</td><td>${user.nationalId}</td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-semibold">Company Information</h6>
+                            <table class="table table-sm">
+                                <tr><td class="fw-medium">Company:</td><td>${user.company}</td></tr>
+                                <tr><td class="fw-medium">Registration Date:</td><td>${user.registrationDate}</td></tr>
+                                <tr><td class="fw-medium">Status:</td><td><span class="badge ${user.status.includes('Verified') ? 'bg-success' : 'bg-warning'}">${user.status}</span></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6 class="fw-semibold">Technical Information</h6>
+                            <table class="table table-sm">
+                                <tr><td class="fw-medium">IP Address:</td><td>${user.ipAddress}</td></tr>
+                                <tr><td class="fw-medium">User Agent:</td><td><small>${user.userAgent}</small></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                
+                // Set up approve/reject buttons in detail modal
+                document.getElementById('approveFromDetailBtn').onclick = function() {
+                    approveUser(userId, user.name);
+                    bootstrap.Modal.getInstance(document.getElementById('userDetailModal')).hide();
+                };
+                
+                document.getElementById('rejectFromDetailBtn').onclick = function() {
+                    rejectUser(userId, user.name);
+                    bootstrap.Modal.getInstance(document.getElementById('userDetailModal')).hide();
+                };
+            }
+        }
+        
+        function updatePendingCount() {
+            const pendingRows = document.querySelectorAll('#pendingRegistrationsModal tbody tr');
+            const count = pendingRows.length;
+            
+            // Update badge
+            const badge = document.getElementById('pendingCount');
+            badge.textContent = count;
+            
+            // Update alert message
+            const alertText = document.querySelector('.alert-warning span');
+            if (alertText) {
+                alertText.textContent = `You have ${count} user registrations awaiting approval.`;
+            }
+            
+            // Hide alert if no pending registrations
+            if (count === 0) {
+                document.querySelector('.alert-warning').style.display = 'none';
+                badge.style.display = 'none';
+            }
+        }
+        
+        function updateUserStats() {
+            // Update statistics cards (would typically come from API)
+            const totalUsers = document.querySelector('.card-body h3');
+            if (totalUsers) {
+                const currentTotal = parseInt(totalUsers.textContent);
+                totalUsers.textContent = currentTotal + 1;
+            }
+        }
+        
+        function showToast(title, message, type = 'info') {
+            // Create toast notification
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            
+            const toastId = 'toast-' + Date.now();
+            const toastHTML = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}</strong><br>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            
+            // Remove toast from DOM after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                toastElement.remove();
+            });
+        }
+        
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            container.style.zIndex = '1070';
+            document.body.appendChild(container);
+            return container;
+        }
         
         // Style for avatars
         const style = document.createElement('style');

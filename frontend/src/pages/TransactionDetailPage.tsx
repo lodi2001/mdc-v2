@@ -30,6 +30,23 @@ const TransactionDetailPage: React.FC = () => {
     }
   };
 
+  const handleDeleteAttachment = async (attachmentId: number, filename: string) => {
+    if (!window.confirm(`${isRTL ? 'هل أنت متأكد من حذف الملف' : 'Are you sure you want to delete'} "${filename}"?`)) {
+      return;
+    }
+
+    try {
+      await apiClient.delete(`/attachments/attachments/${attachmentId}/`);
+      // Refresh transaction details to update the attachment list
+      await fetchTransactionDetails();
+      // Show success message (you could use a toast notification here)
+      alert(isRTL ? 'تم حذف الملف بنجاح' : 'Attachment deleted successfully');
+    } catch (err: any) {
+      console.error('Error deleting attachment:', err);
+      alert(isRTL ? 'فشل حذف الملف' : 'Failed to delete attachment');
+    }
+  };
+
   const getStatusBadgeClass = (status: string) => {
     const statusClasses: { [key: string]: string } = {
       'draft': 'bg-secondary',
@@ -327,7 +344,7 @@ const TransactionDetailPage: React.FC = () => {
                     {transaction.attachments.map((attachment: any) => (
                       <div key={attachment.id} className="list-group-item">
                         <div className="d-flex justify-content-between align-items-center">
-                          <div>
+                          <div className="flex-grow-1">
                             <i className="bi bi-paperclip me-2"></i>
                             <a
                               href={attachment.download_url}
@@ -341,10 +358,17 @@ const TransactionDetailPage: React.FC = () => {
                               ({attachment.file_size_formatted})
                             </small>
                           </div>
-                          <div>
+                          <div className="d-flex align-items-center gap-2">
                             <small className="text-muted">
                               {new Date(attachment.created_at).toLocaleDateString()}
                             </small>
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => handleDeleteAttachment(attachment.id, attachment.original_filename)}
+                              title={isRTL ? 'حذف الملف' : 'Delete attachment'}
+                            >
+                              <i className="bi bi-trash"></i>
+                            </button>
                           </div>
                         </div>
                         {attachment.description && (

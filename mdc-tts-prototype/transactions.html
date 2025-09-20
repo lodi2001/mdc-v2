@@ -106,7 +106,7 @@
                             <span class="badge bg-primary ms-auto">234</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="createTransactionNav" style="display: none;">
                         <a class="nav-link" href="transaction-form.html">
                             <i class="bi bi-plus-square"></i>
                             <span>Create Transaction</span>
@@ -170,7 +170,7 @@
                                 <button class="btn btn-outline-primary" onclick="exportTransactions()">
                                     <i class="bi bi-download me-1"></i> <span data-original-text="Export">Export</span>
                                 </button>
-                                <a href="transaction-form.html" class="btn btn-primary">
+                                <a href="transaction-form.html" class="btn btn-primary" id="createTransactionBtn" style="display: none;">
                                     <i class="bi bi-plus-circle me-1"></i> <span data-original-text="New Transaction">New Transaction</span>
                                 </a>
                             </div>
@@ -265,6 +265,9 @@
                                     <tr>
                                         <th>
                                             <input type="checkbox" class="form-check-input" id="selectAll">
+                                        </th>
+                                        <th class="sortable" data-sort="reference">
+                                            <span data-original-text="Reference Number">Reference Number</span> <i class="bi bi-arrow-down-up"></i>
                                         </th>
                                         <th class="sortable" data-sort="id">
                                             <span data-original-text="Transaction ID">Transaction ID</span> <i class="bi bi-arrow-down-up"></i>
@@ -410,5 +413,21 @@
     <script src="js/sidebar.js?v=4.0"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/transactions.js?v=4.0-property-types"></script>
+    
+    <script>
+        // Hide create transaction elements for client users
+        document.addEventListener('DOMContentLoaded', function() {
+            const userRole = localStorage.getItem('userRole') || 'client';
+            
+            if (userRole !== 'client') {
+                // Show create transaction elements for non-client users
+                const navElement = document.getElementById('createTransactionNav');
+                const btnElement = document.getElementById('createTransactionBtn');
+                
+                if (navElement) navElement.style.display = 'block';
+                if (btnElement) btnElement.style.display = 'inline-flex';
+            }
+        });
+    </script>
 </body>
 </html>

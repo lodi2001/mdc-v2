@@ -95,8 +95,7 @@ const translations = {
         // Table Headers
         'ID': 'الرقم',
         'Transaction ID': 'رقم المعاملة',
-        'External ID': 'الرقم المرجعي',
-        'Internal ID': 'رقم النظام',
+        'Reference Number': 'الرقم المرجعي',
         'Client': 'العميل',
         'Client Name': 'اسم العميل',
         'Type': 'النوع',

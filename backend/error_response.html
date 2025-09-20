@@ -1,0 +1,3509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>AttributeError
+          at /api/v1/transactions/7/</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font-family: sans-serif; background-color:#fff; color:#000; }
+    body > :where(header, main, footer) { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; }
+    h2 { margin-bottom:.8em; }
+    h3 { margin:1em 0 .5em 0; }
+    h4 { margin:0 0 .5em 0; font-weight: normal; }
+    code, pre { font-size: 100%; white-space: pre-wrap; word-break: break-word; }
+    summary { cursor: pointer; }
+    table { border:1px solid #ccc; border-collapse: collapse; width:100%; background:white; }
+    tbody td, tbody th { vertical-align:top; padding:2px 3px; }
+    thead th {
+      padding:1px 6px 1px 3px; background:#fefefe; text-align:left;
+      font-weight:normal; font-size: 0.6875rem; border:1px solid #ddd;
+    }
+    tbody th { width:12em; text-align:right; color:#666; padding-right:.5em; }
+    table.vars { margin:5px 10px 2px 40px; width: auto; }
+    table.vars td, table.req td { font-family:monospace; }
+    table td.code { width:100%; }
+    table td.code pre { overflow:hidden; }
+    table.source th { color:#666; }
+    table.source td { font-family:monospace; white-space:pre; border-bottom:1px solid #eee; }
+    ul.traceback { list-style-type:none; color: #222; }
+    ul.traceback li.cause { word-break: break-word; }
+    ul.traceback li.frame { padding-bottom:1em; color:#4f4f4f; }
+    ul.traceback li.user { background-color:#e0e0e0; color:#000 }
+    div.context { padding:10px 0; overflow:hidden; }
+    div.context ol { padding-left:30px; margin:0 10px; list-style-position: inside; }
+    div.context ol li { font-family:monospace; white-space:pre; color:#777; cursor:pointer; padding-left: 2px; }
+    div.context ol li pre { display:inline; }
+    div.context ol.context-line li { color:#464646; background-color:#dfdfdf; padding: 3px 2px; }
+    div.context ol.context-line li span { position:absolute; right:32px; }
+    .user div.context ol.context-line li { background-color:#bbb; color:#000; }
+    .user div.context ol li { color:#666; }
+    div.commands, summary.commands { margin-left: 40px; }
+    div.commands a, summary.commands { color:#555; text-decoration:none; }
+    .user div.commands a { color: black; }
+    #summary { background: #ffc; }
+    #summary h2 { font-weight: normal; color: #666; }
+    #info { padding: 0; }
+    #info > * { padding:10px 20px; }
+    #explanation { background:#eee; }
+    #template, #template-not-exist { background:#f6f6f6; }
+    #template-not-exist ul { margin: 0 0 10px 20px; }
+    #template-not-exist .postmortem-section { margin-bottom: 3px; }
+    #unicode-hint { background:#eee; }
+    #traceback { background:#eee; }
+    #requestinfo { background:#f6f6f6; padding-left:120px; }
+    #summary table { border:none; background:transparent; }
+    #requestinfo h2, #requestinfo h3 { position:relative; margin-left:-100px; }
+    #requestinfo h3 { margin-bottom:-1em; }
+    .error { background: #ffc; }
+    .specific { color:#cc3300; font-weight:bold; }
+    h2 span.commands { font-size: 0.7rem; font-weight:normal; }
+    span.commands a:link {color:#5E5694;}
+    pre.exception_value { font-family: sans-serif; color: #575757; font-size: 1.5rem; margin: 10px 0 10px 0; }
+    .append-bottom { margin-bottom: 10px; }
+    .fname { user-select: all; }
+  </style>
+  
+  <script>
+    function hideAll(elems) {
+      for (var e = 0; e < elems.length; e++) {
+        elems[e].style.display = 'none';
+      }
+    }
+    window.onload = function() {
+      hideAll(document.querySelectorAll('ol.pre-context'));
+      hideAll(document.querySelectorAll('ol.post-context'));
+      hideAll(document.querySelectorAll('div.pastebin'));
+    }
+    function toggle() {
+      for (var i = 0; i < arguments.length; i++) {
+        var e = document.getElementById(arguments[i]);
+        if (e) {
+          e.style.display = e.style.display == 'none' ? 'block': 'none';
+        }
+      }
+      return false;
+    }
+    function switchPastebinFriendly(link) {
+      s1 = "Switch to copy-and-paste view";
+      s2 = "Switch back to interactive view";
+      link.textContent = link.textContent.trim() == s1 ? s2: s1;
+      toggle('browserTraceback', 'pastebinTraceback');
+      return false;
+    }
+  </script>
+  
+</head>
+<body>
+<header id="summary">
+  <h1>AttributeError
+       at /api/v1/transactions/7/</h1>
+  <pre class="exception_value">Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre>
+  <table class="meta">
+
+    <tr>
+      <th scope="row">Request Method:</th>
+      <td>GET</td>
+    </tr>
+    <tr>
+      <th scope="row">Request URL:</th>
+      <td>http://localhost:8000/api/v1/transactions/7/</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Django Version:</th>
+      <td>5.2.6</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Exception Type:</th>
+      <td>AttributeError</td>
+    </tr>
+
+
+    <tr>
+      <th scope="row">Exception Value:</th>
+      <td><pre>Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre></td>
+    </tr>
+
+
+    <tr>
+      <th scope="row">Exception Location:</th>
+      <td><span class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py</span>, line 2372, in prefetch_related_objects</td>
+    </tr>
+
+
+    <tr>
+      <th scope="row">Raised during:</th>
+      <td>transactions.views.TransactionViewSet</td>
+    </tr>
+
+    <tr>
+      <th scope="row">Python Executable:</th>
+      <td>/home/kms/dev/mdc-v2/venv/bin/python</td>
+    </tr>
+    <tr>
+      <th scope="row">Python Version:</th>
+      <td>3.11.5</td>
+    </tr>
+    <tr>
+      <th scope="row">Python Path:</th>
+      <td><pre><code>[&#x27;/home/kms/dev/mdc-v2/backend&#x27;,
+ &#x27;/home/kms/miniconda3/lib/python311.zip&#x27;,
+ &#x27;/home/kms/miniconda3/lib/python3.11&#x27;,
+ &#x27;/home/kms/miniconda3/lib/python3.11/lib-dynload&#x27;,
+ &#x27;/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages&#x27;]</code></pre></td>
+    </tr>
+    <tr>
+      <th scope="row">Server time:</th>
+      <td>Mon, 15 Sep 2025 16:07:56 +0300</td>
+    </tr>
+  </table>
+</header>
+
+<main id="info">
+
+
+
+
+<div id="traceback">
+  <h2>Traceback <span class="commands"><a href="#" role="button" onclick="return switchPastebinFriendly(this);">
+    Switch to copy-and-paste view</a></span>
+  </h2>
+  <div id="browserTraceback">
+    <ul class="traceback">
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/core/handlers/exception.py</code>, line 55, in inner
+          
+
+          
+            <div class="context" id="c125132230792960">
+              
+                <ol start="48" class="pre-context" id="pre125132230792960">
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>        return inner</pre></li>
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>    else:</pre></li>
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>        @wraps(get_response)</pre></li>
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>        def inner(request):</pre></li>
+                
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>            try:</pre></li>
+                
+                </ol>
+              
+              <ol start="55" class="context-line">
+                <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>                response = get_response(request)
+                               ^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='56' class="post-context" id="post125132230792960">
+                  
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>            except Exception as exc:</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>                response = response_for_exception(request, exc)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>            return response</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre>        return inner</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792960', 'post125132230792960')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230792960">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>exc</td>
+                    <td class="code"><pre>AttributeError(&quot;Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()&quot;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>get_response</td>
+                    <td class="code"><pre>&lt;bound method BaseHandler._get_response of &lt;django.core.handlers.wsgi.WSGIHandler object at 0x71cea3e84a90&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/core/handlers/base.py</code>, line 197, in _get_response
+          
+
+          
+            <div class="context" id="c125132230798208">
+              
+                <ol start="190" class="pre-context" id="pre125132230798208">
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>        if response is None:</pre></li>
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>            wrapped_callback = self.make_view_atomic(callback)</pre></li>
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>            # If it is an asynchronous view, run it in a subthread.</pre></li>
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>            if iscoroutinefunction(wrapped_callback):</pre></li>
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>                wrapped_callback = async_to_sync(wrapped_callback)</pre></li>
+                
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>            try:</pre></li>
+                
+                </ol>
+              
+              <ol start="197" class="context-line">
+                <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>                response = wrapped_callback(request, *callback_args, **callback_kwargs)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='198' class="post-context" id="post125132230798208">
+                  
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>            except Exception as e:</pre></li>
+                  
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>                response = self.process_exception_by_middleware(e, request)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>                if response is None:</pre></li>
+                  
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>                    raise</pre></li>
+                  
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230798208', 'post125132230798208')"><pre>        # Complain if the view returned None (a common error).</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230798208">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>callback</td>
+                    <td class="code"><pre>&lt;function TransactionViewSet at 0x71cea0321580&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>callback_kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>middleware_method</td>
+                    <td class="code"><pre>&lt;bound method CsrfViewMiddleware.process_view of &lt;CsrfViewMiddleware get_response=convert_exception_to_response.&lt;locals&gt;.inner&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>response</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;django.core.handlers.wsgi.WSGIHandler object at 0x71cea3e84a90&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>wrapped_callback</td>
+                    <td class="code"><pre>&lt;function TransactionViewSet at 0x71cea0321580&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py</code>, line 65, in _view_wrapper
+          
+
+          
+            <div class="context" id="c125132230798592">
+              
+                <ol start="58" class="pre-context" id="pre125132230798592">
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>        async def _view_wrapper(request, *args, **kwargs):</pre></li>
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>            return await view_func(request, *args, **kwargs)</pre></li>
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>    else:</pre></li>
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>        def _view_wrapper(request, *args, **kwargs):</pre></li>
+                
+                </ol>
+              
+              <ol start="65" class="context-line">
+                <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>            return view_func(request, *args, **kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='66' class="post-context" id="post125132230798592">
+                  
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>    _view_wrapper.csrf_exempt = True</pre></li>
+                  
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230798592', 'post125132230798592')"><pre>    return wraps(view_func)(_view_wrapper)</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230798592">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>view_func</td>
+                    <td class="code"><pre>&lt;function TransactionViewSet at 0x71cea03214e0&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/viewsets.py</code>, line 125, in view
+          
+
+          
+            <div class="context" id="c125132230792896">
+              
+                <ol start="118" class="pre-context" id="pre125132230792896">
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>                setattr(self, method, handler)</pre></li>
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>            self.request = request</pre></li>
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>            self.args = args</pre></li>
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>            self.kwargs = kwargs</pre></li>
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>            # And continue as usual</pre></li>
+                
+                </ol>
+              
+              <ol start="125" class="context-line">
+                <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>            return self.dispatch(request, *args, **kwargs)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='126' class="post-context" id="post125132230792896">
+                  
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>        # take name and docstring from class</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>        update_wrapper(view, cls, updated=())</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>        # and possible attributes set by decorators</pre></li>
+                  
+                  <li onclick="toggle('pre125132230792896', 'post125132230792896')"><pre>        # like csrf_exempt from dispatch</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230792896">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>action</td>
+                    <td class="code"><pre>&#x27;retrieve&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>actions</td>
+                    <td class="code"><pre>{&#x27;delete&#x27;: &#x27;destroy&#x27;,
+ &#x27;get&#x27;: &#x27;retrieve&#x27;,
+ &#x27;head&#x27;: &#x27;retrieve&#x27;,
+ &#x27;patch&#x27;: &#x27;partial_update&#x27;,
+ &#x27;put&#x27;: &#x27;update&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>cls</td>
+                    <td class="code"><pre>&lt;class &#x27;transactions.views.TransactionViewSet&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>handler</td>
+                    <td class="code"><pre>&lt;bound method RetrieveModelMixin.retrieve of &lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>initkwargs</td>
+                    <td class="code"><pre>{&#x27;basename&#x27;: &#x27;transaction&#x27;, &#x27;detail&#x27;: True, &#x27;suffix&#x27;: &#x27;Instance&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>method</td>
+                    <td class="code"><pre>&#x27;head&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;WSGIRequest: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py</code>, line 515, in dispatch
+          
+
+          
+            <div class="context" id="c125132230795840">
+              
+                <ol start="508" class="pre-context" id="pre125132230795840">
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>                                  self.http_method_not_allowed)</pre></li>
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>            else:</pre></li>
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>                handler = self.http_method_not_allowed</pre></li>
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>            response = handler(request, *args, **kwargs)</pre></li>
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>        except Exception as exc:</pre></li>
+                
+                </ol>
+              
+              <ol start="515" class="context-line">
+                <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>            response = self.handle_exception(exc)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='516' class="post-context" id="post125132230795840">
+                  
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>        self.response = self.finalize_response(request, response, *args, **kwargs)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>        return self.response</pre></li>
+                  
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>    def options(self, request, *args, **kwargs):</pre></li>
+                  
+                  <li onclick="toggle('pre125132230795840', 'post125132230795840')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230795840">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>handler</td>
+                    <td class="code"><pre>&lt;bound method RetrieveModelMixin.retrieve of &lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py</code>, line 475, in handle_exception
+          
+
+          
+            <div class="context" id="c125132230789952">
+              
+                <ol start="468" class="pre-context" id="pre125132230789952">
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        exception_handler = self.get_exception_handler()</pre></li>
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        context = self.get_exception_handler_context()</pre></li>
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        response = exception_handler(exc, context)</pre></li>
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        if response is None:</pre></li>
+                
+                </ol>
+              
+              <ol start="475" class="context-line">
+                <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>            self.raise_uncaught_exception(exc)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='476' class="post-context" id="post125132230789952">
+                  
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        response.exception = True</pre></li>
+                  
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        return response</pre></li>
+                  
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>    def raise_uncaught_exception(self, exc):</pre></li>
+                  
+                  <li onclick="toggle('pre125132230789952', 'post125132230789952')"><pre>        if settings.DEBUG:</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230789952">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>context</td>
+                    <td class="code"><pre>{&#x27;args&#x27;: (),
+ &#x27;kwargs&#x27;: {&#x27;pk&#x27;: &#x27;7&#x27;},
+ &#x27;request&#x27;: &lt;rest_framework.request.Request: GET &#x27;/api/v1/transactions/7/&#x27;&gt;,
+ &#x27;view&#x27;: &lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>exc</td>
+                    <td class="code"><pre>AttributeError(&quot;Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()&quot;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>exception_handler</td>
+                    <td class="code"><pre>&lt;function custom_exception_handler at 0x71ce9eb98720&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>response</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py</code>, line 486, in raise_uncaught_exception
+          
+
+          
+            <div class="context" id="c125132230788992">
+              
+                <ol start="479" class="pre-context" id="pre125132230788992">
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>    def raise_uncaught_exception(self, exc):</pre></li>
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>        if settings.DEBUG:</pre></li>
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>            request = self.request</pre></li>
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>            renderer_format = getattr(request.accepted_renderer, &#x27;format&#x27;)</pre></li>
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>            use_plaintext_traceback = renderer_format not in (&#x27;html&#x27;, &#x27;api&#x27;, &#x27;admin&#x27;)</pre></li>
+                
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>            request.force_plaintext_errors(use_plaintext_traceback)</pre></li>
+                
+                </ol>
+              
+              <ol start="486" class="context-line">
+                <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>        raise exc
+             ^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='487' class="post-context" id="post125132230788992">
+                  
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>    # Note: Views are made CSRF exempt from within `as_view` as to prevent</pre></li>
+                  
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>    # accidental removal of this exemption in cases where `dispatch` needs to</pre></li>
+                  
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>    # be overridden.</pre></li>
+                  
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>    def dispatch(self, request, *args, **kwargs):</pre></li>
+                  
+                  <li onclick="toggle('pre125132230788992', 'post125132230788992')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230788992">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>exc</td>
+                    <td class="code"><pre>AttributeError(&quot;Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()&quot;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>renderer_format</td>
+                    <td class="code"><pre>&#x27;json&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>use_plaintext_traceback</td>
+                    <td class="code"><pre>True</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py</code>, line 512, in dispatch
+          
+
+          
+            <div class="context" id="c125132230790400">
+              
+                <ol start="505" class="pre-context" id="pre125132230790400">
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>            # Get the appropriate handler method</pre></li>
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>            if request.method.lower() in self.http_method_names:</pre></li>
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>                handler = getattr(self, request.method.lower(),</pre></li>
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>                                  self.http_method_not_allowed)</pre></li>
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>            else:</pre></li>
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>                handler = self.http_method_not_allowed</pre></li>
+                
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre></pre></li>
+                
+                </ol>
+              
+              <ol start="512" class="context-line">
+                <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>            response = handler(request, *args, **kwargs)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='513' class="post-context" id="post125132230790400">
+                  
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>        except Exception as exc:</pre></li>
+                  
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>            response = self.handle_exception(exc)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>        self.response = self.finalize_response(request, response, *args, **kwargs)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230790400', 'post125132230790400')"><pre>        return self.response</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230790400">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>handler</td>
+                    <td class="code"><pre>&lt;bound method RetrieveModelMixin.retrieve of &lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/mixins.py</code>, line 54, in retrieve
+          
+
+          
+            <div class="context" id="c125132230794368">
+              
+                <ol start="47" class="pre-context" id="pre125132230794368">
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>class RetrieveModelMixin:</pre></li>
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>    &quot;&quot;&quot;</pre></li>
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>    Retrieve a model instance.</pre></li>
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>    &quot;&quot;&quot;</pre></li>
+                
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>    def retrieve(self, request, *args, **kwargs):</pre></li>
+                
+                </ol>
+              
+              <ol start="54" class="context-line">
+                <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>        instance = self.get_object()
+                       ^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='55' class="post-context" id="post125132230794368">
+                  
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>        serializer = self.get_serializer(instance)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>        return Response(serializer.data)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>class UpdateModelMixin:</pre></li>
+                  
+                  <li onclick="toggle('pre125132230794368', 'post125132230794368')"><pre>    &quot;&quot;&quot;</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230794368">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>request</td>
+                    <td class="code"><pre>&lt;rest_framework.request.Request: GET &#x27;/api/v1/transactions/7/&#x27;&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/generics.py</code>, line 100, in get_object
+          
+
+          
+            <div class="context" id="c125132230791104">
+              
+                <ol start="93" class="pre-context" id="pre125132230791104">
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>            &#x27;Expected view %s to be called with a URL keyword argument &#x27;</pre></li>
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>            &#x27;named &quot;%s&quot;. Fix your URL conf, or set the `.lookup_field` &#x27;</pre></li>
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>            &#x27;attribute on the view correctly.&#x27; %</pre></li>
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>            (self.__class__.__name__, lookup_url_kwarg)</pre></li>
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>        )</pre></li>
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>        filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg]}</pre></li>
+                
+                </ol>
+              
+              <ol start="100" class="context-line">
+                <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>        obj = get_object_or_404(queryset, **filter_kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='101' class="post-context" id="post125132230791104">
+                  
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>        # May raise a permission denied</pre></li>
+                  
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>        self.check_object_permissions(self.request, obj)</pre></li>
+                  
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre>        return obj</pre></li>
+                  
+                  <li onclick="toggle('pre125132230791104', 'post125132230791104')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230791104">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>filter_kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>lookup_url_kwarg</td>
+                    <td class="code"><pre>&#x27;pk&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>queryset</td>
+                    <td class="code"><pre>Error in formatting: AttributeError: Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;transactions.views.TransactionViewSet object at 0x71ce9e241210&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame user">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/generics.py</code>, line 19, in get_object_or_404
+          
+
+          
+            <div class="context" id="c125132230797376">
+              
+                <ol start="12" class="pre-context" id="pre125132230797376">
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>def get_object_or_404(queryset, *filter_args, **filter_kwargs):</pre></li>
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    &quot;&quot;&quot;</pre></li>
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    Same as Django&#x27;s standard shortcut, but make sure to also raise 404</pre></li>
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    if the filter_kwargs don&#x27;t match the required types.</pre></li>
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    &quot;&quot;&quot;</pre></li>
+                
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    try:</pre></li>
+                
+                </ol>
+              
+              <ol start="19" class="context-line">
+                <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>        return _get_object_or_404(queryset, *filter_args, **filter_kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='20' class="post-context" id="post125132230797376">
+                  
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    except (TypeError, ValueError, ValidationError):</pre></li>
+                  
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>        raise Http404</pre></li>
+                  
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>class GenericAPIView(views.APIView):</pre></li>
+                  
+                  <li onclick="toggle('pre125132230797376', 'post125132230797376')"><pre>    &quot;&quot;&quot;</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132230797376">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>filter_args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>filter_kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>queryset</td>
+                    <td class="code"><pre>Error in formatting: AttributeError: Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/shortcuts.py</code>, line 90, in get_object_or_404
+          
+
+          
+            <div class="context" id="c125132240538368">
+              
+                <ol start="83" class="pre-context" id="pre125132240538368">
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>            klass.__name__ if isinstance(klass, type) else klass.__class__.__name__</pre></li>
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>        )</pre></li>
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>        raise ValueError(</pre></li>
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>            &quot;First argument to get_object_or_404() must be a Model, Manager, &quot;</pre></li>
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>            &quot;or QuerySet, not &#x27;%s&#x27;.&quot; % klass__name</pre></li>
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>        )</pre></li>
+                
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>    try:</pre></li>
+                
+                </ol>
+              
+              <ol start="90" class="context-line">
+                <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>        return queryset.get(*args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='91' class="post-context" id="post125132240538368">
+                  
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>    except queryset.model.DoesNotExist:</pre></li>
+                  
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>        raise Http404(</pre></li>
+                  
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>            &quot;No %s matches the given query.&quot; % queryset.model._meta.object_name</pre></li>
+                  
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre>        )</pre></li>
+                  
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132240538368', 'post125132240538368')"><pre></pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132240538368">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>klass</td>
+                    <td class="code"><pre>Error in formatting: AttributeError: Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>queryset</td>
+                    <td class="code"><pre>Error in formatting: AttributeError: Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py</code>, line 629, in get
+          
+
+          
+            <div class="context" id="c125132240638912">
+              
+                <ol start="622" class="pre-context" id="pre125132240638912">
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>        limit = None</pre></li>
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>        if (</pre></li>
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            not clone.query.select_for_update</pre></li>
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            or connections[clone.db].features.supports_select_for_update_with_limit</pre></li>
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>        ):</pre></li>
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            limit = MAX_GET_RESULTS</pre></li>
+                
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            clone.query.set_limits(high=limit)</pre></li>
+                
+                </ol>
+              
+              <ol start="629" class="context-line">
+                <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>        num = len(clone)
+                   ^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='630' class="post-context" id="post125132240638912">
+                  
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>        if num == 1:</pre></li>
+                  
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            return clone._result_cache[0]</pre></li>
+                  
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>        if not num:</pre></li>
+                  
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            raise self.model.DoesNotExist(</pre></li>
+                  
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>                &quot;%s matching query does not exist.&quot; % self.model._meta.object_name</pre></li>
+                  
+                  <li onclick="toggle('pre125132240638912', 'post125132240638912')"><pre>            )</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132240638912">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>args</td>
+                    <td class="code"><pre>()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>clone</td>
+                    <td class="code"><pre>&lt;QuerySet [&lt;Transaction: TRX-2025-00006 - swa&gt;]&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>kwargs</td>
+                    <td class="code"><pre>{&#x27;pk&#x27;: &#x27;7&#x27;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>limit</td>
+                    <td class="code"><pre>21</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>Error in formatting: AttributeError: Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py</code>, line 366, in __len__
+          
+
+          
+            <div class="context" id="c125132241395968">
+              
+                <ol start="359" class="pre-context" id="pre125132241395968">
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>    def __repr__(self):</pre></li>
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        data = list(self[: REPR_OUTPUT_SIZE + 1])</pre></li>
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        if len(data) &gt; REPR_OUTPUT_SIZE:</pre></li>
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>            data[-1] = &quot;...(remaining elements truncated)...&quot;</pre></li>
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        return &quot;&lt;%s %r&gt;&quot; % (self.__class__.__name__, data)</pre></li>
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>    def __len__(self):</pre></li>
+                
+                </ol>
+              
+              <ol start="366" class="context-line">
+                <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        self._fetch_all()
+             ^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='367' class="post-context" id="post125132241395968">
+                  
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        return len(self._result_cache)</pre></li>
+                  
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>    def __iter__(self):</pre></li>
+                  
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        The queryset iterator protocol uses three nested iterators in the</pre></li>
+                  
+                  <li onclick="toggle('pre125132241395968', 'post125132241395968')"><pre>        default case:</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132241395968">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;QuerySet [&lt;Transaction: TRX-2025-00006 - swa&gt;]&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py</code>, line 1951, in _fetch_all
+          
+
+          
+            <div class="context" id="c125132239922880">
+              
+                <ol start="1944" class="pre-context" id="pre125132239922880">
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        c._fields = self._fields</pre></li>
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        return c</pre></li>
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>    def _fetch_all(self):</pre></li>
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        if self._result_cache is None:</pre></li>
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>            self._result_cache = list(self._iterable_class(self))</pre></li>
+                
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        if self._prefetch_related_lookups and not self._prefetch_done:</pre></li>
+                
+                </ol>
+              
+              <ol start="1951" class="context-line">
+                <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>            self._prefetch_related_objects()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='1952' class="post-context" id="post125132239922880">
+                  
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>    def _next_is_sticky(self):</pre></li>
+                  
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        Indicate that the next filter call and the one following that should</pre></li>
+                  
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        be treated as a single filter. This is only important when it comes to</pre></li>
+                  
+                  <li onclick="toggle('pre125132239922880', 'post125132239922880')"><pre>        determining when to reuse tables for many-to-many filters. Required so</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132239922880">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;QuerySet [&lt;Transaction: TRX-2025-00006 - swa&gt;]&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py</code>, line 1328, in _prefetch_related_objects
+          
+
+          
+            <div class="context" id="c125132240685696">
+              
+                <ol start="1321" class="pre-context" id="pre125132240685696">
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        return self.filter(pk=obj.pk).exists()</pre></li>
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>    async def acontains(self, obj):</pre></li>
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        return await sync_to_async(self.contains)(obj=obj)</pre></li>
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>    def _prefetch_related_objects(self):</pre></li>
+                
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        # This method can only be called once the result cache has been filled.</pre></li>
+                
+                </ol>
+              
+              <ol start="1328" class="context-line">
+                <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='1329' class="post-context" id="post125132240685696">
+                  
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        self._prefetch_done = True</pre></li>
+                  
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre></pre></li>
+                  
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>    def explain(self, *, format=None, **options):</pre></li>
+                  
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        &quot;&quot;&quot;</pre></li>
+                  
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        Runs an EXPLAIN on the SQL query this QuerySet would perform, and</pre></li>
+                  
+                  <li onclick="toggle('pre125132240685696', 'post125132240685696')"><pre>        returns the results.</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132240685696">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>self</td>
+                    <td class="code"><pre>&lt;QuerySet [&lt;Transaction: TRX-2025-00006 - swa&gt;]&gt;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+        
+        <li class="frame django">
+          
+            <code class="fname">/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py</code>, line 2372, in prefetch_related_objects
+          
+
+          
+            <div class="context" id="c125132241203904">
+              
+                <ol start="2365" class="pre-context" id="pre125132241203904">
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>            first_obj = obj_list[0]</pre></li>
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>            to_attr = lookup.get_current_to_attr(level)[0]</pre></li>
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>            prefetcher, descriptor, attr_found, is_fetched = get_prefetcher(</pre></li>
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                first_obj, through_attr, to_attr</pre></li>
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>            )</pre></li>
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre></pre></li>
+                
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>            if not attr_found:</pre></li>
+                
+                </ol>
+              
+              <ol start="2372" class="context-line">
+                <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                raise AttributeError(
+                      ^</pre> <span>…</span></li>
+              </ol>
+              
+                <ol start='2373' class="post-context" id="post125132241203904">
+                  
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                    &quot;Cannot find &#x27;%s&#x27; on %s object, &#x27;%s&#x27; is an invalid &quot;</pre></li>
+                  
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                    &quot;parameter to prefetch_related()&quot;</pre></li>
+                  
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                    % (</pre></li>
+                  
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                        through_attr,</pre></li>
+                  
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                        first_obj.__class__.__name__,</pre></li>
+                  
+                  <li onclick="toggle('pre125132241203904', 'post125132241203904')"><pre>                        lookup.prefetch_through,</pre></li>
+                  
+              </ol>
+              
+            </div>
+          
+
+          
+            
+              <details>
+                <summary class="commands">Local vars</summary>
+            
+            <table class="vars" id="v125132241203904">
+              <thead>
+                <tr>
+                  <th scope="col">Variable</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>additional_lookups</td>
+                    <td class="code"><pre>[]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>all_lookups</td>
+                    <td class="code"><pre>[]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>attr_found</td>
+                    <td class="code"><pre>False</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>auto_lookups</td>
+                    <td class="code"><pre>set()</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>descriptor</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>done_queries</td>
+                    <td class="code"><pre>{&#x27;comments&#x27;: [], &#x27;status_history&#x27;: []}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>first_obj</td>
+                    <td class="code"><pre>&lt;Transaction: TRX-2025-00006 - swa&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>followed_descriptors</td>
+                    <td class="code"><pre>{&lt;django.db.models.fields.related_descriptors.ReverseManyToOneDescriptor object at 0x71cea1f30390&gt;,
+ &lt;django.db.models.fields.related_descriptors.ReverseManyToOneDescriptor object at 0x71cea1f32a10&gt;}</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>good_objects</td>
+                    <td class="code"><pre>True</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>is_fetched</td>
+                    <td class="code"><pre>&lt;function get_prefetcher.&lt;locals&gt;.is_to_attr_fetched.&lt;locals&gt;.has_to_attr_attribute at 0x71ce9ec08b80&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>level</td>
+                    <td class="code"><pre>0</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>lookup</td>
+                    <td class="code"><pre>&lt;django.db.models.query.Prefetch object at 0x71ce9e312390&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>model_instances</td>
+                    <td class="code"><pre>[&lt;Transaction: TRX-2025-00006 - swa&gt;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>new_lookups</td>
+                    <td class="code"><pre>[]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>obj</td>
+                    <td class="code"><pre>&lt;Transaction: TRX-2025-00006 - swa&gt;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>obj_list</td>
+                    <td class="code"><pre>[&lt;Transaction: TRX-2025-00006 - swa&gt;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>obj_to_fetch</td>
+                    <td class="code"><pre>[&lt;Transaction: TRX-2025-00006 - swa&gt;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>prefetch_to</td>
+                    <td class="code"><pre>&#x27;attachment_set&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>prefetcher</td>
+                    <td class="code"><pre>None</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>related_lookups</td>
+                    <td class="code"><pre>(&#x27;comments&#x27;, &#x27;status_history&#x27;, &#x27;attachment_set&#x27;)</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>through_attr</td>
+                    <td class="code"><pre>&#x27;attachment_set&#x27;</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>through_attrs</td>
+                    <td class="code"><pre>[&#x27;attachment_set&#x27;]</pre></td>
+                  </tr>
+                
+                  <tr>
+                    <td>to_attr</td>
+                    <td class="code"><pre>&#x27;attachment_set&#x27;</pre></td>
+                  </tr>
+                
+              </tbody>
+            </table>
+            </details>
+          
+        </li>
+      
+    </ul>
+  </div>
+
+  <form action="https://dpaste.com/" name="pasteform" id="pasteform" method="post">
+  <div id="pastebinTraceback" class="pastebin">
+    <input type="hidden" name="language" value="PythonConsole">
+    <input type="hidden" name="title"
+      value="AttributeError at /api/v1/transactions/7/">
+    <input type="hidden" name="source" value="Django Dpaste Agent">
+    <input type="hidden" name="poster" value="Django">
+    <textarea name="content" id="traceback_area" cols="140" rows="25">
+Environment:
+
+
+Request Method: GET
+Request URL: http://localhost:8000/api/v1/transactions/7/
+
+Django Version: 5.2.6
+Python Version: 3.11.5
+Installed Applications:
+[&#x27;django.contrib.admin&#x27;,
+ &#x27;django.contrib.auth&#x27;,
+ &#x27;django.contrib.contenttypes&#x27;,
+ &#x27;django.contrib.sessions&#x27;,
+ &#x27;django.contrib.messages&#x27;,
+ &#x27;django.contrib.staticfiles&#x27;,
+ &#x27;rest_framework&#x27;,
+ &#x27;rest_framework_simplejwt&#x27;,
+ &#x27;corsheaders&#x27;,
+ &#x27;django_extensions&#x27;,
+ &#x27;django_filters&#x27;,
+ &#x27;drf_spectacular&#x27;,
+ &#x27;authentication&#x27;,
+ &#x27;users&#x27;,
+ &#x27;transactions&#x27;,
+ &#x27;attachments&#x27;,
+ &#x27;notifications&#x27;,
+ &#x27;audit&#x27;,
+ &#x27;dashboard&#x27;,
+ &#x27;system_settings&#x27;,
+ &#x27;reports&#x27;,
+ &#x27;workflows&#x27;]
+Installed Middleware:
+[&#x27;corsheaders.middleware.CorsMiddleware&#x27;,
+ &#x27;django.middleware.security.SecurityMiddleware&#x27;,
+ &#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;,
+ &#x27;django.middleware.locale.LocaleMiddleware&#x27;,
+ &#x27;django.middleware.common.CommonMiddleware&#x27;,
+ &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,
+ &#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;,
+ &#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;,
+ &#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;,
+ &#x27;audit.middleware.AuditLogMiddleware&#x27;]
+
+
+
+Traceback (most recent call last):
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+    ^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/mixins.py", line 54, in retrieve
+    instance = self.get_object()
+               ^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/generics.py", line 100, in get_object
+    obj = get_object_or_404(queryset, **filter_kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/rest_framework/generics.py", line 19, in get_object_or_404
+    return _get_object_or_404(queryset, *filter_args, **filter_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1951, in _fetch_all
+    self._prefetch_related_objects()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1328, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kms/dev/mdc-v2/venv/lib/python3.11/site-packages/django/db/models/query.py", line 2372, in prefetch_related_objects
+    raise AttributeError(
+    ^
+
+Exception Type: AttributeError at /api/v1/transactions/7/
+Exception Value: Cannot find &#x27;attachment_set&#x27; on Transaction object, &#x27;attachment_set&#x27; is an invalid parameter to prefetch_related()
+</textarea>
+  <br><br>
+  <input type="submit" value="Share this traceback on a public website">
+  </div>
+</form>
+
+</div>
+
+
+<div id="requestinfo">
+  <h2>Request information</h2>
+
+
+  
+    <h3 id="user-info">USER</h3>
+    <p>Admin User (admin@mdc.com)</p>
+  
+
+  <h3 id="get-info">GET</h3>
+  
+    <p>No GET data</p>
+  
+
+  <h3 id="post-info">POST</h3>
+  
+    <p>No POST data</p>
+  
+
+  <h3 id="files-info">FILES</h3>
+  
+    <p>No FILES data</p>
+  
+
+  <h3 id="cookie-info">COOKIES</h3>
+  
+    <p>No cookie data</p>
+  
+
+  <h3 id="meta-info">META</h3>
+  <table class="req">
+    <thead>
+      <tr>
+        <th scope="col">Variable</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>CLAUDECODE</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CLAUDE_CODE_ENTRYPOINT</td>
+          <td class="code"><pre>&#x27;cli&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONDA_DEFAULT_ENV</td>
+          <td class="code"><pre>&#x27;base&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONDA_EXE</td>
+          <td class="code"><pre>&#x27;/home/kms/miniconda3/bin/conda&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONDA_PREFIX</td>
+          <td class="code"><pre>&#x27;/home/kms/miniconda3&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONDA_PROMPT_MODIFIER</td>
+          <td class="code"><pre>&#x27;(base) &#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONDA_PYTHON_EXE</td>
+          <td class="code"><pre>&#x27;/home/kms/miniconda3/bin/python&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONDA_SHLVL</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONTENT_LENGTH</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CONTENT_TYPE</td>
+          <td class="code"><pre>&#x27;text/plain&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>COREPACK_ENABLE_AUTO_PIN</td>
+          <td class="code"><pre>&#x27;0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DBUS_SESSION_BUS_ADDRESS</td>
+          <td class="code"><pre>&#x27;unix:path=/run/user/1000/bus&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DISPLAY</td>
+          <td class="code"><pre>&#x27;:0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DJANGO_SETTINGS_MODULE</td>
+          <td class="code"><pre>&#x27;mdc_backend.settings&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GATEWAY_INTERFACE</td>
+          <td class="code"><pre>&#x27;CGI/1.1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>GIT_EDITOR</td>
+          <td class="code"><pre>&#x27;true&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HOME</td>
+          <td class="code"><pre>&#x27;/home/kms&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HOSTTYPE</td>
+          <td class="code"><pre>&#x27;x86_64&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_ACCEPT</td>
+          <td class="code"><pre>&#x27;*/*&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_ACCEPT_ENCODING</td>
+          <td class="code"><pre>&#x27;gzip, deflate&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_AUTHORIZATION</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_CONNECTION</td>
+          <td class="code"><pre>&#x27;keep-alive&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_HOST</td>
+          <td class="code"><pre>&#x27;localhost:8000&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>HTTP_USER_AGENT</td>
+          <td class="code"><pre>&#x27;python-requests/2.32.5&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANG</td>
+          <td class="code"><pre>&#x27;C.UTF-8&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LESSCLOSE</td>
+          <td class="code"><pre>&#x27;/usr/bin/lesspipe %s %s&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LESSOPEN</td>
+          <td class="code"><pre>&#x27;| /usr/bin/lesspipe %s&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGNAME</td>
+          <td class="code"><pre>&#x27;kms&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LS_COLORS</td>
+          <td class="code"><pre>&#x27;rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MOTD_SHOWN</td>
+          <td class="code"><pre>&#x27;update-motd&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NAME</td>
+          <td class="code"><pre>&#x27;Nuwas&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NoDefaultCurrentDirectoryInExePath</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>OLDPWD</td>
+          <td class="code"><pre>&#x27;/home/kms/dev&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE</td>
+          <td class="code"><pre>&#x27;delta&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PATH</td>
+          <td class="code"><pre>(&#x27;/home/kms/dev/mdc-v2/venv/bin:/home/kms/.claude/local:/usr/local/texlive/2025/bin/x86_64-linux:/home/kms/miniconda3/bin:/home/kms/miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/msys64/mingw64/bin:/mnt/c/Strawberry/c/bin:/mnt/c/Strawberry/perl/site/bin:/mnt/c/Strawberry/perl/bin:/mnt/c/Users/kms20/AppData/Local/Programs/Python/Python311/Scripts:/mnt/c/Users/kms20/AppData/Local/Programs/Python/Python311:/mnt/c/Users/kms20/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/kms20/AppData/Local/Programs/Microsoft &#x27;
+ &#x27;VS &#x27;
+ &#x27;Code/bin:/mnt/c/Users/kms20/AppData/Local/Programs/Ollama:/mnt/c/texlive/2024/bin/windows:/mnt/c/Users/kms20/AppData/Roaming/npm:/mnt/c/Users/kms20/AppData/Local/Programs/Windsurf/bin:/snap/bin&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PATH_INFO</td>
+          <td class="code"><pre>&#x27;/api/v1/transactions/7/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PULSE_SERVER</td>
+          <td class="code"><pre>&#x27;unix:/mnt/wslg/PulseServer&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PWD</td>
+          <td class="code"><pre>&#x27;/home/kms/dev/mdc-v2/backend&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>QUERY_STRING</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_ADDR</td>
+          <td class="code"><pre>&#x27;127.0.0.1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REMOTE_HOST</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REQUEST_METHOD</td>
+          <td class="code"><pre>&#x27;GET&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>RUN_MAIN</td>
+          <td class="code"><pre>&#x27;true&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SCRIPT_NAME</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_NAME</td>
+          <td class="code"><pre>&#x27;localhost&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PORT</td>
+          <td class="code"><pre>&#x27;8000&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_PROTOCOL</td>
+          <td class="code"><pre>&#x27;HTTP/1.1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_SOFTWARE</td>
+          <td class="code"><pre>&#x27;WSGIServer/0.2&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHELL</td>
+          <td class="code"><pre>&#x27;/bin/bash&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHLVL</td>
+          <td class="code"><pre>&#x27;2&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TERM</td>
+          <td class="code"><pre>&#x27;xterm-256color&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TZ</td>
+          <td class="code"><pre>&#x27;Asia/Riyadh&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USER</td>
+          <td class="code"><pre>&#x27;kms&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VIPSHOME</td>
+          <td class="code"><pre>&#x27;/target&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VIRTUAL_ENV</td>
+          <td class="code"><pre>&#x27;/home/kms/dev/mdc-v2/venv&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>VIRTUAL_ENV_PROMPT</td>
+          <td class="code"><pre>&#x27;(venv) &#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WAYLAND_DISPLAY</td>
+          <td class="code"><pre>&#x27;wayland-0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSL2_GUI_APPS_ENABLED</td>
+          <td class="code"><pre>&#x27;1&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSLENV</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSL_DISTRO_NAME</td>
+          <td class="code"><pre>&#x27;Ubuntu&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSL_INTEROP</td>
+          <td class="code"><pre>&#x27;/run/WSL/726_interop&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_DATA_DIRS</td>
+          <td class="code"><pre>&#x27;/usr/local/share:/usr/share:/var/lib/snapd/desktop&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>XDG_RUNTIME_DIR</td>
+          <td class="code"><pre>&#x27;/run/user/1000/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>_</td>
+          <td class="code"><pre>&#x27;/home/kms/dev/mdc-v2/venv/bin/python&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>_CE_CONDA</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>_CE_M</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.errors</td>
+          <td class="code"><pre>&lt;_io.TextIOWrapper name=&#x27;&lt;stderr&gt;&#x27; mode=&#x27;w&#x27; encoding=&#x27;utf-8&#x27;&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.file_wrapper</td>
+          <td class="code"><pre>&lt;class &#x27;wsgiref.util.FileWrapper&#x27;&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.input</td>
+          <td class="code"><pre>&lt;django.core.handlers.wsgi.LimitedStream object at 0x71ce9e2753c0&gt;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multiprocess</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.multithread</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.run_once</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.url_scheme</td>
+          <td class="code"><pre>&#x27;http&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>wsgi.version</td>
+          <td class="code"><pre>(1, 0)</pre></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+
+  <h3 id="settings-info">Settings</h3>
+  <h4>Using settings module <code>mdc_backend.settings</code></h4>
+  <table class="req">
+    <thead>
+      <tr>
+        <th scope="col">Setting</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>ABSOLUTE_URL_OVERRIDES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ADMINS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_FILE_EXTENSIONS</td>
+          <td class="code"><pre>[&#x27;pdf&#x27;, &#x27;doc&#x27;, &#x27;docx&#x27;, &#x27;xls&#x27;, &#x27;xlsx&#x27;, &#x27;txt&#x27;, &#x27;csv&#x27;, &#x27;jpg&#x27;, &#x27;jpeg&#x27;, &#x27;png&#x27;, &#x27;gif&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_HOSTS</td>
+          <td class="code"><pre>[&#x27;localhost&#x27;, &#x27;127.0.0.1&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ALLOWED_MIME_TYPES</td>
+          <td class="code"><pre>[&#x27;application/pdf&#x27;,
+ &#x27;application/msword&#x27;,
+ &#x27;application/vnd.openxmlformats-officedocument.wordprocessingml.document&#x27;,
+ &#x27;application/vnd.ms-excel&#x27;,
+ &#x27;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#x27;,
+ &#x27;text/plain&#x27;,
+ &#x27;text/csv&#x27;,
+ &#x27;image/jpeg&#x27;,
+ &#x27;image/png&#x27;,
+ &#x27;image/gif&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>APPEND_SLASH</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTHENTICATION_BACKENDS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTH_PASSWORD_VALIDATORS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>AUTH_USER_MODEL</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>BASE_DIR</td>
+          <td class="code"><pre>PosixPath(&#x27;/home/kms/dev/mdc-v2/backend&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHES</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;BACKEND&#x27;: &#x27;django_redis.cache.RedisCache&#x27;,
+             &#x27;LOCATION&#x27;: &#x27;redis://localhost:6379/0&#x27;,
+             &#x27;OPTIONS&#x27;: {&#x27;CLIENT_CLASS&#x27;: &#x27;django_redis.client.DefaultClient&#x27;,
+                         &#x27;CONNECTION_POOL_KWARGS&#x27;: {&#x27;max_connections&#x27;: 50}}}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_ALIAS</td>
+          <td class="code"><pre>&#x27;default&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_KEY_PREFIX</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CACHE_MIDDLEWARE_SECONDS</td>
+          <td class="code"><pre>600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_ACCEPT_CONTENT</td>
+          <td class="code"><pre>[&#x27;application/json&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_BROKER_URL</td>
+          <td class="code"><pre>&#x27;redis://localhost:6379/0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_RESULT_BACKEND</td>
+          <td class="code"><pre>&#x27;redis://localhost:6379/0&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_RESULT_SERIALIZER</td>
+          <td class="code"><pre>&#x27;json&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TASK_ROUTES</td>
+          <td class="code"><pre>{&#x27;attachments.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;files&#x27;},
+ &#x27;notifications.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;notifications&#x27;},
+ &#x27;transactions.tasks.*&#x27;: {&#x27;queue&#x27;: &#x27;transactions&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TASK_SERIALIZER</td>
+          <td class="code"><pre>&#x27;json&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CELERY_TIMEZONE</td>
+          <td class="code"><pre>&#x27;Asia/Riyadh&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CORS_ALLOWED_HEADERS</td>
+          <td class="code"><pre>[&#x27;accept&#x27;,
+ &#x27;accept-encoding&#x27;,
+ &#x27;authorization&#x27;,
+ &#x27;content-type&#x27;,
+ &#x27;dnt&#x27;,
+ &#x27;origin&#x27;,
+ &#x27;user-agent&#x27;,
+ &#x27;x-csrftoken&#x27;,
+ &#x27;x-requested-with&#x27;,
+ &#x27;accept-language&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CORS_ALLOWED_ORIGINS</td>
+          <td class="code"><pre>[&#x27;http://localhost:3000&#x27;, &#x27;http://127.0.0.1:3000&#x27;, &#x27;http://localhost:3000&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CORS_ALLOW_CREDENTIALS</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_AGE</td>
+          <td class="code"><pre>31449600</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_NAME</td>
+          <td class="code"><pre>&#x27;csrftoken&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_PATH</td>
+          <td class="code"><pre>&#x27;/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_SAMESITE</td>
+          <td class="code"><pre>&#x27;Lax&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_FAILURE_VIEW</td>
+          <td class="code"><pre>&#x27;django.views.csrf.csrf_failure&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_HEADER_NAME</td>
+          <td class="code"><pre>&#x27;HTTP_X_CSRFTOKEN&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_TRUSTED_ORIGINS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>CSRF_USE_SESSIONS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASES</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;ATOMIC_REQUESTS&#x27;: False,
+             &#x27;AUTOCOMMIT&#x27;: True,
+             &#x27;CONN_HEALTH_CHECKS&#x27;: False,
+             &#x27;CONN_MAX_AGE&#x27;: 0,
+             &#x27;ENGINE&#x27;: &#x27;django.db.backends.sqlite3&#x27;,
+             &#x27;HOST&#x27;: &#x27;&#x27;,
+             &#x27;NAME&#x27;: PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/db.sqlite3&#x27;),
+             &#x27;OPTIONS&#x27;: {},
+             &#x27;PASSWORD&#x27;: &#x27;********************&#x27;,
+             &#x27;PORT&#x27;: &#x27;&#x27;,
+             &#x27;TEST&#x27;: {&#x27;CHARSET&#x27;: None,
+                      &#x27;COLLATION&#x27;: None,
+                      &#x27;MIGRATE&#x27;: True,
+                      &#x27;MIRROR&#x27;: None,
+                      &#x27;NAME&#x27;: None},
+             &#x27;TIME_ZONE&#x27;: None,
+             &#x27;USER&#x27;: &#x27;&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATABASE_ROUTERS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATA_UPLOAD_MAX_MEMORY_SIZE</td>
+          <td class="code"><pre>10485760</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATA_UPLOAD_MAX_NUMBER_FIELDS</td>
+          <td class="code"><pre>1000</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATA_UPLOAD_MAX_NUMBER_FILES</td>
+          <td class="code"><pre>100</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_FORMAT</td>
+          <td class="code"><pre>&#x27;N j, Y, P&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATETIME_INPUT_FORMATS</td>
+          <td class="code"><pre>[&#x27;%Y-%m-%d %H:%M:%S&#x27;,
+ &#x27;%Y-%m-%d %H:%M:%S.%f&#x27;,
+ &#x27;%Y-%m-%d %H:%M&#x27;,
+ &#x27;%m/%d/%Y %H:%M:%S&#x27;,
+ &#x27;%m/%d/%Y %H:%M:%S.%f&#x27;,
+ &#x27;%m/%d/%Y %H:%M&#x27;,
+ &#x27;%m/%d/%y %H:%M:%S&#x27;,
+ &#x27;%m/%d/%y %H:%M:%S.%f&#x27;,
+ &#x27;%m/%d/%y %H:%M&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_FORMAT</td>
+          <td class="code"><pre>&#x27;N j, Y&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DATE_INPUT_FORMATS</td>
+          <td class="code"><pre>[&#x27;%Y-%m-%d&#x27;,
+ &#x27;%m/%d/%Y&#x27;,
+ &#x27;%m/%d/%y&#x27;,
+ &#x27;%b %d %Y&#x27;,
+ &#x27;%b %d, %Y&#x27;,
+ &#x27;%d %b %Y&#x27;,
+ &#x27;%d %b, %Y&#x27;,
+ &#x27;%B %d %Y&#x27;,
+ &#x27;%B %d, %Y&#x27;,
+ &#x27;%d %B %Y&#x27;,
+ &#x27;%d %B, %Y&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEBUG</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEBUG_PROPAGATE_EXCEPTIONS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DECIMAL_SEPARATOR</td>
+          <td class="code"><pre>&#x27;.&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_AUTO_FIELD</td>
+          <td class="code"><pre>&#x27;django.db.models.BigAutoField&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_CHARSET</td>
+          <td class="code"><pre>&#x27;utf-8&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_EXCEPTION_REPORTER</td>
+          <td class="code"><pre>&#x27;django.views.debug.ExceptionReporter&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_EXCEPTION_REPORTER_FILTER</td>
+          <td class="code"><pre>&#x27;django.views.debug.SafeExceptionReporterFilter&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_FROM_EMAIL</td>
+          <td class="code"><pre>&#x27;MDC TTS &lt;noreply@mdc.com&gt;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_INDEX_TABLESPACE</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DEFAULT_TABLESPACE</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DISALLOWED_USER_AGENTS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>DJANGO_APPS</td>
+          <td class="code"><pre>[&#x27;django.contrib.admin&#x27;,
+ &#x27;django.contrib.auth&#x27;,
+ &#x27;django.contrib.contenttypes&#x27;,
+ &#x27;django.contrib.sessions&#x27;,
+ &#x27;django.contrib.messages&#x27;,
+ &#x27;django.contrib.staticfiles&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_BACKEND</td>
+          <td class="code"><pre>&#x27;django.core.mail.backends.console.EmailBackend&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST</td>
+          <td class="code"><pre>&#x27;smtp.gmail.com&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST_PASSWORD</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_HOST_USER</td>
+          <td class="code"><pre>&#x27;&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_PORT</td>
+          <td class="code"><pre>587</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SSL_CERTFILE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SSL_KEYFILE</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_SUBJECT_PREFIX</td>
+          <td class="code"><pre>&#x27;[Django] &#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_TIMEOUT</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_LOCALTIME</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_SSL</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>EMAIL_USE_TLS</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_DIRECTORY_PERMISSIONS</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_HANDLERS</td>
+          <td class="code"><pre>[&#x27;django.core.files.uploadhandler.MemoryFileUploadHandler&#x27;,
+ &#x27;django.core.files.uploadhandler.TemporaryFileUploadHandler&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_MAX_MEMORY_SIZE</td>
+          <td class="code"><pre>5242880</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_PERMISSIONS</td>
+          <td class="code"><pre>420</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FILE_UPLOAD_TEMP_DIR</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIRST_DAY_OF_WEEK</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FIXTURE_DIRS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORCE_SCRIPT_NAME</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORMAT_MODULE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORMS_URLFIELD_ASSUME_HTTPS</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>FORM_RENDERER</td>
+          <td class="code"><pre>&#x27;django.forms.renderers.DjangoTemplates&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>IGNORABLE_404_URLS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INSTALLED_APPS</td>
+          <td class="code"><pre>[&#x27;django.contrib.admin&#x27;,
+ &#x27;django.contrib.auth&#x27;,
+ &#x27;django.contrib.contenttypes&#x27;,
+ &#x27;django.contrib.sessions&#x27;,
+ &#x27;django.contrib.messages&#x27;,
+ &#x27;django.contrib.staticfiles&#x27;,
+ &#x27;rest_framework&#x27;,
+ &#x27;rest_framework_simplejwt&#x27;,
+ &#x27;corsheaders&#x27;,
+ &#x27;django_extensions&#x27;,
+ &#x27;django_filters&#x27;,
+ &#x27;drf_spectacular&#x27;,
+ &#x27;authentication&#x27;,
+ &#x27;users&#x27;,
+ &#x27;transactions&#x27;,
+ &#x27;attachments&#x27;,
+ &#x27;notifications&#x27;,
+ &#x27;audit&#x27;,
+ &#x27;dashboard&#x27;,
+ &#x27;system_settings&#x27;,
+ &#x27;reports&#x27;,
+ &#x27;workflows&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>INTERNAL_IPS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGES</td>
+          <td class="code"><pre>[(&#x27;en&#x27;, &#x27;English&#x27;), (&#x27;ar&#x27;, &#x27;Arabic&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGES_BIDI</td>
+          <td class="code"><pre>[&#x27;he&#x27;, &#x27;ar&#x27;, &#x27;ar-dz&#x27;, &#x27;ckb&#x27;, &#x27;fa&#x27;, &#x27;ug&#x27;, &#x27;ur&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_CODE</td>
+          <td class="code"><pre>&#x27;en&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_AGE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_NAME</td>
+          <td class="code"><pre>&#x27;django_language&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_PATH</td>
+          <td class="code"><pre>&#x27;/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_SAMESITE</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LANGUAGE_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOCALE_PATHS</td>
+          <td class="code"><pre>[PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/locale&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOCAL_APPS</td>
+          <td class="code"><pre>[&#x27;authentication&#x27;,
+ &#x27;users&#x27;,
+ &#x27;transactions&#x27;,
+ &#x27;attachments&#x27;,
+ &#x27;notifications&#x27;,
+ &#x27;audit&#x27;,
+ &#x27;dashboard&#x27;,
+ &#x27;system_settings&#x27;,
+ &#x27;reports&#x27;,
+ &#x27;workflows&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING</td>
+          <td class="code"><pre>{&#x27;disable_existing_loggers&#x27;: False,
+ &#x27;formatters&#x27;: {&#x27;simple&#x27;: {&#x27;format&#x27;: &#x27;{levelname} {message}&#x27;, &#x27;style&#x27;: &#x27;{&#x27;},
+                &#x27;verbose&#x27;: {&#x27;format&#x27;: &#x27;{levelname} {asctime} {module} &#x27;
+                                      &#x27;{process:d} {thread:d} {message}&#x27;,
+                            &#x27;style&#x27;: &#x27;{&#x27;}},
+ &#x27;handlers&#x27;: {&#x27;console&#x27;: {&#x27;class&#x27;: &#x27;logging.StreamHandler&#x27;,
+                          &#x27;formatter&#x27;: &#x27;simple&#x27;,
+                          &#x27;level&#x27;: &#x27;DEBUG&#x27;},
+              &#x27;file&#x27;: {&#x27;class&#x27;: &#x27;logging.FileHandler&#x27;,
+                       &#x27;filename&#x27;: PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/logs/mdc_backend.log&#x27;),
+                       &#x27;formatter&#x27;: &#x27;verbose&#x27;,
+                       &#x27;level&#x27;: &#x27;INFO&#x27;}},
+ &#x27;loggers&#x27;: {&#x27;django&#x27;: {&#x27;handlers&#x27;: [&#x27;file&#x27;],
+                        &#x27;level&#x27;: &#x27;INFO&#x27;,
+                        &#x27;propagate&#x27;: False},
+             &#x27;mdc_backend&#x27;: {&#x27;handlers&#x27;: [&#x27;console&#x27;, &#x27;file&#x27;],
+                             &#x27;level&#x27;: &#x27;DEBUG&#x27;,
+                             &#x27;propagate&#x27;: False}},
+ &#x27;root&#x27;: {&#x27;handlers&#x27;: [&#x27;console&#x27;, &#x27;file&#x27;], &#x27;level&#x27;: &#x27;WARNING&#x27;},
+ &#x27;version&#x27;: 1}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGGING_CONFIG</td>
+          <td class="code"><pre>&#x27;logging.config.dictConfig&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_REDIRECT_URL</td>
+          <td class="code"><pre>&#x27;/accounts/profile/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGIN_URL</td>
+          <td class="code"><pre>&#x27;/accounts/login/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>LOGOUT_REDIRECT_URL</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MANAGERS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MAX_FILES_PER_TRANSACTION</td>
+          <td class="code"><pre>20</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MAX_FILE_SIZE</td>
+          <td class="code"><pre>10485760</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MDC_SETTINGS</td>
+          <td class="code"><pre>{&#x27;AUDIT_LOG_RETENTION_DAYS&#x27;: 365,
+ &#x27;FRONTEND_URL&#x27;: &#x27;http://localhost:3000&#x27;,
+ &#x27;PAGINATION_SIZE&#x27;: 20,
+ &#x27;PASSWORD_RESET_TIMEOUT&#x27;: &#x27;********************&#x27;,
+ &#x27;QR_CODE_BORDER&#x27;: 4,
+ &#x27;QR_CODE_SIZE&#x27;: 10,
+ &#x27;SEARCH_RESULTS_LIMIT&#x27;: 100,
+ &#x27;TRANSACTION_ID_PREFIX&#x27;: &#x27;TRX&#x27;}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_ROOT</td>
+          <td class="code"><pre>PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/media&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MEDIA_URL</td>
+          <td class="code"><pre>&#x27;/media/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MESSAGE_STORAGE</td>
+          <td class="code"><pre>&#x27;django.contrib.messages.storage.fallback.FallbackStorage&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIDDLEWARE</td>
+          <td class="code"><pre>[&#x27;corsheaders.middleware.CorsMiddleware&#x27;,
+ &#x27;django.middleware.security.SecurityMiddleware&#x27;,
+ &#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;,
+ &#x27;django.middleware.locale.LocaleMiddleware&#x27;,
+ &#x27;django.middleware.common.CommonMiddleware&#x27;,
+ &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,
+ &#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;,
+ &#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;,
+ &#x27;django.middleware.clickjacking.XFrameOptionsMiddleware&#x27;,
+ &#x27;audit.middleware.AuditLogMiddleware&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MIGRATION_MODULES</td>
+          <td class="code"><pre>{}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>MONTH_DAY_FORMAT</td>
+          <td class="code"><pre>&#x27;F j&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>NUMBER_GROUPING</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_HASHERS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PASSWORD_RESET_TIMEOUT</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>PREPEND_WWW</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>REST_FRAMEWORK</td>
+          <td class="code"><pre>{&#x27;DEFAULT_AUTHENTICATION_CLASSES&#x27;: &#x27;********************&#x27;,
+ &#x27;DEFAULT_FILTER_BACKENDS&#x27;: [&#x27;django_filters.rest_framework.DjangoFilterBackend&#x27;,
+                             &#x27;rest_framework.filters.SearchFilter&#x27;,
+                             &#x27;rest_framework.filters.OrderingFilter&#x27;],
+ &#x27;DEFAULT_PAGINATION_CLASS&#x27;: &#x27;rest_framework.pagination.PageNumberPagination&#x27;,
+ &#x27;DEFAULT_PARSER_CLASSES&#x27;: [&#x27;rest_framework.parsers.JSONParser&#x27;,
+                            &#x27;rest_framework.parsers.MultiPartParser&#x27;,
+                            &#x27;rest_framework.parsers.FormParser&#x27;],
+ &#x27;DEFAULT_PERMISSION_CLASSES&#x27;: (&#x27;rest_framework.permissions.IsAuthenticated&#x27;,),
+ &#x27;DEFAULT_RENDERER_CLASSES&#x27;: [&#x27;rest_framework.renderers.JSONRenderer&#x27;],
+ &#x27;DEFAULT_SCHEMA_CLASS&#x27;: &#x27;drf_spectacular.openapi.AutoSchema&#x27;,
+ &#x27;DEFAULT_THROTTLE_CLASSES&#x27;: [&#x27;rest_framework.throttling.AnonRateThrottle&#x27;,
+                              &#x27;rest_framework.throttling.UserRateThrottle&#x27;],
+ &#x27;DEFAULT_THROTTLE_RATES&#x27;: {&#x27;anon&#x27;: &#x27;10/minute&#x27;,
+                            &#x27;auth&#x27;: &#x27;********************&#x27;,
+                            &#x27;bulk&#x27;: &#x27;2/minute&#x27;,
+                            &#x27;upload&#x27;: &#x27;5/minute&#x27;,
+                            &#x27;user&#x27;: &#x27;100/minute&#x27;},
+ &#x27;EXCEPTION_HANDLER&#x27;: &#x27;mdc_backend.utils.exception_handler.custom_exception_handler&#x27;,
+ &#x27;PAGE_SIZE&#x27;: 20}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>ROOT_URLCONF</td>
+          <td class="code"><pre>&#x27;mdc_backend.urls&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECRET_KEY</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECRET_KEY_FALLBACKS</td>
+          <td class="code"><pre>&#x27;********************&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_BROWSER_XSS_FILTER</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_CONTENT_TYPE_NOSNIFF</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_CROSS_ORIGIN_OPENER_POLICY</td>
+          <td class="code"><pre>&#x27;same-origin&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_HSTS_INCLUDE_SUBDOMAINS</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_HSTS_PRELOAD</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_HSTS_SECONDS</td>
+          <td class="code"><pre>0</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_PROXY_SSL_HEADER</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_REDIRECT_EXEMPT</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_REFERRER_POLICY</td>
+          <td class="code"><pre>&#x27;same-origin&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_SSL_HOST</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SECURE_SSL_REDIRECT</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SERVER_EMAIL</td>
+          <td class="code"><pre>&#x27;root@localhost&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_CACHE_ALIAS</td>
+          <td class="code"><pre>&#x27;default&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_AGE</td>
+          <td class="code"><pre>1800</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_DOMAIN</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_HTTPONLY</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_NAME</td>
+          <td class="code"><pre>&#x27;sessionid&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_PATH</td>
+          <td class="code"><pre>&#x27;/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_SAMESITE</td>
+          <td class="code"><pre>&#x27;Lax&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_COOKIE_SECURE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_ENGINE</td>
+          <td class="code"><pre>&#x27;django.contrib.sessions.backends.cache&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_EXPIRE_AT_BROWSER_CLOSE</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_FILE_PATH</td>
+          <td class="code"><pre>None</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_SAVE_EVERY_REQUEST</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SESSION_SERIALIZER</td>
+          <td class="code"><pre>&#x27;django.contrib.sessions.serializers.JSONSerializer&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SETTINGS_MODULE</td>
+          <td class="code"><pre>&#x27;mdc_backend.settings&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHORT_DATETIME_FORMAT</td>
+          <td class="code"><pre>&#x27;m/d/Y P&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SHORT_DATE_FORMAT</td>
+          <td class="code"><pre>&#x27;m/d/Y&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SIGNING_BACKEND</td>
+          <td class="code"><pre>&#x27;django.core.signing.TimestampSigner&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SILENCED_SYSTEM_CHECKS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SIMPLE_JWT</td>
+          <td class="code"><pre>{&#x27;ACCESS_TOKEN_LIFETIME&#x27;: &#x27;********************&#x27;,
+ &#x27;ALGORITHM&#x27;: &#x27;HS256&#x27;,
+ &#x27;AUTH_HEADER_TYPES&#x27;: &#x27;********************&#x27;,
+ &#x27;AUTH_TOKEN_CLASSES&#x27;: &#x27;********************&#x27;,
+ &#x27;BLACKLIST_AFTER_ROTATION&#x27;: True,
+ &#x27;REFRESH_TOKEN_LIFETIME&#x27;: &#x27;********************&#x27;,
+ &#x27;ROTATE_REFRESH_TOKENS&#x27;: &#x27;********************&#x27;,
+ &#x27;SIGNING_KEY&#x27;: &#x27;********************&#x27;,
+ &#x27;TOKEN_TYPE_CLAIM&#x27;: &#x27;********************&#x27;,
+ &#x27;USER_ID_CLAIM&#x27;: &#x27;user_id&#x27;,
+ &#x27;USER_ID_FIELD&#x27;: &#x27;id&#x27;,
+ &#x27;VERIFYING_KEY&#x27;: &#x27;********************&#x27;}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>SPECTACULAR_SETTINGS</td>
+          <td class="code"><pre>{&#x27;COMPONENT_SPLIT_REQUEST&#x27;: True,
+ &#x27;CONTACT&#x27;: {&#x27;email&#x27;: &#x27;dev@mdc.com&#x27;, &#x27;name&#x27;: &#x27;MDC Development Team&#x27;},
+ &#x27;DEFAULT_GENERATOR_CLASS&#x27;: &#x27;drf_spectacular.generators.SchemaGenerator&#x27;,
+ &#x27;DESCRIPTION&#x27;: &#x27;A comprehensive API for managing translation and &#x27;
+                &#x27;documentation services&#x27;,
+ &#x27;ENUM_NAME_OVERRIDES&#x27;: {&#x27;PasswordValidationErrorEnum&#x27;: &#x27;********************&#x27;,
+                         &#x27;ValidationErrorEnum&#x27;: &#x27;drf_spectacular.utils.ValidationErrorEnum.choices&#x27;},
+ &#x27;EXTENSIONS_INFO&#x27;: {&#x27;x-logo&#x27;: {&#x27;altText&#x27;: &#x27;MDC Logo&#x27;,
+                                &#x27;url&#x27;: &#x27;/static/images/mdc-logo.png&#x27;}},
+ &#x27;LICENSE&#x27;: {&#x27;name&#x27;: &#x27;Proprietary&#x27;},
+ &#x27;SCHEMA_PATH_PREFIX&#x27;: &#x27;/api/v1/&#x27;,
+ &#x27;SECURITY&#x27;: [{&#x27;JWT&#x27;: []}],
+ &#x27;SECURITY_DEFINITIONS&#x27;: {&#x27;JWT&#x27;: {&#x27;description&#x27;: &#x27;JWT token authentication. &#x27;
+                                                 &#x27;Format: &quot;Bearer {token}&quot;&#x27;,
+                                  &#x27;in&#x27;: &#x27;header&#x27;,
+                                  &#x27;name&#x27;: &#x27;Authorization&#x27;,
+                                  &#x27;type&#x27;: &#x27;apiKey&#x27;}},
+ &#x27;SERVE_INCLUDE_SCHEMA&#x27;: False,
+ &#x27;SWAGGER_UI_SETTINGS&#x27;: {&#x27;deepLinking&#x27;: True,
+                         &#x27;displayOperationId&#x27;: True,
+                         &#x27;filter&#x27;: True,
+                         &#x27;persistAuthorization&#x27;: &#x27;********************&#x27;},
+ &#x27;TAGS&#x27;: [{&#x27;description&#x27;: &#x27;User authentication and authorization&#x27;,
+           &#x27;name&#x27;: &#x27;Authentication&#x27;},
+          {&#x27;description&#x27;: &#x27;User management operations&#x27;, &#x27;name&#x27;: &#x27;Users&#x27;},
+          {&#x27;description&#x27;: &#x27;Transaction management and workflow&#x27;,
+           &#x27;name&#x27;: &#x27;Transactions&#x27;},
+          {&#x27;description&#x27;: &#x27;File upload and management&#x27;, &#x27;name&#x27;: &#x27;Attachments&#x27;},
+          {&#x27;description&#x27;: &#x27;Email notifications and templates&#x27;,
+           &#x27;name&#x27;: &#x27;Notifications&#x27;},
+          {&#x27;description&#x27;: &#x27;Analytics and dashboard data&#x27;, &#x27;name&#x27;: &#x27;Dashboard&#x27;},
+          {&#x27;description&#x27;: &#x27;System settings and configuration&#x27;,
+           &#x27;name&#x27;: &#x27;System&#x27;},
+          {&#x27;description&#x27;: &#x27;Audit logs and activity tracking&#x27;, &#x27;name&#x27;: &#x27;Audit&#x27;}],
+ &#x27;TITLE&#x27;: &#x27;MDC Transaction Tracking System API&#x27;,
+ &#x27;VERSION&#x27;: &#x27;1.0.0&#x27;}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_DIRS</td>
+          <td class="code"><pre>[PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/static&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATICFILES_FINDERS</td>
+          <td class="code"><pre>[&#x27;django.contrib.staticfiles.finders.FileSystemFinder&#x27;,
+ &#x27;django.contrib.staticfiles.finders.AppDirectoriesFinder&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_ROOT</td>
+          <td class="code"><pre>PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/staticfiles&#x27;)</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STATIC_URL</td>
+          <td class="code"><pre>&#x27;/static/&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>STORAGES</td>
+          <td class="code"><pre>{&#x27;default&#x27;: {&#x27;BACKEND&#x27;: &#x27;django.core.files.storage.FileSystemStorage&#x27;},
+ &#x27;staticfiles&#x27;: {&#x27;BACKEND&#x27;: &#x27;django.contrib.staticfiles.storage.StaticFilesStorage&#x27;}}</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEMPLATES</td>
+          <td class="code"><pre>[{&#x27;APP_DIRS&#x27;: True,
+  &#x27;BACKEND&#x27;: &#x27;django.template.backends.django.DjangoTemplates&#x27;,
+  &#x27;DIRS&#x27;: [PosixPath(&#x27;/home/kms/dev/mdc-v2/backend/templates&#x27;)],
+  &#x27;OPTIONS&#x27;: {&#x27;context_processors&#x27;: [&#x27;django.template.context_processors.debug&#x27;,
+                                     &#x27;django.template.context_processors.request&#x27;,
+                                     &#x27;django.contrib.auth.context_processors.auth&#x27;,
+                                     &#x27;django.contrib.messages.context_processors.messages&#x27;,
+                                     &#x27;django.template.context_processors.i18n&#x27;]}}]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_NON_SERIALIZED_APPS</td>
+          <td class="code"><pre>[]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TEST_RUNNER</td>
+          <td class="code"><pre>&#x27;django.test.runner.DiscoverRunner&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>THIRD_PARTY_APPS</td>
+          <td class="code"><pre>[&#x27;rest_framework&#x27;,
+ &#x27;rest_framework_simplejwt&#x27;,
+ &#x27;corsheaders&#x27;,
+ &#x27;django_extensions&#x27;,
+ &#x27;django_filters&#x27;,
+ &#x27;drf_spectacular&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>&#x27;,&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_FORMAT</td>
+          <td class="code"><pre>&#x27;P&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_INPUT_FORMATS</td>
+          <td class="code"><pre>[&#x27;%H:%M:%S&#x27;, &#x27;%H:%M:%S.%f&#x27;, &#x27;%H:%M&#x27;]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TIME_ZONE</td>
+          <td class="code"><pre>&#x27;Asia/Riyadh&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TRANSACTION_CATEGORIES</td>
+          <td class="code"><pre>[(&#x27;architecture&#x27;, &#x27;Architecture&#x27;),
+ (&#x27;engineering&#x27;, &#x27;Engineering&#x27;),
+ (&#x27;construction&#x27;, &#x27;Construction&#x27;),
+ (&#x27;planning&#x27;, &#x27;Planning&#x27;),
+ (&#x27;consultation&#x27;, &#x27;Consultation&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TRANSACTION_PRIORITIES</td>
+          <td class="code"><pre>[(&#x27;low&#x27;, &#x27;Low&#x27;), (&#x27;normal&#x27;, &#x27;Normal&#x27;), (&#x27;high&#x27;, &#x27;High&#x27;), (&#x27;urgent&#x27;, &#x27;Urgent&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>TRANSACTION_STATUSES</td>
+          <td class="code"><pre>[(&#x27;draft&#x27;, &#x27;Draft&#x27;),
+ (&#x27;submitted&#x27;, &#x27;Submitted&#x27;),
+ (&#x27;under_review&#x27;, &#x27;Under Review&#x27;),
+ (&#x27;approved&#x27;, &#x27;Approved&#x27;),
+ (&#x27;in_progress&#x27;, &#x27;In Progress&#x27;),
+ (&#x27;completed&#x27;, &#x27;Completed&#x27;),
+ (&#x27;cancelled&#x27;, &#x27;Cancelled&#x27;),
+ (&#x27;on_hold&#x27;, &#x27;On Hold&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USER_ROLES</td>
+          <td class="code"><pre>[(&#x27;admin&#x27;, &#x27;Admin&#x27;), (&#x27;editor&#x27;, &#x27;Editor&#x27;), (&#x27;client&#x27;, &#x27;Client&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USER_STATUSES</td>
+          <td class="code"><pre>[(&#x27;active&#x27;, &#x27;Active&#x27;),
+ (&#x27;inactive&#x27;, &#x27;Inactive&#x27;),
+ (&#x27;suspended&#x27;, &#x27;Suspended&#x27;),
+ (&#x27;pending&#x27;, &#x27;Pending&#x27;)]</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_I18N</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_L10N</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_THOUSAND_SEPARATOR</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_TZ</td>
+          <td class="code"><pre>True</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_X_FORWARDED_HOST</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>USE_X_FORWARDED_PORT</td>
+          <td class="code"><pre>False</pre></td>
+        </tr>
+      
+        <tr>
+          <td>WSGI_APPLICATION</td>
+          <td class="code"><pre>&#x27;mdc_backend.wsgi.application&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>X_FRAME_OPTIONS</td>
+          <td class="code"><pre>&#x27;DENY&#x27;</pre></td>
+        </tr>
+      
+        <tr>
+          <td>YEAR_MONTH_FORMAT</td>
+          <td class="code"><pre>&#x27;F Y&#x27;</pre></td>
+        </tr>
+      
+    </tbody>
+  </table>
+
+</div>
+</main>
+
+
+  <footer id="explanation">
+    <p>
+      You’re seeing this error because you have <code>DEBUG = True</code> in your
+      Django settings file. Change that to <code>False</code>, and Django will
+      display a standard page generated by the handler for this status code.
+    </p>
+  </footer>
+
+</body>
+</html>

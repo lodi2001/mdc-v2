@@ -628,7 +628,7 @@
             { key: 'description', label: 'Description', required: false },
             { key: 'priority', label: 'Priority', required: false },
             { key: 'due_date', label: 'Due Date', required: false },
-            { key: 'external_id', label: 'External ID', required: false },
+            { key: 'external_id', label: 'Reference Number', required: false },
             { key: 'project_id', label: 'Project ID', required: false },
             { key: 'department', label: 'Department', required: false },
             { key: 'assigned_to', label: 'Assigned To', required: false },
@@ -946,7 +946,7 @@
                 { type: 'error', row: 23, field: 'Due Date', message: 'Invalid date format' },
                 { type: 'warning', row: 8, field: 'Priority', message: 'Unknown priority value, will default to "Medium"' },
                 { type: 'warning', row: 12, field: 'Department', message: 'Department not found, will be created' },
-                { type: 'warning', row: 35, field: 'External ID', message: 'Duplicate external ID detected' }
+                { type: 'warning', row: 35, field: 'Reference Number', message: 'Duplicate reference number detected' }
             ];
             
             const container = document.getElementById('validationIssues');

@@ -214,7 +214,7 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], permission_classes=[IsActiveUser], parser_classes=[MultiPartParser, FormParser])
     def bulk_upload(self, request):
         """
-        Upload multiple attachments for a transaction
+        Upload multiple attachments for a transaction using proper serializer workflow
         """
         transaction_id = request.data.get('transaction')
         files = request.FILES.getlist('files')
@@ -258,40 +258,52 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         uploaded_attachments = []
         errors = []
 
-        for file in files:
-            try:
-                # Validate file
-                validate_file_extension(file.name)
-                validate_file_size(file.size)
-                validate_mime_type(file.content_type)
+        # Use database transaction for atomicity
+        with db_transaction.atomic():
+            for file in files:
+                try:
+                    # Use the proper AttachmentUploadSerializer
+                    upload_data = {
+                        'file': file,
+                        'transaction_id': transaction_id,
+                        'is_client_visible': True,
+                        'description': ''
+                    }
 
-                # Create attachment
-                attachment = Attachment.objects.create(
-                    transaction=transaction,
-                    uploaded_by=user,
-                    original_filename=file.name,
-                    stored_filename=file.name,
-                    file_path=f"attachments/{transaction.transaction_id}/{file.name}",
-                    file_size=file.size,
-                    mime_type=file.content_type or 'application/octet-stream',
-                    is_client_visible=True
-                )
+                    serializer = AttachmentUploadSerializer(
+                        data=upload_data,
+                        context={'request': request}
+                    )
 
-                # Save file to storage
-                file_path = default_storage.save(
-                    f"attachments/{transaction.transaction_id}/{file.name}",
-                    file
-                )
-                attachment.file_path = file_path
-                attachment.save()
+                    if serializer.is_valid():
+                        attachment = serializer.save()
+                        # Get the full attachment data with all fields
+                        attachment_data = AttachmentSerializer(
+                            attachment,
+                            context={'request': request}
+                        ).data
+                        uploaded_attachments.append(attachment_data)
+                    else:
+                        errors.append({
+                            'filename': file.name,
+                            'error': str(serializer.errors)
+                        })
 
-                uploaded_attachments.append(AttachmentSerializer(attachment, context={'request': request}).data)
+                except Exception as e:
+                    logger.error(f"Error uploading file {file.name}: {str(e)}")
+                    errors.append({
+                        'filename': file.name,
+                        'error': str(e)
+                    })
 
-            except Exception as e:
-                errors.append({
-                    'filename': file.name,
-                    'error': str(e)
-                })
+        # Create audit log - commented out for now due to parameter issues
+        # if uploaded_attachments:
+        #     create_audit_log_entry(
+        #         user=request.user,
+        #         action='BULK_FILE_UPLOAD',
+        #         object_id=transaction.id,
+        #         details=f"Uploaded {len(uploaded_attachments)} files to transaction {transaction.transaction_id}"
+        #     )
 
         if uploaded_attachments:
             return create_success_response(

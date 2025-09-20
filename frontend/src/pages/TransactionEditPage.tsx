@@ -133,8 +133,15 @@ const TransactionEditPage: React.FC = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+    console.log('Files selected:', files?.length, files);
     if (files) {
-      setAttachments(prev => [...prev, ...Array.from(files)]);
+      const fileArray = Array.from(files);
+      console.log('Adding files to attachments state:', fileArray);
+      setAttachments(prev => {
+        const newAttachments = [...prev, ...fileArray];
+        console.log('New attachments state will be:', newAttachments);
+        return newAttachments;
+      });
     }
   };
 
@@ -207,20 +214,29 @@ const TransactionEditPage: React.FC = () => {
       const response = await apiClient.patch(`/transactions/${id}/`, submitData);
 
       // Upload new attachments if any
+      console.log('Checking attachments:', attachments.length, attachments);
       if (attachments.length > 0) {
+        console.log('Uploading attachments for transaction:', id);
         const formData = new FormData();
         attachments.forEach(file => {
+          console.log('Adding file to formData:', file.name, file.size);
           formData.append('files', file);
         });
         formData.append('transaction', id!);
 
         try {
-          await apiClient.post('/attachments/bulk_upload/', formData, {
+          console.log('Sending attachment upload request...');
+          const uploadResponse = await apiClient.post('/attachments/attachments/bulk_upload/', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
+          console.log('Attachment upload response:', uploadResponse.data);
         } catch (uploadErr) {
           console.error('Error uploading attachments:', uploadErr);
+          // Show error to user but don't prevent navigation
+          alert('Warning: Some attachments may not have been uploaded. Please check the transaction details.');
         }
+      } else {
+        console.log('No attachments to upload');
       }
 
       navigate(`/transactions/${id}`);

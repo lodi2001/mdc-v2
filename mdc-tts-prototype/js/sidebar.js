@@ -150,18 +150,6 @@
                 text: 'Notifications',
                 textAr: 'الإشعارات',
                 badge: { text: '2', class: 'bg-danger' }
-            },
-            {
-                href: 'reports.html',
-                icon: 'bi-graph-up',
-                text: 'Reports',
-                textAr: 'التقارير'
-            },
-            {
-                href: 'support.html',
-                icon: 'bi-headset',
-                text: 'Support',
-                textAr: 'الدعم'
             }
         ]
     };

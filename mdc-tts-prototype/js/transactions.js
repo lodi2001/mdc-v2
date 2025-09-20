@@ -124,11 +124,8 @@ function renderActionButtonsByRole(transactionId) {
     const userData = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
     
     if (userData.role === 'client') {
-        // Client: Only feedback and download buttons
+        // Client: Only download button
         return `
-            <button class="btn btn-sm btn-outline-success" onclick="addFeedback('${transactionId}')" title="Add Feedback" data-original-title="Add Feedback">
-                <i class="bi bi-chat-dots"></i>
-            </button>
             <button class="btn btn-sm btn-outline-primary" onclick="downloadTransaction('${transactionId}')" title="Download" data-original-title="Download">
                 <i class="bi bi-download"></i>
             </button>
@@ -151,11 +148,8 @@ function renderGridActionButtonsByRole(transactionId) {
     const userData = JSON.parse(sessionStorage.getItem('user') || localStorage.getItem('user') || '{}');
     
     if (userData.role === 'client') {
-        // Client: Only feedback and download buttons
+        // Client: Only download button
         return `
-            <button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation(); addFeedback('${transactionId}')">
-                <i class="bi bi-chat-dots"></i>
-            </button>
             <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); downloadTransaction('${transactionId}')">
                 <i class="bi bi-download"></i>
             </button>
@@ -475,6 +469,7 @@ function renderTableView(transactions) {
     }
     
     // Build the complete table HTML structure - hide Client and Priority columns for Client users
+    // Show Reference Number first, then Transaction ID for all users
     const tableHTML = `
         <table class="table table-hover table-mobile-card mb-0" id="transactionsTable">
             <thead>
@@ -482,8 +477,8 @@ function renderTableView(transactions) {
                     <th>
                         <input type="checkbox" class="form-check-input" id="selectAll">
                     </th>
-                    <th data-original-text="Transaction ID">رقم المعاملة</th>
                     <th data-original-text="Reference Number">الرقم المرجعي</th>
+                    <th data-original-text="Transaction ID">رقم المعاملة</th>
                     ${!isClient ? '<th data-original-text="Client">العميل</th>' : ''}
                     <th data-original-text="Type">النوع</th>
                     ${!isClient ? '<th data-original-text="Priority">الأولوية</th>' : ''}
@@ -512,12 +507,12 @@ function renderTableView(transactions) {
             <td>
                 <input type="checkbox" class="form-check-input transaction-checkbox" value="${t.id}">
             </td>
+            <td class="text-muted">${referenceNumber}</td>
             <td>
                 <a href="transaction-detail.html?id=${t.id}" class="text-decoration-none">
                     #${t.id}
                 </a>
             </td>
-            <td class="text-muted">${referenceNumber}</td>
             ${!isClient ? `<td>${t.client}</td>` : ''}
             <td>${getTypeBadge(t.type)}</td>
             ${!isClient ? `<td>${getPriorityBadge(t.priority || 'medium')}</td>` : ''}

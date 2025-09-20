@@ -118,11 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     });
 
-    // Forgot password link
-    document.querySelector('.forgot-password-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Password reset functionality would be implemented here. An email would be sent to the registered email address.');
-    });
+    // Forgot password link - now handled by actual href to forgot-password.html
+    // No need to prevent default behavior
 
     // Helper Functions
     function validateEmail(email) {
@@ -216,6 +213,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateTextToArabic() {
+        // Welcome section (left side)
+        const welcomeTitle = document.querySelector('.welcome-title');
+        if (welcomeTitle) welcomeTitle.textContent = 'نظام تتبع المعاملات';
+        
+        const welcomeSubtitle = document.querySelector('.welcome-subtitle');
+        if (welcomeSubtitle) welcomeSubtitle.textContent = 'قم بتبسيط معاملاتك المالية من خلال منصتنا الشاملة لإدارة المعاملات';
+        
+        const featureItems = document.querySelectorAll('.feature-item span');
+        if (featureItems[0]) featureItems[0].textContent = 'آمن وموثوق';
+        if (featureItems[1]) featureItems[1].textContent = 'تتبع في الوقت الفعلي';
+        if (featureItems[2]) featureItems[2].textContent = 'تصدير التقارير';
+        
+        // Form section (right side)
         document.querySelector('.form-title').textContent = 'مرحباً بعودتك';
         document.querySelector('.form-subtitle').textContent = 'قم بتسجيل الدخول للوصول إلى حسابك';
         document.querySelector('.google-signin-btn span').textContent = 'تسجيل الدخول بواسطة جوجل';
@@ -227,10 +237,23 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('label[for="rememberMe"]').textContent = 'تذكرني';
         document.querySelector('.forgot-password-link').textContent = 'نسيت كلمة المرور؟';
         document.querySelector('.btn-text').textContent = 'تسجيل الدخول';
-        document.querySelector('.login-footer p').innerHTML = 'ليس لديك حساب؟ <a href="#" class="text-decoration-none">تواصل مع المسؤول</a>';
+        document.querySelector('.login-footer p').innerHTML = 'ليس لديك حساب؟ <a href="register.html" class="text-decoration-none">إنشاء حساب</a>';
     }
 
     function updateTextToEnglish() {
+        // Welcome section (left side)
+        const welcomeTitle = document.querySelector('.welcome-title');
+        if (welcomeTitle) welcomeTitle.textContent = 'Transaction Tracking System';
+        
+        const welcomeSubtitle = document.querySelector('.welcome-subtitle');
+        if (welcomeSubtitle) welcomeSubtitle.textContent = 'Streamline your financial transactions with our comprehensive management platform';
+        
+        const featureItems = document.querySelectorAll('.feature-item span');
+        if (featureItems[0]) featureItems[0].textContent = 'Secure & Reliable';
+        if (featureItems[1]) featureItems[1].textContent = 'Real-time Tracking';
+        if (featureItems[2]) featureItems[2].textContent = 'Export Reports';
+        
+        // Form section (right side)
         document.querySelector('.form-title').textContent = 'Welcome Back';
         document.querySelector('.form-subtitle').textContent = 'Sign in to access your account';
         document.querySelector('.google-signin-btn span').textContent = 'Sign in with Google';
@@ -242,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('label[for="rememberMe"]').textContent = 'Remember me';
         document.querySelector('.forgot-password-link').textContent = 'Forgot password?';
         document.querySelector('.btn-text').textContent = 'Sign In';
-        document.querySelector('.login-footer p').innerHTML = 'Don\'t have an account? <a href="#" class="text-decoration-none">Contact Administrator</a>';
+        document.querySelector('.login-footer p').innerHTML = 'Don\'t have an account? <a href="register.html" class="text-decoration-none">Create account</a>';
     }
 
     // Set Arabic as default language

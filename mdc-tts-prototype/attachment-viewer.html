@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Viewer - MDC TTS</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #1a1a1a;
+        }
+        
+        .viewer-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .viewer-header {
+            background: #2c2c2c;
+            border-bottom: 1px solid #444;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .viewer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .viewer-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .viewer-body {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+            background: #f0f0f0;
+        }
+        
+        .document-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100%;
+            padding: 20px;
+        }
+        
+        .document-wrapper {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 100%;
+            position: relative;
+        }
+        
+        .document-content {
+            transform-origin: top left;
+            transition: transform 0.3s ease;
+        }
+        
+        .document-content.zoom-fit {
+            width: 100%;
+            height: auto;
+        }
+        
+        .document-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .document-content iframe {
+            border: none;
+            background: white;
+        }
+        
+        .zoom-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(44, 44, 44, 0.95);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            gap: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        
+        .zoom-level {
+            color: white;
+            padding: 5px 10px;
+            min-width: 60px;
+            text-align: center;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 44, 44, 0.95);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        
+        .page-info {
+            color: white;
+            padding: 0 10px;
+            font-size: 14px;
+        }
+        
+        .btn-viewer {
+            background: transparent;
+            border: 1px solid #666;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-viewer:hover {
+            background: #444;
+            border-color: #888;
+        }
+        
+        .btn-viewer:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .thumbnails-sidebar {
+            width: 200px;
+            background: #2c2c2c;
+            border-right: 1px solid #444;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .thumbnails-sidebar.active {
+            display: block;
+        }
+        
+        .thumbnail-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #444;
+            text-align: center;
+        }
+        
+        .thumbnail-item:hover {
+            background: #383838;
+        }
+        
+        .thumbnail-item.active {
+            background: #1a5f3f;
+        }
+        
+        .thumbnail-item img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 5px;
+        }
+        
+        .thumbnail-label {
+            color: #ccc;
+            font-size: 12px;
+        }
+        
+        .viewer-body.with-sidebar {
+            display: flex;
+        }
+        
+        .viewer-body.with-sidebar .document-container {
+            flex: 1;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .annotations-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .annotation {
+            position: absolute;
+            background: rgba(255, 235, 59, 0.3);
+            border: 2px solid #FFC107;
+            pointer-events: all;
+            cursor: pointer;
+        }
+        
+        .annotation-tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 3000;
+            display: none;
+        }
+        
+        .annotation:hover + .annotation-tooltip {
+            display: block;
+        }
+        
+        /* RTL Support */
+        [dir="rtl"] .viewer-info {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .viewer-controls {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .thumbnails-sidebar {
+            border-right: none;
+            border-left: 1px solid #444;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .viewer-header,
+            .zoom-controls,
+            .page-navigation,
+            .thumbnails-sidebar {
+                display: none !important;
+            }
+            
+            .viewer-body {
+                background: white;
+            }
+            
+            .document-wrapper {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="viewer-container">
+        <!-- Viewer Header -->
+        <div class="viewer-header">
+            <div class="viewer-info">
+                <button class="btn btn-sm btn-outline-light" onclick="closeViewer()">
+                    <i class="bi bi-arrow-left"></i>
+                    <span data-original-text="Back">Back</span>
+                </button>
+                <div>
+                    <div class="fw-bold" id="documentTitle">Contract_Agreement_2024.pdf</div>
+                    <small class="text-muted">
+                        <span id="documentSize">2.4 MB</span> • 
+                        <span data-original-text="Uploaded">Uploaded</span> 
+                        <span id="uploadDate">Jan 15, 2024</span>
+                    </small>
+                </div>
+            </div>
+            
+            <div class="viewer-controls">
+                <!-- View Mode -->
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-light" onclick="toggleThumbnails()" title="Toggle Thumbnails">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-light" onclick="toggleFullscreen()" title="Fullscreen">
+                        <i class="bi bi-fullscreen"></i>
+                    </button>
+                </div>
+                
+                <!-- Tools -->
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-light" onclick="rotateDocument(-90)" title="Rotate Left">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-light" onclick="rotateDocument(90)" title="Rotate Right">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+                
+                <!-- Actions -->
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-light" onclick="printDocument()" title="Print">
+                        <i class="bi bi-printer"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-light" onclick="downloadDocument()" title="Download">
+                        <i class="bi bi-download"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-light" onclick="shareDocument()" title="Share">
+                        <i class="bi bi-share"></i>
+                    </button>
+                </div>
+                
+                <!-- Language Toggle -->
+                <div class="btn-group" role="group">
+                    <button class="btn btn-sm btn-outline-light active" data-lang="en">EN</button>
+                    <button class="btn btn-sm btn-outline-light" data-lang="ar">AR</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Viewer Body -->
+        <div class="viewer-body" id="viewerBody">
+            <!-- Thumbnails Sidebar -->
+            <div class="thumbnails-sidebar" id="thumbnailsSidebar">
+                <div class="thumbnail-item active">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5IiBmb250LXNpemU9IjE0Ij5QYWdlIDE8L3RleHQ+PC9zdmc+" alt="Page 1">
+                    <div class="thumbnail-label">Page 1</div>
+                </div>
+                <div class="thumbnail-item">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5IiBmb250LXNpemU9IjE0Ij5QYWdlIDI8L3RleHQ+PC9zdmc+" alt="Page 2">
+                    <div class="thumbnail-label">Page 2</div>
+                </div>
+                <div class="thumbnail-item">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5IiBmb250LXNpemU9IjE0Ij5QYWdlIDM8L3RleHQ+PC9zdmc+" alt="Page 3">
+                    <div class="thumbnail-label">Page 3</div>
+                </div>
+            </div>
+            
+            <!-- Document Container -->
+            <div class="document-container" id="documentContainer">
+                <div class="document-wrapper">
+                    <div class="document-content zoom-fit" id="documentContent">
+                        <!-- PDF would be rendered here using PDF.js or iframe -->
+                        <iframe src="sample-document.pdf" width="800" height="1000" id="documentFrame"></iframe>
+                        
+                        <!-- For images -->
+                        <!-- <img src="document-image.jpg" alt="Document" id="documentImage" style="display:none;"> -->
+                        
+                        <!-- Annotations Layer -->
+                        <div class="annotations-layer" id="annotationsLayer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Zoom Controls -->
+        <div class="zoom-controls">
+            <button class="btn-viewer" onclick="zoomOut()">
+                <i class="bi bi-zoom-out"></i>
+            </button>
+            <div class="zoom-level" id="zoomLevel">100%</div>
+            <button class="btn-viewer" onclick="zoomIn()">
+                <i class="bi bi-zoom-in"></i>
+            </button>
+            <button class="btn-viewer" onclick="zoomFit()">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+        </div>
+        
+        <!-- Page Navigation (for multi-page documents) -->
+        <div class="page-navigation" id="pageNavigation">
+            <button class="btn-viewer" onclick="previousPage()" id="prevPageBtn">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="page-info">
+                <span data-original-text="Page">Page</span> 
+                <span id="currentPage">1</span> / <span id="totalPages">3</span>
+            </div>
+            <button class="btn-viewer" onclick="nextPage()" id="nextPageBtn">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Document viewer state
+        let currentZoom = 100;
+        let currentPage = 1;
+        let totalPages = 3;
+        let rotation = 0;
+        let documentType = 'pdf'; // pdf, image, text, etc.
+        
+        // Initialize viewer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get document info from URL params or session
+            const urlParams = new URLSearchParams(window.location.search);
+            const docId = urlParams.get('id');
+            const docName = urlParams.get('name');
+            
+            if (docName) {
+                document.getElementById('documentTitle').textContent = docName;
+            }
+            
+            // Load document
+            loadDocument(docId);
+            
+            // Update page navigation
+            updatePageNavigation();
+        });
+        
+        // Load document
+        function loadDocument(docId) {
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            // Simulate loading (in production, fetch from API)
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                // Determine document type and render accordingly
+                // For now, showing iframe for PDFs
+            }, 1000);
+        }
+        
+        // Zoom functions
+        function zoomIn() {
+            if (currentZoom < 200) {
+                currentZoom += 25;
+                applyZoom();
+            }
+        }
+        
+        function zoomOut() {
+            if (currentZoom > 25) {
+                currentZoom -= 25;
+                applyZoom();
+            }
+        }
+        
+        function zoomFit() {
+            currentZoom = 100;
+            applyZoom();
+            document.getElementById('documentContent').classList.add('zoom-fit');
+        }
+        
+        function applyZoom() {
+            const content = document.getElementById('documentContent');
+            content.classList.remove('zoom-fit');
+            content.style.transform = `scale(${currentZoom / 100}) rotate(${rotation}deg)`;
+            document.getElementById('zoomLevel').textContent = currentZoom + '%';
+        }
+        
+        // Rotation functions
+        function rotateDocument(degrees) {
+            rotation += degrees;
+            if (rotation >= 360) rotation -= 360;
+            if (rotation < 0) rotation += 360;
+            applyZoom();
+        }
+        
+        // Page navigation
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadPage(currentPage);
+                updatePageNavigation();
+            }
+        }
+        
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadPage(currentPage);
+                updatePageNavigation();
+            }
+        }
+        
+        function loadPage(pageNum) {
+            // Load specific page (for PDF.js integration)
+            console.log('Loading page:', pageNum);
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail-item').forEach((item, index) => {
+                item.classList.toggle('active', index === pageNum - 1);
+            });
+        }
+        
+        function updatePageNavigation() {
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+            document.getElementById('prevPageBtn').disabled = currentPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+        }
+        
+        // Toggle functions
+        function toggleThumbnails() {
+            const sidebar = document.getElementById('thumbnailsSidebar');
+            const body = document.getElementById('viewerBody');
+            sidebar.classList.toggle('active');
+            body.classList.toggle('with-sidebar');
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Actions
+        function printDocument() {
+            window.print();
+        }
+        
+        function downloadDocument() {
+            // Trigger download
+            const link = document.createElement('a');
+            link.href = 'sample-document.pdf'; // Would be actual document URL
+            link.download = document.getElementById('documentTitle').textContent;
+            link.click();
+        }
+        
+        function shareDocument() {
+            // Show share options
+            if (navigator.share) {
+                navigator.share({
+                    title: document.getElementById('documentTitle').textContent,
+                    text: 'Check out this document',
+                    url: window.location.href
+                });
+            } else {
+                // Copy link to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+        
+        function closeViewer() {
+            // Go back to previous page or close viewer
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'transactions.html';
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'Escape':
+                    closeViewer();
+                    break;
+                case '+':
+                case '=':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        zoomIn();
+                    }
+                    break;
+                case '-':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        zoomOut();
+                    }
+                    break;
+                case '0':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        zoomFit();
+                    }
+                    break;
+                case 'ArrowLeft':
+                    previousPage();
+                    break;
+                case 'ArrowRight':
+                    nextPage();
+                    break;
+                case 'p':
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        printDocument();
+                    }
+                    break;
+            }
+        });
+        
+        // Language toggle
+        document.querySelectorAll('[data-lang]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('[data-lang]').forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Update HTML lang and dir attributes
+                const isArabic = this.dataset.lang === 'ar';
+                document.documentElement.lang = isArabic ? 'ar' : 'en';
+                document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+                
+                // Apply translations
+                if (isArabic) {
+                    applyArabicTranslations();
+                } else {
+                    applyEnglishTranslations();
+                }
+            });
+        });
+        
+        function applyArabicTranslations() {
+            document.querySelector('[data-original-text="Back"]').textContent = 'رجوع';
+            document.querySelector('[data-original-text="Uploaded"]').textContent = 'تم الرفع';
+            document.querySelector('[data-original-text="Page"]').textContent = 'صفحة';
+        }
+        
+        function applyEnglishTranslations() {
+            document.querySelectorAll('[data-original-text]').forEach(element => {
+                element.textContent = element.getAttribute('data-original-text');
+            });
+        }
+    </script>
+</body>
+</html>
