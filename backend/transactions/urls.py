@@ -5,6 +5,7 @@ URL configuration for Transactions app
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from .export_view import ExportTransactionsView
 
 # Create router for ViewSet
 router = DefaultRouter()
@@ -14,10 +15,15 @@ app_name = 'transactions'
 
 urlpatterns = [
     # Recent transactions endpoint (must come before router URLs)
-    path('recent/', 
-         views.RecentTransactionsView.as_view(), 
+    path('recent/',
+         views.RecentTransactionsView.as_view(),
          name='recent-transactions'),
-    
+
+    # Export endpoint (must come before router URLs to avoid conflicts)
+    path('export/',
+         ExportTransactionsView.as_view(),
+         name='transaction-export'),
+
     # Include router URLs
     path('', include(router.urls)),
     

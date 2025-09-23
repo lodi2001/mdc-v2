@@ -101,6 +101,7 @@ class TransactionSerializer(serializers.ModelSerializer):
     priority_display = serializers.CharField(source='get_priority_display', read_only=True)
     attachments = serializers.SerializerMethodField()
     attachments_count = serializers.SerializerMethodField()
+    status_history = TransactionStatusHistorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Transaction
@@ -110,7 +111,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             'status', 'status_display', 'priority', 'priority_display',
             'due_date', 'department', 'project_id', 'tags', 'internal_notes',
             'created_by_name', 'assigned_to_name',
-            'attachments', 'attachments_count',
+            'attachments', 'attachments_count', 'status_history',
             'created_at', 'updated_at'
         ]
         read_only_fields = [

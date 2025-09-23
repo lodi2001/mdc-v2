@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import apiClient from '../services/api/client';
 import { Transaction } from '../types/transaction';
+import TransactionComments from '../components/transactions/TransactionComments';
+import TransactionHistory from '../components/transactions/TransactionHistory';
 
 const TransactionDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -320,17 +322,10 @@ const TransactionDetailPage: React.FC = () => {
           )}
 
           {activeTab === 'comments' && (
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">
-                  {isRTL ? 'التعليقات' : 'Comments'}
-                </h5>
-                <div className="text-center text-muted py-5">
-                  <i className="bi bi-chat-dots fs-1"></i>
-                  <p>{isRTL ? 'لا توجد تعليقات بعد' : 'No comments yet'}</p>
-                </div>
-              </div>
-            </div>
+            <TransactionComments
+              transactionId={id || ''}
+              isRTL={isRTL}
+            />
           )}
 
           {activeTab === 'attachments' && (
@@ -390,17 +385,10 @@ const TransactionDetailPage: React.FC = () => {
           )}
 
           {activeTab === 'history' && (
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">
-                  {isRTL ? 'سجل المعاملة' : 'Transaction History'}
-                </h5>
-                <div className="text-center text-muted py-5">
-                  <i className="bi bi-clock-history fs-1"></i>
-                  <p>{isRTL ? 'لا يوجد سجل' : 'No history available'}</p>
-                </div>
-              </div>
-            </div>
+            <TransactionHistory
+              transactionId={id || ''}
+              isRTL={isRTL}
+            />
           )}
         </div>
       </div>

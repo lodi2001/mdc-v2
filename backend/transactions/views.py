@@ -100,9 +100,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
             'comments', 'status_history', 'attachments'
         )
 
-        # For retrieve, update, destroy actions, return all transactions
+        # For retrieve, update, destroy, and custom detail actions, return all transactions
         # and let check_object_permissions handle the access control
-        if self.action in ['retrieve', 'update', 'partial_update', 'destroy']:
+        if self.action in ['retrieve', 'update', 'partial_update', 'destroy', 'history', 'comments', 'qr_code']:
             return queryset
 
         # For list action, filter based on user role
@@ -335,11 +335,15 @@ class TransactionViewSet(viewsets.ModelViewSet):
             data=serializer.data
         )
     
-    @action(detail=False, methods=['get'], permission_classes=[IsActiveUser])
     def export(self, request):
         """
-        Export transactions to Excel/CSV
+        Export transactions to Excel/CSV - custom action that returns HttpResponse directly
         """
+        # Check permissions manually since we're bypassing DRF
+        if not request.user.is_authenticated or not request.user.is_active:
+            from django.http import JsonResponse
+            return JsonResponse({"success": False, "message": "Authentication required"}, status=401)
+
         import csv
         from django.http import HttpResponse
         import openpyxl
@@ -487,7 +491,87 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 message="Failed to generate QR code",
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-    
+
+    @action(detail=True, methods=['get'], permission_classes=[IsActiveUser])
+    def history(self, request, pk=None):
+        """
+        Get transaction history including status changes and activities
+        """
+        transaction = self.get_object()
+
+        # Check permissions
+        user = request.user
+        if user.role == 'client' and transaction.client != user:
+            return create_error_response(
+                message="You don't have permission to view this transaction",
+                status_code=status.HTTP_403_FORBIDDEN
+            )
+        elif user.role == 'editor' and transaction.assigned_to != user and transaction.created_by != user:
+            return create_error_response(
+                message="You don't have permission to view this transaction",
+                status_code=status.HTTP_403_FORBIDDEN
+            )
+
+        # Get status history
+        status_history = transaction.status_history.all().order_by('-created_at')
+
+        # Combine different activity types
+        activities = []
+
+        # Add status changes
+        for history in status_history:
+            activities.append({
+                'type': 'status_change',
+                'icon': 'bi-arrow-right-circle',
+                'color': 'primary',
+                'title': f'Status changed from {history.get_previous_status_display() if history.previous_status else "N/A"} to {history.get_new_status_display()}',
+                'description': history.change_reason or '',
+                'user': history.changed_by.get_full_name() if history.changed_by else 'System',
+                'created_at': history.created_at.isoformat(),
+            })
+
+        # Add comments as activities
+        for comment in transaction.comments.filter(is_deleted=False):
+            # Skip internal comments for clients
+            if user.role == 'client' and comment.is_internal:
+                continue
+            activities.append({
+                'type': 'comment',
+                'icon': 'bi-chat-dots',
+                'color': 'info',
+                'title': 'Comment added' + (' (Internal)' if comment.is_internal else ''),
+                'description': comment.content[:100] + ('...' if len(comment.content) > 100 else ''),
+                'user': comment.user.get_full_name() if comment.user else 'Unknown',
+                'created_at': comment.created_at.isoformat(),
+            })
+
+        # Add attachments as activities
+        for attachment in transaction.attachments.filter(is_deleted=False):
+            # Skip non-visible attachments for clients
+            if user.role == 'client' and not attachment.is_client_visible:
+                continue
+            activities.append({
+                'type': 'attachment',
+                'icon': 'bi-paperclip',
+                'color': 'success',
+                'title': 'File uploaded',
+                'description': attachment.original_filename,
+                'user': attachment.uploaded_by.get_full_name() if attachment.uploaded_by else 'Unknown',
+                'created_at': attachment.created_at.isoformat(),
+            })
+
+        # Sort activities by created_at (newest first)
+        activities.sort(key=lambda x: x['created_at'], reverse=True)
+
+        return create_success_response(
+            message="Transaction history retrieved successfully",
+            data={
+                'transaction_id': transaction.transaction_id,
+                'activities': activities,
+                'total_activities': len(activities)
+            }
+        )
+
     @action(detail=True, methods=['get', 'post'], permission_classes=[IsActiveUser])
     def attachments(self, request, pk=None):
         """

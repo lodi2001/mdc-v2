@@ -921,3 +921,32 @@ class PasswordResetConfirmView(APIView):
 
 
 # SystemSettingsView removed - now handled by system_settings app
+
+
+class ClientListView(APIView):
+    """
+    View to list all client users for filtering purposes
+    """
+    permission_classes = [IsActiveUser]
+    pagination_class = None
+
+    def get(self, request):
+        """
+        Get list of client users
+        """
+        # Get all active client users
+        clients = User.objects.filter(
+            role='client',
+            is_active=True
+        ).order_by('first_name', 'last_name')
+
+        # Serialize data
+        serializer = UserListSerializer(clients, many=True)
+
+        return create_success_response(
+            message="Clients retrieved successfully",
+            data={
+                'results': serializer.data,
+                'count': clients.count()
+            }
+        )

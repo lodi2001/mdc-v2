@@ -118,6 +118,13 @@ class User(AbstractUser):
         default=False,
         help_text=_('Whether user email has been verified')
     )
+
+    # Comment permission
+    can_comment = models.BooleanField(
+        _('can comment'),
+        default=False,
+        help_text=_('Whether client user can add comments to transactions')
+    )
     
     # Approval workflow
     created_by = models.ForeignKey(
@@ -176,7 +183,12 @@ class User(AbstractUser):
     
     def __str__(self):
         return f"{self.get_full_name()} ({self.email})"
-    
+
+    def get_full_name(self):
+        """Return the full name of the user."""
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return full_name or self.username
+
     @property
     def is_admin(self):
         """Check if user has admin role."""

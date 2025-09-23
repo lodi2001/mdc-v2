@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../contexts/AuthContext';
 import apiClient from '../services/api/client';
+import TransactionFilters from '../components/transactions/TransactionFilters';
+import AdvancedFilterModal from '../components/transactions/AdvancedFilterModal';
+import { debounce } from 'lodash';
 
 interface Transaction {
   id: string;
@@ -32,15 +35,26 @@ const TransactionsPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
   const [selectedTransactions, setSelectedTransactions] = useState<string[]>([]);
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<any>({});
+  const [exportLoading, setExportLoading] = useState(false);
   const isRTL = localStorage.getItem('language') === 'ar';
 
   const isAdmin = user?.role?.toLowerCase() === 'admin';
   const isEditor = user?.role?.toLowerCase() === 'editor';
   const canCreate = isAdmin || isEditor;
 
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((term: string) => {
+      setSearchTerm(term);
+    }, 500),
+    []
+  );
+
   useEffect(() => {
     fetchTransactions();
-  }, [currentPage, pageSize, searchTerm, statusFilter, typeFilter, dateFrom, dateTo]);
+  }, [currentPage, pageSize, searchTerm, statusFilter, typeFilter, dateFrom, dateTo, activeFilters]);
 
   const fetchTransactions = async () => {
     try {
@@ -50,9 +64,10 @@ const TransactionsPage: React.FC = () => {
         page_size: pageSize.toString(),
         ...(searchTerm && { search: searchTerm }),
         ...(statusFilter && { status: statusFilter }),
-        ...(typeFilter && { type: typeFilter }),
-        ...(dateFrom && { date_from: dateFrom }),
-        ...(dateTo && { date_to: dateTo }),
+        ...(typeFilter && { transaction_type: typeFilter }),
+        ...(dateFrom && { created_at__gte: dateFrom }),
+        ...(dateTo && { created_at__lte: dateTo }),
+        ...activeFilters,
       });
 
       const response = await apiClient.get(`/transactions/?${params}`);
@@ -123,6 +138,91 @@ const TransactionsPage: React.FC = () => {
     return priorityClasses[priority] || 'bg-secondary';
   };
 
+  const handleExport = async (format: 'excel' | 'csv') => {
+    try {
+      setExportLoading(true);
+
+      // Build query params including all current filters
+      const params = new URLSearchParams({
+        format,
+        ...(searchTerm && { search: searchTerm }),
+        ...(statusFilter && { status: statusFilter }),
+        ...(typeFilter && { transaction_type: typeFilter }),
+        ...(dateFrom && { created_at__gte: dateFrom }),
+        ...(dateTo && { created_at__lte: dateTo }),
+        ...activeFilters,
+      });
+
+      // Get auth token
+      const token = localStorage.getItem('access_token');
+
+      // Make request to export endpoint using fetch for better blob handling
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/transactions/export/?${params}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Get the blob from response
+      const blob = await response.blob();
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      // Get filename from Content-Disposition header if available, otherwise use default
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = `transactions_${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'xlsx' : 'csv'}`;
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      link.setAttribute('download', filename);
+
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      // Clean up
+      window.URL.revokeObjectURL(url);
+
+      // Show success message
+      alert(isRTL ? 'تم تصدير المعاملات بنجاح' : 'Transactions exported successfully');
+    } catch (error) {
+      console.error('Export error:', error);
+      alert(isRTL ? 'فشل تصدير المعاملات' : 'Failed to export transactions');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const handleFilterChange = (filters: any) => {
+    setActiveFilters(filters);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleAdvancedFilterApply = (filters: any) => {
+    setActiveFilters(filters);
+    setCurrentPage(1);
+    setShowAdvancedFilter(false);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    debouncedSearch(value);
+  };
+
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
@@ -137,11 +237,15 @@ const TransactionsPage: React.FC = () => {
             </div>
             <div className="col-auto">
               <div className="d-flex gap-2">
-                <button className="btn btn-outline-primary">
-                  <i className="bi bi-funnel me-1"></i> Advanced Filter
-                </button>
-                <button className="btn btn-outline-primary">
-                  <i className="bi bi-download me-1"></i> Export
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() => setShowAdvancedFilter(true)}
+                >
+                  <i className="bi bi-funnel me-1"></i>
+                  {isRTL ? 'فلتر متقدم' : 'Advanced Filter'}
+                  {Object.keys(activeFilters).length > 0 && (
+                    <span className="badge bg-primary ms-1">{Object.keys(activeFilters).length}</span>
+                  )}
                 </button>
                 {canCreate && (
                   <Link to="/transactions/create" className="btn btn-primary">
@@ -153,76 +257,32 @@ const TransactionsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Quick Filters */}
-        <div className="card mb-4">
+        {/* Search Bar */}
+        <div className="card mb-3">
           <div className="card-body">
-            <div className="row g-3">
-              <div className="col-12 col-md-4">
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="bi bi-search"></i>
-                  </span>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Search by ID, client, or description..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="col-6 col-md-2">
-                <select 
-                  className="form-select"
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  <option value="">All Status</option>
-                  <option value="draft">Draft</option>
-                  <option value="submitted">Submitted</option>
-                  <option value="approved">Approved</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                  <option value="on-hold">On Hold</option>
-                </select>
-              </div>
-              <div className="col-6 col-md-2">
-                <select 
-                  className="form-select"
-                  value={typeFilter}
-                  onChange={(e) => setTypeFilter(e.target.value)}
-                >
-                  <option value="">All Types</option>
-                  <option value="registration">Registration</option>
-                  <option value="ownership">Ownership Transfer</option>
-                  <option value="licenses">Licenses</option>
-                  <option value="designs">Designs</option>
-                  <option value="study">Study</option>
-                </select>
-              </div>
-              <div className="col-6 col-md-2">
-                <input 
-                  type="date" 
-                  className="form-control"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  placeholder="From Date"
-                />
-              </div>
-              <div className="col-6 col-md-2">
-                <input 
-                  type="date" 
-                  className="form-control"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  placeholder="To Date"
-                />
-              </div>
+            <div className="input-group">
+              <span className="input-group-text">
+                <i className="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder={isRTL ?
+                  'ابحث برقم المعاملة، اسم العميل، النوع، أو الوصف...' :
+                  'Search by transaction ID, client name, type, or description...'
+                }
+                onChange={handleSearch}
+              />
             </div>
           </div>
         </div>
+
+        {/* Transaction Filters Component */}
+        <TransactionFilters
+          onFilterChange={handleFilterChange}
+          onExport={handleExport}
+          loading={exportLoading}
+        />
 
         {/* Transactions Table */}
         <div className="card">
@@ -475,6 +535,14 @@ const TransactionsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Advanced Filter Modal */}
+      <AdvancedFilterModal
+        show={showAdvancedFilter}
+        onClose={() => setShowAdvancedFilter(false)}
+        onApply={handleAdvancedFilterApply}
+        currentFilters={activeFilters}
+      />
     </Layout>
   );
 };

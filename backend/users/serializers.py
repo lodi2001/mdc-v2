@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             'password', 'role', 'status',
             'phone_number', 'national_id', 'company_name',
             'date_joined', 'last_login', 'is_active', 'language_preference',
-            'created_by', 'email_verified'
+            'created_by', 'email_verified', 'can_comment'
         ]
         read_only_fields = ['id', 'date_joined', 'last_login', 'created_by']
         extra_kwargs = {

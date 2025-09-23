@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import apiClient from '../services/api/client';
@@ -54,6 +54,8 @@ const TransactionEditPage: React.FC = () => {
   // State for file attachments
   const [attachments, setAttachments] = useState<File[]>([]);
   const [existingAttachments, setExistingAttachments] = useState<any[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchTransaction();
@@ -205,17 +207,16 @@ const TransactionEditPage: React.FC = () => {
         submitData.internal_notes = formData.internal_notes || '';
       }
 
-      // If no fields changed, navigate back without making an API call
-      if (Object.keys(submitData).length === 0) {
-        navigate(`/transactions/${id}`);
-        return;
+      // Check if we need to update transaction data or just upload attachments
+      if (Object.keys(submitData).length > 0) {
+        // Update transaction if there are field changes
+        const response = await apiClient.patch(`/transactions/${id}/`, submitData);
       }
 
-      const response = await apiClient.patch(`/transactions/${id}/`, submitData);
-
-      // Upload new attachments if any
+      // Upload new attachments if any (even if no field changes)
       console.log('Checking attachments:', attachments.length, attachments);
       if (attachments.length > 0) {
+        setUploadingFiles(true);
         console.log('Uploading attachments for transaction:', id);
         const formData = new FormData();
         attachments.forEach(file => {
@@ -230,10 +231,26 @@ const TransactionEditPage: React.FC = () => {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
           console.log('Attachment upload response:', uploadResponse.data);
+
+          // Clear the attachments state and file input after successful upload
+          setAttachments([]);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+
+          // Show success message
+          const uploadedCount = uploadResponse.data?.data?.attachments?.length || attachments.length;
+          alert(isRTL
+            ? `تم رفع ${uploadedCount} ملف(ات) بنجاح`
+            : `${uploadedCount} file(s) uploaded successfully`);
         } catch (uploadErr) {
           console.error('Error uploading attachments:', uploadErr);
           // Show error to user but don't prevent navigation
-          alert('Warning: Some attachments may not have been uploaded. Please check the transaction details.');
+          alert(isRTL
+            ? 'تحذير: قد لا يتم رفع بعض المرفقات. يرجى التحقق من تفاصيل المعاملة.'
+            : 'Warning: Some attachments may not have been uploaded. Please check the transaction details.');
+        } finally {
+          setUploadingFiles(false);
         }
       } else {
         console.log('No attachments to upload');
@@ -332,7 +349,7 @@ const TransactionEditPage: React.FC = () => {
               type="button"
               className="btn btn-secondary me-2"
               onClick={() => navigate(`/transactions/${id}`)}
-              disabled={saving}
+              disabled={saving || uploadingFiles}
             >
               <i className="bi bi-x-circle me-2"></i>
               {isRTL ? 'إلغاء' : 'Cancel'}
@@ -341,12 +358,12 @@ const TransactionEditPage: React.FC = () => {
               type="submit"
               form="editTransactionForm"
               className="btn btn-primary"
-              disabled={saving}
+              disabled={saving || uploadingFiles}
             >
-              {saving ? (
+              {saving || uploadingFiles ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  {isRTL ? 'جاري الحفظ...' : 'Saving...'}
+                  {uploadingFiles ? (isRTL ? 'جاري رفع الملفات...' : 'Uploading files...') : (isRTL ? 'جاري الحفظ...' : 'Saving...')}
                 </>
               ) : (
                 <>
@@ -631,11 +648,13 @@ const TransactionEditPage: React.FC = () => {
 
                     {/* File input */}
                     <input
+                      ref={fileInputRef}
                       type="file"
                       className="form-control"
                       multiple
                       accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                       onChange={handleFileChange}
+                      disabled={uploadingFiles}
                     />
                     <small className="text-muted">
                       {isRTL

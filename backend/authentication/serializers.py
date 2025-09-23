@@ -53,6 +53,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 'is_admin': user.is_admin,
                 'is_editor': user.is_editor,
                 'is_client': user.is_client,
+                'can_comment': user.can_comment,
             }
         })
         
