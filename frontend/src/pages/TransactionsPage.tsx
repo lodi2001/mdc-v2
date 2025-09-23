@@ -218,6 +218,55 @@ const TransactionsPage: React.FC = () => {
     setShowAdvancedFilter(false);
   };
 
+  const handleDuplicate = async (transactionId: number) => {
+    try {
+      // Use the backend duplicate endpoint which handles notifications
+      const response = await apiClient.post(`/transactions/${transactionId}/duplicate/`);
+
+      if (response.data.success) {
+        // Show success message
+        alert(isRTL ? 'تم نسخ المعاملة بنجاح' : 'Transaction duplicated successfully');
+
+        // Refresh the list to show the new duplicate
+        fetchTransactions();
+      }
+    } catch (error) {
+      console.error('Error duplicating transaction:', error);
+      alert(isRTL ? 'فشل نسخ المعاملة' : 'Failed to duplicate transaction');
+    }
+  };
+
+  const handleDelete = async (transactionId: number, transactionTitle: string) => {
+    // Only admins can delete transactions
+    if (user?.role !== 'admin') {
+      alert(isRTL ? 'ليس لديك صلاحية حذف المعاملات' : 'You do not have permission to delete transactions');
+      return;
+    }
+
+    // Confirmation dialog
+    const confirmMessage = isRTL
+      ? `هل أنت متأكد من حذف المعاملة "${transactionTitle}"؟\n\nهذا الإجراء لا يمكن التراجع عنه.`
+      : `Are you sure you want to delete the transaction "${transactionTitle}"?\n\nThis action cannot be undone.`;
+
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      // Delete the transaction
+      await apiClient.delete(`/transactions/${transactionId}/`);
+
+      // Show success message
+      alert(isRTL ? 'تم حذف المعاملة بنجاح' : 'Transaction deleted successfully');
+
+      // Refresh the list
+      fetchTransactions();
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+      alert(isRTL ? 'فشل حذف المعاملة' : 'Failed to delete transaction');
+    }
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     debouncedSearch(value);
@@ -444,22 +493,26 @@ const TransactionsPage: React.FC = () => {
                                   <li>
                                     <button
                                       className="dropdown-item"
-                                      onClick={() => console.log('Duplicate', transaction.id)}
+                                      onClick={() => handleDuplicate(transaction.id)}
                                     >
                                       <i className="bi bi-files me-2"></i>
                                       {isRTL ? 'نسخ' : 'Duplicate'}
                                     </button>
                                   </li>
-                                  <li><hr className="dropdown-divider" /></li>
-                                  <li>
-                                    <button
-                                      className="dropdown-item text-danger"
-                                      onClick={() => console.log('Delete', transaction.id)}
-                                    >
-                                      <i className="bi bi-trash me-2"></i>
-                                      {isRTL ? 'حذف' : 'Delete'}
-                                    </button>
-                                  </li>
+                                  {user?.role === 'admin' && (
+                                    <>
+                                      <li><hr className="dropdown-divider" /></li>
+                                      <li>
+                                        <button
+                                          className="dropdown-item text-danger"
+                                          onClick={() => handleDelete(transaction.id, transaction.title)}
+                                        >
+                                          <i className="bi bi-trash me-2"></i>
+                                          {isRTL ? 'حذف' : 'Delete'}
+                                        </button>
+                                      </li>
+                                    </>
+                                  )}
                                 </>
                               )}
                             </ul>

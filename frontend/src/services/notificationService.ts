@@ -14,14 +14,14 @@ import type {
 } from '../types/notification';
 
 class NotificationService {
-  private baseUrl = '/notifications';
+  private baseUrl = '/notifications/notifications';
 
   /**
    * Get all notifications with optional filters
    */
   async getNotifications(filters?: NotificationFilterState): Promise<NotificationType[]> {
     const params = new URLSearchParams();
-    
+
     if (filters) {
       if (filters.type && filters.type !== 'all') {
         params.append('type', filters.type);
@@ -34,19 +34,24 @@ class NotificationService {
         params.append('created_at_before', filters.dateRange.end);
       }
     }
-    
-    const response = await api.get(`${this.baseUrl}/notifications/?${params.toString()}`);
-    // The backend returns an object with success, pagination, and results
-    // We need to extract the results array
-    if (response.data && response.data.results && Array.isArray(response.data.results)) {
-      return response.data.results;
+
+    try {
+      const response = await api.get(`${this.baseUrl}/?${params.toString()}`);
+      // The backend returns an object with success, pagination, and results
+      // We need to extract the results array
+      if (response.data && response.data.results && Array.isArray(response.data.results)) {
+        return response.data.results;
+      }
+      // Fallback for non-paginated response
+      if (Array.isArray(response.data)) {
+        return response.data;
+      }
+      // Return empty array if structure is unexpected
+      return [];
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      return [];
     }
-    // Fallback for non-paginated response
-    if (Array.isArray(response.data)) {
-      return response.data;
-    }
-    // Return empty array if structure is unexpected
-    return [];
   }
 
   /**
@@ -126,7 +131,7 @@ class NotificationService {
    * Get single notification
    */
   async getNotification(id: number): Promise<NotificationType> {
-    const response = await api.get(`${this.baseUrl}/notifications/${id}/`);
+    const response = await api.get(`${this.baseUrl}/${id}/`);
     return response.data;
   }
 
@@ -138,35 +143,35 @@ class NotificationService {
     if (notificationIds) {
       data.notification_ids = notificationIds;
     }
-    await api.post(`${this.baseUrl}/notifications/mark_read/`, data);
+    await api.post(`${this.baseUrl}/mark_read/`, data);
   }
 
   /**
    * Mark all notifications as read
    */
   async markAllAsRead(): Promise<void> {
-    await api.post(`${this.baseUrl}/notifications/mark_all_read/`);
+    await api.post(`${this.baseUrl}/mark_all_read/`);
   }
 
   /**
    * Clear all notifications
    */
   async clearAll(): Promise<void> {
-    await api.delete(`${this.baseUrl}/notifications/clear_all/`);
+    await api.delete(`${this.baseUrl}/clear_all/`);
   }
 
   /**
    * Delete a notification
    */
   async deleteNotification(id: number): Promise<void> {
-    await api.delete(`${this.baseUrl}/notifications/${id}/`);
+    await api.delete(`${this.baseUrl}/${id}/`);
   }
 
   /**
    * Get unread count
    */
   async getUnreadCount(): Promise<number> {
-    const response = await api.get(`${this.baseUrl}/notifications/unread_count/`);
+    const response = await api.get(`${this.baseUrl}/unread_count/`);
     return response.data.count;
   }
 
@@ -174,7 +179,7 @@ class NotificationService {
    * Get notification statistics
    */
   async getStats(): Promise<NotificationStats> {
-    const response = await api.get(`${this.baseUrl}/notifications/`);
+    const response = await api.get(`${this.baseUrl}/`);
     
     // Extract notifications array from paginated response
     let notifications: NotificationType[] = [];

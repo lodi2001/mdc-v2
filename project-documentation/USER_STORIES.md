@@ -650,10 +650,12 @@ For each user story to be considered complete:
 - ✅ **Import Functionality**: Access to 4-step import wizard
 - ✅ **UI Elements**: Create buttons, edit forms, status controls visible
 
-#### Client Role (50% Complete - CRITICAL GAPS)
+#### Client Role (75% Complete - MUCH IMPROVED)
 - ✅ **View Only Access**: Can view own transactions and status
 - ✅ **Document Download**: Can download client-visible documents
 - ✅ **Print/Export**: Can export own transaction data
+- ✅ **Notification System**: Receive notifications about transaction updates
+- ✅ **Status Notifications**: Get notified when transaction status changes
 - ❌ **RESTRICTED**: Cannot create, edit, or delete transactions
 - ❌ **RESTRICTED**: Cannot add comments (view-only)
 - ❌ **RESTRICTED**: Cannot access "Quick Actions" section

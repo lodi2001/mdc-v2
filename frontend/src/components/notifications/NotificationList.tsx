@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import NotificationItem from './NotificationItem';
 import { NotificationGroup } from '../../types/notification';
 
@@ -22,13 +21,13 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onMarkAsRead,
   onDelete
 }) => {
-  const { t } = useTranslation();
+  const isRTL = localStorage.getItem('language') === 'ar';
 
   if (loading && groups.length === 0) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">{t('common.loading')}</span>
+          <span className="visually-hidden">{isRTL ? 'جاري التحميل...' : 'Loading...'}</span>
         </div>
       </div>
     );
@@ -47,8 +46,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
     return (
       <div className="text-center py-5">
         <i className="bi bi-bell-slash fs-1 text-muted mb-3 d-block"></i>
-        <h5 className="text-muted">{t('notifications.noNotifications')}</h5>
-        <p className="text-muted">{t('notifications.noNotificationsDescription')}</p>
+        <h5 className="text-muted">{isRTL ? 'لا توجد إشعارات' : 'No notifications'}</h5>
+        <p className="text-muted">{isRTL ? 'لم يتم العثور على أي إشعارات' : 'No notifications found'}</p>
       </div>
     );
   }
@@ -58,7 +57,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
       {groups.map((group, groupIndex) => (
         <div key={group.label} className="notification-group mb-4">
           {/* Group header */}
-          <h6 className="text-muted mb-3">{group.label}</h6>
+          <h6 className="text-muted mb-3">{isRTL && group.labelAr ? group.labelAr : group.label}</h6>
           
           {/* Group notifications */}
           {group.notifications.map((notification) => (

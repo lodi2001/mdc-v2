@@ -19,6 +19,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Transaction, TransactionStatusHistory, Comment
 from attachments.models import Attachment
 from attachments.serializers import AttachmentSerializer
+from notifications.models import Notification
 from .serializers import (
     TransactionSerializer, TransactionListSerializer, TransactionCreateSerializer,
     TransactionStatusUpdateSerializer, TransactionAssignmentSerializer,
@@ -173,6 +174,61 @@ class TransactionViewSet(viewsets.ModelViewSet):
         # Send notification to assigned user
         if transaction.assigned_to:
             self._send_assignment_notification(transaction)
+
+        # Create in-app notifications
+        # Notify the client about transaction creation
+        if transaction.client and transaction.client != self.request.user:
+            Notification.create_for_user(
+                user=transaction.client,
+                title='New Transaction Created',
+                message=f'Transaction {transaction.transaction_id} has been created for you',
+                type='transaction',
+                category='info',
+                transaction=transaction,
+                action_link=f'/transactions/{transaction.id}'
+            )
+
+        # Notify assigned user if different from creator
+        if transaction.assigned_to and transaction.assigned_to != self.request.user:
+            Notification.create_for_user(
+                user=transaction.assigned_to,
+                title='Transaction Assigned',
+                message=f'Transaction {transaction.transaction_id} has been assigned to you',
+                type='transaction',
+                category='info',
+                transaction=transaction,
+                action_link=f'/transactions/{transaction.id}'
+            )
+
+        # Notify all admin users about new transaction
+        from users.models import User
+        admin_users = User.objects.filter(role='admin', is_active=True).exclude(id=self.request.user.id)
+        for admin in admin_users:
+            Notification.create_for_user(
+                user=admin,
+                title='New Transaction',
+                message=f'New transaction {transaction.transaction_id} created by {self.request.user.get_full_name()}',
+                type='transaction',
+                category='info',
+                transaction=transaction,
+                action_link=f'/transactions/{transaction.id}'
+            )
+
+        # Self-notification for the admin/editor who created the transaction
+        if self.request.user.role in ['admin', 'editor']:
+            Notification.create_for_user(
+                user=self.request.user,
+                title='Transaction Created Successfully',
+                message=f'You have successfully created transaction {transaction.transaction_id}',
+                type='transaction',
+                category='success',
+                transaction=transaction,
+                action_link=f'/transactions/{transaction.id}',
+                metadata={
+                    'self_action': True,
+                    'action_type': 'create'
+                }
+            )
     
     def perform_update(self, serializer):
         """
@@ -210,16 +266,123 @@ class TransactionViewSet(viewsets.ModelViewSet):
         )
 
         # Send notification if assignment changed
-        if (old_instance.assigned_to != transaction.assigned_to and
-            transaction.assigned_to):
-            self._send_assignment_notification(transaction)
-    
+        if old_instance.assigned_to != transaction.assigned_to:
+            if transaction.assigned_to:
+                self._send_assignment_notification(transaction)
+                # Create in-app notification for new assignee
+                Notification.create_for_user(
+                    user=transaction.assigned_to,
+                    title='Transaction Assigned',
+                    message=f'Transaction {transaction.transaction_id} has been assigned to you',
+                    type='transaction',
+                    category='info',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}'
+                )
+
+            # Notify previous assignee about unassignment
+            if old_instance.assigned_to:
+                Notification.create_for_user(
+                    user=old_instance.assigned_to,
+                    title='Transaction Unassigned',
+                    message=f'Transaction {transaction.transaction_id} is no longer assigned to you',
+                    type='transaction',
+                    category='warning',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}'
+                )
+
+        # Send notification if status changed
+        if old_instance.status != transaction.status:
+            # Notify client about status change
+            if transaction.client:
+                Notification.create_for_user(
+                    user=transaction.client,
+                    title='Transaction Status Updated',
+                    message=f'Transaction {transaction.transaction_id} status changed from {old_instance.get_status_display()} to {transaction.get_status_display()}',
+                    type='transaction',
+                    category='info' if transaction.status == 'completed' else 'warning' if transaction.status == 'cancelled' else 'info',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}'
+                )
+
+            # Notify assigned user if different from updater
+            if transaction.assigned_to and transaction.assigned_to != self.request.user:
+                Notification.create_for_user(
+                    user=transaction.assigned_to,
+                    title='Transaction Status Changed',
+                    message=f'Transaction {transaction.transaction_id} status changed to {transaction.get_status_display()}',
+                    type='transaction',
+                    category='info',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}'
+                )
+
+        # Send notification if client changed
+        if old_instance.client != transaction.client:
+            # Notify new client
+            if transaction.client:
+                Notification.create_for_user(
+                    user=transaction.client,
+                    title='Transaction Assigned to You',
+                    message=f'Transaction {transaction.transaction_id} has been assigned to you',
+                    type='transaction',
+                    category='info',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}'
+                )
+
+            # Notify old client
+            if old_instance.client:
+                Notification.create_for_user(
+                    user=old_instance.client,
+                    title='Transaction Reassigned',
+                    message=f'Transaction {transaction.transaction_id} is no longer assigned to you',
+                    type='transaction',
+                    category='warning',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}'
+                )
+
+        # Self-notification for admin/editor who performed the update
+        if self.request.user.role in ['admin', 'editor']:
+            # Determine what changed to create a meaningful notification
+            changes = []
+            if old_instance.status != transaction.status:
+                changes.append(f'status to {transaction.get_status_display()}')
+            if old_instance.assigned_to != transaction.assigned_to:
+                if transaction.assigned_to:
+                    changes.append(f'assigned to {transaction.assigned_to.get_full_name()}')
+                else:
+                    changes.append('unassigned')
+            if old_instance.client != transaction.client:
+                if transaction.client:
+                    changes.append(f'client to {transaction.client.get_full_name()}')
+                else:
+                    changes.append('client removed')
+
+            if changes:
+                Notification.create_for_user(
+                    user=self.request.user,
+                    title='Transaction Updated Successfully',
+                    message=f'You updated transaction {transaction.transaction_id}: {", ".join(changes)}',
+                    type='transaction',
+                    category='success',
+                    transaction=transaction,
+                    action_link=f'/transactions/{transaction.id}',
+                    metadata={
+                        'self_action': True,
+                        'action_type': 'update',
+                        'changes': changes
+                    }
+                )
+
     def perform_destroy(self, instance):
         """
         Soft delete transaction with audit logging
         """
         instance.soft_delete(self.request.user, "Deleted via API")
-        
+
         create_audit_log_entry(
             user=self.request.user,
             action='delete',
@@ -230,6 +393,21 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 'client_name': instance.client_name
             }
         )
+
+        # Self-notification for admin who deleted the transaction
+        if self.request.user.role == 'admin':
+            Notification.create_for_user(
+                user=self.request.user,
+                title='Transaction Deleted Successfully',
+                message=f'You have successfully deleted transaction {instance.transaction_id}',
+                type='transaction',
+                category='warning',
+                metadata={
+                    'self_action': True,
+                    'action_type': 'delete',
+                    'deleted_transaction_id': instance.transaction_id
+                }
+            )
     
     def _send_assignment_notification(self, transaction):
         """
@@ -456,6 +634,125 @@ class TransactionViewSet(viewsets.ModelViewSet):
         serializer = TransactionListSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
     
+    @action(detail=True, methods=['post'], permission_classes=[IsActiveUser])
+    def duplicate(self, request, pk=None):
+        """
+        Duplicate a transaction with notification triggers
+        """
+        transaction = self.get_object()
+
+        # Check permissions - only admin and editor can duplicate
+        user = request.user
+        if user.role == 'client':
+            return create_error_response(
+                message="You don't have permission to duplicate transactions",
+                status_code=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            # Create duplicate transaction
+            duplicate = Transaction.objects.create(
+                title=f"{transaction.title} (Copy)",
+                reference_number=f"{transaction.reference_number}-COPY" if transaction.reference_number else "",
+                client_name=transaction.client_name,
+                transaction_type=transaction.transaction_type,
+                description=transaction.description,
+                priority=transaction.priority,
+                due_date=transaction.due_date,
+                department=transaction.department,
+                project_id=transaction.project_id,
+                tags=transaction.tags,
+                internal_notes=transaction.internal_notes,
+                client=transaction.client,
+                assigned_to=None,  # Don't copy assignment
+                status='draft',  # Reset status to draft
+                created_by=user
+            )
+
+            # Copy attachments if any
+            for attachment in transaction.attachments.all():
+                duplicate.attachments.add(attachment)
+
+            # Create audit log
+            create_audit_log_entry(
+                user=user,
+                action='duplicate',
+                object_type='Transaction',
+                object_id=duplicate.id,
+                details={
+                    'original_transaction_id': transaction.transaction_id,
+                    'new_transaction_id': duplicate.transaction_id
+                }
+            )
+
+            # Send notifications
+            # Notify client about new duplicated transaction
+            if duplicate.client and duplicate.client != user:
+                Notification.create_for_user(
+                    user=duplicate.client,
+                    title='Transaction Duplicated',
+                    message=f'Transaction {duplicate.transaction_id} has been created as a copy of {transaction.transaction_id}',
+                    type='transaction',
+                    category='info',
+                    transaction=duplicate,
+                    action_link=f'/transactions/{duplicate.id}',
+                    metadata={
+                        'original_id': transaction.id,
+                        'duplicated_by': user.get_full_name()
+                    }
+                )
+
+            # Notify admin users about duplication
+            from users.models import User
+            admin_users = User.objects.filter(role='admin', is_active=True).exclude(id=user.id)
+            for admin in admin_users[:3]:  # Limit to 3 admins
+                Notification.create_for_user(
+                    user=admin,
+                    title='Transaction Duplicated',
+                    message=f'{user.get_full_name()} duplicated transaction {transaction.transaction_id}',
+                    type='transaction',
+                    category='info',
+                    transaction=duplicate,
+                    action_link=f'/transactions/{duplicate.id}',
+                    metadata={
+                        'original_id': transaction.id,
+                        'duplicated_by': user.get_full_name()
+                    }
+                )
+
+            # Self-notification for the admin/editor who duplicated
+            if user.role in ['admin', 'editor']:
+                Notification.create_for_user(
+                    user=user,
+                    title='Transaction Duplicated Successfully',
+                    message=f'You successfully duplicated transaction {transaction.transaction_id} as {duplicate.transaction_id}',
+                    type='transaction',
+                    category='success',
+                    transaction=duplicate,
+                    action_link=f'/transactions/{duplicate.id}',
+                    metadata={
+                        'self_action': True,
+                        'action_type': 'duplicate',
+                        'original_id': transaction.id,
+                        'duplicate_id': duplicate.id
+                    }
+                )
+
+            # Serialize and return the duplicated transaction
+            serializer = TransactionSerializer(duplicate, context={'request': request})
+            return create_success_response(
+                message="Transaction duplicated successfully",
+                data=serializer.data,
+                status_code=status.HTTP_201_CREATED
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to duplicate transaction: {str(e)}")
+            return create_error_response(
+                message=f"Failed to duplicate transaction: {str(e)}",
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
     @action(detail=True, methods=['get'], permission_classes=[IsActiveUser])
     def qr_code(self, request, pk=None):
         """

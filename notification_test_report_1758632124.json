@@ -1,0 +1,131 @@
+{
+  "summary": {
+    "total_tests": 20,
+    "passed_tests": 20,
+    "failed_tests": 0,
+    "pass_rate": 100.0
+  },
+  "test_results": [
+    {
+      "test_name": "Authentication",
+      "status": "PASS",
+      "details": "Successfully logged in as admin",
+      "timestamp": "2025-09-23T15:55:21.671729"
+    },
+    {
+      "test_name": "Test Data Creation",
+      "status": "PASS",
+      "details": "Created 20 test notifications",
+      "timestamp": "2025-09-23T15:55:22.544377"
+    },
+    {
+      "test_name": "Backend API - List notifications",
+      "status": "PASS",
+      "details": "Endpoint accessible (status: 200)",
+      "timestamp": "2025-09-23T15:55:22.555909"
+    },
+    {
+      "test_name": "Backend API - Get unread count",
+      "status": "PASS",
+      "details": "Endpoint accessible (status: 200)",
+      "timestamp": "2025-09-23T15:55:22.602511"
+    },
+    {
+      "test_name": "Notification Count",
+      "status": "PASS",
+      "details": "Unread count: 18",
+      "timestamp": "2025-09-23T15:55:22.654518"
+    },
+    {
+      "test_name": "Notification List",
+      "status": "PASS",
+      "details": "Found 20 notifications, 10 unread",
+      "timestamp": "2025-09-23T15:55:22.714576"
+    },
+    {
+      "test_name": "Notification List",
+      "status": "PASS",
+      "details": "Found 20 notifications, 10 unread",
+      "timestamp": "2025-09-23T15:55:22.774721"
+    },
+    {
+      "test_name": "Notification Grouping",
+      "status": "PASS",
+      "details": "Groups: today: 10, yesterday: 5, this_week: 5, older: 0",
+      "timestamp": "2025-09-23T15:55:22.774814"
+    },
+    {
+      "test_name": "Filter by Type - transaction",
+      "status": "PASS",
+      "details": "Found 12 notifications",
+      "timestamp": "2025-09-23T15:55:22.835145"
+    },
+    {
+      "test_name": "Filter by Type - system",
+      "status": "PASS",
+      "details": "Found 9 notifications",
+      "timestamp": "2025-09-23T15:55:22.890354"
+    },
+    {
+      "test_name": "Filter by Type - user",
+      "status": "PASS",
+      "details": "Found 7 notifications",
+      "timestamp": "2025-09-23T15:55:22.942508"
+    },
+    {
+      "test_name": "Filter by Type - report",
+      "status": "PASS",
+      "details": "Found 12 notifications",
+      "timestamp": "2025-09-23T15:55:22.994174"
+    },
+    {
+      "test_name": "Filter by Read Status - read",
+      "status": "PASS",
+      "details": "Found 20 notifications",
+      "timestamp": "2025-09-23T15:55:23.046358"
+    },
+    {
+      "test_name": "Filter by Read Status - unread",
+      "status": "PASS",
+      "details": "Found 18 notifications",
+      "timestamp": "2025-09-23T15:55:23.098820"
+    },
+    {
+      "test_name": "Notification List",
+      "status": "PASS",
+      "details": "Found 20 notifications, 10 unread",
+      "timestamp": "2025-09-23T15:55:23.158950"
+    },
+    {
+      "test_name": "Mark As Read",
+      "status": "PASS",
+      "details": "Successfully marked notification 33 as read",
+      "timestamp": "2025-09-23T15:55:23.222910"
+    },
+    {
+      "test_name": "Frontend Accessibility",
+      "status": "PASS",
+      "details": "Frontend server is accessible",
+      "timestamp": "2025-09-23T15:55:23.230478"
+    },
+    {
+      "test_name": "Mark All As Read",
+      "status": "PASS",
+      "details": "Successfully marked all notifications as read",
+      "timestamp": "2025-09-23T15:55:23.286288"
+    },
+    {
+      "test_name": "Notification Count",
+      "status": "PASS",
+      "details": "Unread count: 0",
+      "timestamp": "2025-09-23T15:55:24.295673"
+    },
+    {
+      "test_name": "Mark All As Read Verification",
+      "status": "PASS",
+      "details": "Unread count is now 0",
+      "timestamp": "2025-09-23T15:55:24.295691"
+    }
+  ],
+  "timestamp": "2025-09-23T15:55:24.295859"
+}

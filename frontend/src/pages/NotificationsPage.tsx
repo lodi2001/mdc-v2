@@ -3,7 +3,6 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import Layout from '../components/layout/Layout';
 import NotificationList from '../components/notifications/NotificationList';
 import NotificationFilters from '../components/notifications/NotificationFilters';
@@ -16,7 +15,7 @@ import {
 import notificationService from '../services/notificationService';
 
 const NotificationsPage: React.FC = () => {
-  const { t } = useTranslation();
+  const isRTL = localStorage.getItem('language') === 'ar';
 
   // State management
   const [notificationGroups, setNotificationGroups] = useState<NotificationGroup[]>([]);
@@ -52,11 +51,11 @@ const NotificationsPage: React.FC = () => {
       const statsData = await notificationService.getStats();
       setStats(statsData);
     } catch (err: any) {
-      setError(err.message || t('notifications.errorLoading'));
+      setError(err.message || (isRTL ? 'فشل تحميل الإشعارات' : 'Failed to load notifications'));
     } finally {
       setLoading(false);
     }
-  }, [filters, t]);
+  }, [filters, isRTL]);
 
   // Load notifications on mount and filter change
   useEffect(() => {
@@ -82,10 +81,10 @@ const NotificationsPage: React.FC = () => {
           unread: Math.max(0, stats.unread - 1)
         });
       }
-      
-      showSnackbar(t('notifications.markedAsRead'), 'success');
+
+      showSnackbar(isRTL ? 'تم وضع علامة مقروءة' : 'Marked as read', 'success');
     } catch (err: any) {
-      showSnackbar(err.message || t('notifications.errorMarkingRead'), 'error');
+      showSnackbar(err.message || (isRTL ? 'فشل وضع علامة مقروءة' : 'Failed to mark as read'), 'error');
     }
   };
 
@@ -109,10 +108,10 @@ const NotificationsPage: React.FC = () => {
           unread: 0
         });
       }
-      
-      showSnackbar(t('notifications.allMarkedAsRead'), 'success');
+
+      showSnackbar(isRTL ? 'تم وضع علامة مقروءة على جميع الإشعارات' : 'All notifications marked as read', 'success');
     } catch (err: any) {
-      showSnackbar(err.message || t('notifications.errorMarkingRead'), 'error');
+      showSnackbar(err.message || (isRTL ? 'فشل وضع علامة مقروءة' : 'Failed to mark as read'), 'error');
     }
   };
 
@@ -124,25 +123,25 @@ const NotificationsPage: React.FC = () => {
         ...group,
         notifications: group.notifications.filter(n => n.id !== id)
       })).filter(group => group.notifications.length > 0));
-      
-      showSnackbar(t('notifications.deleted'), 'success');
+
+      showSnackbar(isRTL ? 'تم حذف الإشعار' : 'Notification deleted', 'success');
     } catch (err: any) {
-      showSnackbar(err.message || t('notifications.errorDeleting'), 'error');
+      showSnackbar(err.message || (isRTL ? 'فشل حذف الإشعار' : 'Failed to delete notification'), 'error');
     }
   };
 
   // Handle clear all
   const handleClearAll = async () => {
-    if (!window.confirm(t('notifications.confirmClearAll'))) {
+    if (!window.confirm(isRTL ? 'هل أنت متأكد من حذف جميع الإشعارات؟' : 'Are you sure you want to clear all notifications?')) {
       return;
     }
     
     try {
       await notificationService.clearAll();
       setNotificationGroups([]);
-      showSnackbar(t('notifications.allCleared'), 'success');
+      showSnackbar(isRTL ? 'تم مسح جميع الإشعارات' : 'All notifications cleared', 'success');
     } catch (err: any) {
-      showSnackbar(err.message || t('notifications.errorClearing'), 'error');
+      showSnackbar(err.message || (isRTL ? 'فشل مسح الإشعارات' : 'Failed to clear notifications'), 'error');
     }
   };
 
@@ -167,8 +166,8 @@ const NotificationsPage: React.FC = () => {
         {/* Page Header */}
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h2>{t('notifications.title')}</h2>
-            <p className="text-muted mb-0">{t('notifications.description')}</p>
+            <h2>{isRTL ? 'الإشعارات' : 'Notifications'}</h2>
+            <p className="text-muted mb-0">{isRTL ? 'إدارة وعرض جميع إشعاراتك' : 'Manage and view all your notifications'}</p>
           </div>
           <div className="d-flex gap-2">
             <button 
@@ -176,21 +175,21 @@ const NotificationsPage: React.FC = () => {
               onClick={handleMarkAllAsRead}
             >
               <i className="bi bi-check-all me-2"></i>
-              {t('notifications.markAllRead')}
+              {isRTL ? 'وضع علامة مقروءة على الكل' : 'Mark all as read'}
             </button>
             <button 
               className="btn btn-outline-danger"
               onClick={handleClearAll}
             >
               <i className="bi bi-trash me-2"></i>
-              {t('notifications.clearAll')}
+              {isRTL ? 'مسح الكل' : 'Clear all'}
             </button>
             <button 
               className="btn btn-primary"
               onClick={() => setSettingsOpen(true)}
             >
               <i className="bi bi-gear me-2"></i>
-              {t('notifications.settings')}
+              {isRTL ? 'الإعدادات' : 'Settings'}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import notificationService from '../../services/notificationService';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -19,6 +20,24 @@ interface MenuItem {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user } = useAuth();
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  // Load notification count
+  const loadNotificationCount = async () => {
+    try {
+      const count = await notificationService.getUnreadCount();
+      setNotificationCount(count);
+    } catch (error) {
+      console.error('Error loading notification count:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadNotificationCount();
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(loadNotificationCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getMenuItems = (): MenuItem[] => {
     // Handle lowercase role from backend
@@ -30,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/transactions', icon: 'bi-receipt', label: 'All Transactions', badge: { text: '234', class: 'bg-primary' } },
         { path: '/transactions/create', icon: 'bi-plus-square', label: 'Create Transaction' },
         { path: '/users', icon: 'bi-people', label: 'User Management' },
-        { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: { text: '5', class: 'bg-danger' } },
+        { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: notificationCount > 0 ? { text: notificationCount > 99 ? '99+' : notificationCount.toString(), class: 'bg-danger' } : undefined },
         { path: '/reports', icon: 'bi-graph-up', label: 'Reports & Analytics' },
         { path: '/assignments', icon: 'bi-person-check', label: 'Assignments' },
         { path: '/email-templates', icon: 'bi-envelope', label: 'Email Templates' },
@@ -43,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/transactions', icon: 'bi-receipt', label: 'My Transactions', badge: { text: '42', class: 'bg-primary' } },
         { path: '/transactions/create', icon: 'bi-plus-square', label: 'Create New' },
         { path: '/assigned-tasks', icon: 'bi-list-task', label: 'Assigned Transactions', badge: { text: '12', class: 'bg-warning' } },
-        { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: { text: '3', class: 'bg-danger' } },
+        { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: notificationCount > 0 ? { text: notificationCount > 99 ? '99+' : notificationCount.toString(), class: 'bg-danger' } : undefined },
         { path: '/import-wizard', icon: 'bi-upload', label: 'Bulk Import' },
         { path: '/drafts', icon: 'bi-file-earmark', label: 'Drafts', badge: { text: '5', class: 'bg-secondary' } },
         { path: '/reports', icon: 'bi-file-earmark-bar-graph', label: 'Reports' },
@@ -54,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
         { path: '/transactions', icon: 'bi-receipt', label: 'My Transactions', badge: { text: '8', class: 'bg-primary' } },
         { path: '/documents', icon: 'bi-file-earmark-text', label: 'Documents' },
-        { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: { text: '2', class: 'bg-danger' } },
+        { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: notificationCount > 0 ? { text: notificationCount > 99 ? '99+' : notificationCount.toString(), class: 'bg-danger' } : undefined },
       ];
     }
   };

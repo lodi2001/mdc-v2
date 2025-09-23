@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "total_tests": 1,
+    "passed_tests": 0,
+    "failed_tests": 1,
+    "pass_rate": 0.0
+  },
+  "test_results": [
+    {
+      "test_name": "Authentication",
+      "status": "FAIL",
+      "details": "Login failed: 401 - {\"detail\":\"Invalid credentials.\"}",
+      "timestamp": "2025-09-23T15:51:14.123277"
+    }
+  ],
+  "timestamp": "2025-09-23T15:51:14.123787"
+}

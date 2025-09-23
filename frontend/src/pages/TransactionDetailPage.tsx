@@ -126,7 +126,10 @@ const TransactionDetailPage: React.FC = () => {
               <i className="bi bi-arrow-left me-2"></i>
               {isRTL ? 'رجوع' : 'Back'}
             </button>
-            <button className="btn btn-primary">
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate(`/transactions/${id}/edit`)}
+            >
               <i className="bi bi-pencil me-2"></i>
               {isRTL ? 'تعديل' : 'Edit'}
             </button>
