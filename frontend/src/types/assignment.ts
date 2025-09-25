@@ -4,7 +4,9 @@
 
 export interface Assignment {
   id: string;
-  externalId: string;
+  transactionId: string;  // The TRX-YYYY-NNNNN format ID
+  referenceNumber: string;  // External reference number from admin/editor
+  title: string;  // Transaction title
   clientName: string;
   clientId?: number;
   type: string;
@@ -12,6 +14,7 @@ export interface Assignment {
   status: AssignmentStatus;
   priority: AssignmentPriority;
   assignedTo?: AssignedUser;
+  assignedToName?: string;  // Name of assigned person for display
   assignedDate: string;
   dueDate: string;
   progress: number;

@@ -7,7 +7,7 @@ import { Assignment, AssignedUser } from '../types/assignment';
 // Mock users - matching backend test fixtures
 export const mockUsers = {
   admin: {
-    id: '1',
+    id: 1,  // Changed to number to match AssignedUser type
     username: 'admin_user',
     name: 'Admin User',
     email: 'admin@test.com',
@@ -18,7 +18,7 @@ export const mockUsers = {
     lastName: 'User'
   },
   editor1: {
-    id: '2',
+    id: 2,  // Changed to number
     username: 'editor1',
     name: 'Editor One',
     email: 'editor1@test.com',
@@ -29,7 +29,7 @@ export const mockUsers = {
     lastName: 'One'
   },
   editor2: {
-    id: '3',
+    id: 3,  // Changed to number
     username: 'editor2',
     name: 'Editor Two',
     email: 'editor2@test.com',
@@ -40,7 +40,7 @@ export const mockUsers = {
     lastName: 'Two'
   },
   client1: {
-    id: '4',
+    id: 4,  // Changed to number
     username: 'client1',
     name: 'Client One',
     email: 'client1@test.com',
@@ -51,7 +51,7 @@ export const mockUsers = {
     lastName: 'One'
   },
   client2: {
-    id: '5',
+    id: 5,  // Changed to number
     username: 'client2',
     name: 'Client Two',
     email: 'client2@test.com',
@@ -67,14 +67,23 @@ export const mockUsers = {
 export const mockAssignments: Assignment[] = [
   {
     id: 'EXT-101',
-    externalId: 'EXT-101',
+    transactionId: 'TRX-2025-00101',  // Changed from externalId
+    referenceNumber: 'REF-101',  // Added referenceNumber
+    title: 'Test Import Transaction',  // Added title
     clientName: 'Test Client 1',
     clientId: 4,
     type: 'Import',
     description: 'Test transaction assigned to editor1',
     status: 'in_progress',
     priority: 'high',
-    assignedTo: mockUsers.editor1 as AssignedUser,
+    assignedTo: {
+      id: mockUsers.editor1.id,
+      username: mockUsers.editor1.username,
+      firstName: mockUsers.editor1.firstName,
+      lastName: mockUsers.editor1.lastName,
+      email: mockUsers.editor1.email,
+      avatar: mockUsers.editor1.avatar
+    },
     assignedDate: new Date().toISOString(),
     dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     progress: 50,
@@ -85,14 +94,23 @@ export const mockAssignments: Assignment[] = [
   },
   {
     id: 'EXT-102',
-    externalId: 'EXT-102',
+    transactionId: 'TRX-2025-00102',  // Changed from externalId
+    referenceNumber: 'REF-102',  // Added referenceNumber
+    title: 'Test Export Transaction',  // Added title
     clientName: 'Test Client 2',
     clientId: 5,
     type: 'Export',
     description: 'Test transaction assigned to editor2',
     status: 'pending',
     priority: 'medium',
-    assignedTo: mockUsers.editor2 as AssignedUser,
+    assignedTo: {
+      id: mockUsers.editor2.id,
+      username: mockUsers.editor2.username,
+      firstName: mockUsers.editor2.firstName,
+      lastName: mockUsers.editor2.lastName,
+      email: mockUsers.editor2.email,
+      avatar: mockUsers.editor2.avatar
+    },
     assignedDate: new Date().toISOString(),
     dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     progress: 0,
@@ -103,7 +121,9 @@ export const mockAssignments: Assignment[] = [
   },
   {
     id: 'EXT-103',
-    externalId: 'EXT-103',
+    transactionId: 'TRX-2025-00103',  // Changed from externalId
+    referenceNumber: 'REF-103',  // Added referenceNumber
+    title: 'Unassigned Import Task',  // Added title
     clientName: 'Test Client 1',
     clientId: 4,
     type: 'Import',
@@ -123,9 +143,30 @@ export const mockAssignments: Assignment[] = [
 
 // Mock available assignees (should NOT include clients)
 export const mockAvailableAssignees: AssignedUser[] = [
-  mockUsers.admin as AssignedUser,
-  mockUsers.editor1 as AssignedUser,
-  mockUsers.editor2 as AssignedUser
+  {
+    id: mockUsers.admin.id,
+    username: mockUsers.admin.username,
+    firstName: mockUsers.admin.firstName,
+    lastName: mockUsers.admin.lastName,
+    email: mockUsers.admin.email,
+    avatar: mockUsers.admin.avatar
+  },
+  {
+    id: mockUsers.editor1.id,
+    username: mockUsers.editor1.username,
+    firstName: mockUsers.editor1.firstName,
+    lastName: mockUsers.editor1.lastName,
+    email: mockUsers.editor1.email,
+    avatar: mockUsers.editor1.avatar
+  },
+  {
+    id: mockUsers.editor2.id,
+    username: mockUsers.editor2.username,
+    firstName: mockUsers.editor2.firstName,
+    lastName: mockUsers.editor2.lastName,
+    email: mockUsers.editor2.email,
+    avatar: mockUsers.editor2.avatar
+  }
   // Note: client1 and client2 are intentionally excluded
 ];
 
@@ -138,17 +179,17 @@ export const mockApiResponses = {
     page: 1,
     pageSize: 10
   },
-  
+
   getAvailableAssignees: {
     success: true,
     data: mockAvailableAssignees
   },
-  
+
   reassignSuccess: {
     success: true,
     message: 'Transaction reassigned successfully'
   },
-  
+
   reassignError: {
     success: false,
     message: 'Invalid data provided',
@@ -156,7 +197,7 @@ export const mockApiResponses = {
       assigned_to: ['Only admin or editor users can be assigned to transactions']
     }
   },
-  
+
   bulkReassignSuccess: {
     success: true,
     message: 'Bulk reassignment completed successfully',

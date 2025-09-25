@@ -56,6 +56,14 @@ export interface Transaction {
   comments_count?: number;
   status_display?: string;
   priority_display?: string;
+  attachments?: Array<{
+    id: number;
+    original_filename: string;
+    download_url: string;
+    file_size_formatted: string;
+    created_at: string;
+    description?: string;
+  }>;
 }
 
 export const TRANSACTION_TYPES = [

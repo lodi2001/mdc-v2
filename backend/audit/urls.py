@@ -2,22 +2,15 @@
 URL configuration for Audit API
 """
 
-from django.urls import path
-from django.http import JsonResponse
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import AuditLogViewSet
 
 app_name = 'audit'
 
-def audit_placeholder(request):
-    """Placeholder for audit endpoints"""
-    return JsonResponse({
-        'message': 'Audit API endpoints will be implemented in future updates',
-        'endpoints': {
-            'logs': 'Coming soon',
-            'reports': 'Coming soon',
-            'activity': 'Coming soon'
-        }
-    })
+router = DefaultRouter()
+router.register('logs', AuditLogViewSet, basename='auditlog')
 
 urlpatterns = [
-    path('', audit_placeholder, name='audit-placeholder'),
+    path('', include(router.urls)),
 ]

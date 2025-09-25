@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     if (role === 'admin') {
       return [
         { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
-        { path: '/transactions', icon: 'bi-receipt', label: 'All Transactions', badge: { text: '234', class: 'bg-primary' } },
+        { path: '/transactions', icon: 'bi-receipt', label: 'All Transactions' },
         { path: '/transactions/create', icon: 'bi-plus-square', label: 'Create Transaction' },
         { path: '/users', icon: 'bi-people', label: 'User Management' },
         { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: notificationCount > 0 ? { text: notificationCount > 99 ? '99+' : notificationCount.toString(), class: 'bg-danger' } : undefined },
@@ -59,19 +59,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     } else if (role === 'editor') {
       return [
         { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
-        { path: '/transactions', icon: 'bi-receipt', label: 'My Transactions', badge: { text: '42', class: 'bg-primary' } },
+        { path: '/transactions', icon: 'bi-receipt', label: 'My Transactions' },
         { path: '/transactions/create', icon: 'bi-plus-square', label: 'Create New' },
-        { path: '/assigned-tasks', icon: 'bi-list-task', label: 'Assigned Transactions', badge: { text: '12', class: 'bg-warning' } },
+        { path: '/assigned-tasks', icon: 'bi-list-task', label: 'Assigned Transactions' },
         { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: notificationCount > 0 ? { text: notificationCount > 99 ? '99+' : notificationCount.toString(), class: 'bg-danger' } : undefined },
         { path: '/import-wizard', icon: 'bi-upload', label: 'Bulk Import' },
-        { path: '/drafts', icon: 'bi-file-earmark', label: 'Drafts', badge: { text: '5', class: 'bg-secondary' } },
+        { path: '/drafts', icon: 'bi-file-earmark', label: 'Drafts' },
         { path: '/reports', icon: 'bi-file-earmark-bar-graph', label: 'Reports' },
       ];
     } else {
       // Client
       return [
         { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
-        { path: '/transactions', icon: 'bi-receipt', label: 'My Transactions', badge: { text: '8', class: 'bg-primary' } },
+        { path: '/transactions', icon: 'bi-receipt', label: 'My Transactions' },
         { path: '/documents', icon: 'bi-file-earmark-text', label: 'Documents' },
         { path: '/notifications', icon: 'bi-bell', label: 'Notifications', badge: notificationCount > 0 ? { text: notificationCount > 99 ? '99+' : notificationCount.toString(), class: 'bg-danger' } : undefined },
       ];

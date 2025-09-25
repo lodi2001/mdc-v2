@@ -51,7 +51,7 @@ const AssignToDropdown: React.FC<AssignToDropdownProps> = ({
   }, [isOpen]);
 
   // Debounce helper
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const debouncedSearchAssignees = useCallback((search: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);

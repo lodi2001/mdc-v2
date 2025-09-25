@@ -41,10 +41,10 @@ const DashboardAdmin: React.FC = () => {
       console.log('Using mock data for dashboard');
       // Set mock data for now if API fails
       setStats({
-        totalTransactions: 234,
-        pendingApproval: 45,
-        completed: 189,
-        activeUsers: 52,
+        totalTransactions: 0,
+        pendingApproval: 0,
+        completed: 0,
+        activeUsers: 0,
       });
       setRecentTransactions([
         {

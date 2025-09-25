@@ -40,6 +40,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    'core',
     'authentication',
     'users',
     'transactions',

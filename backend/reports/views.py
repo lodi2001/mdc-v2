@@ -5,7 +5,8 @@ Views for Report Generation API
 import logging
 from datetime import datetime, timedelta
 from django.utils import timezone
-from django.db.models import Q, Count, Avg, Sum
+from django.db import models
+from django.db.models import Q, Count, Avg, Sum, F
 from django.http import HttpResponse
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -32,6 +33,382 @@ from .serializers import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+class AnalyticsMetricsView(APIView):
+    """
+    Get key metrics for the reports dashboard
+    """
+    permission_classes = [IsActiveUser]
+
+    def get(self, request):
+        """Get key analytics metrics"""
+        user = request.user
+
+        # Base queryset
+        queryset = Transaction.objects.filter(is_deleted=False)
+
+        # Apply role-based filtering
+        if user.role == 'client':
+            queryset = queryset.filter(client=user)
+        elif user.role == 'editor':
+            queryset = queryset.filter(
+                Q(assigned_to=user) | Q(created_by=user)
+            )
+
+        # Apply date filters if provided
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        if start_date:
+            queryset = queryset.filter(created_at__gte=start_date)
+        if end_date:
+            queryset = queryset.filter(created_at__lte=end_date)
+
+        # Calculate metrics
+        total_transactions = queryset.count()
+
+        # Average processing time for completed transactions
+        completed = queryset.filter(status='completed')
+        avg_processing_time = 0
+        if completed.exists():
+            avg_delta = completed.aggregate(
+                avg_time=Avg(F('updated_at') - F('created_at'))
+            ).get('avg_time')
+            if avg_delta:
+                avg_processing_time = avg_delta.days + (avg_delta.seconds / 86400)  # Convert to days
+
+        # Completion rate
+        completion_rate = 0
+        if total_transactions > 0:
+            completion_rate = (completed.count() / total_transactions) * 100
+
+        # Active users (users with transactions in date range)
+        active_users = User.objects.filter(
+            Q(created_transactions__in=queryset) |
+            Q(assigned_transactions__in=queryset)
+        ).distinct().count()
+
+        # Calculate month-over-month change
+        now = timezone.now()
+        last_month_start = (now.replace(day=1) - timedelta(days=1)).replace(day=1)
+        last_month_count = Transaction.objects.filter(
+            created_at__gte=last_month_start,
+            created_at__lt=now.replace(day=1)
+        ).count()
+
+        current_month_count = Transaction.objects.filter(
+            created_at__gte=now.replace(day=1)
+        ).count()
+
+        change_percentage = 0
+        if last_month_count > 0:
+            change_percentage = ((current_month_count - last_month_count) / last_month_count) * 100
+
+        metrics = {
+            'total_transactions': total_transactions,
+            'avg_processing_time': round(avg_processing_time, 1),
+            'completion_rate': round(completion_rate, 1),
+            'active_users': active_users,
+            'change_percentage': round(change_percentage, 1),
+            'pending_approval': queryset.filter(status='submitted').count(),
+            'in_progress': queryset.filter(status='in_progress').count(),
+            'completed': completed.count()
+        }
+
+        return create_success_response(
+            message="Metrics retrieved successfully",
+            data=metrics
+        )
+
+
+class VolumeTrendsView(APIView):
+    """
+    Get transaction volume trends over time
+    """
+    permission_classes = [IsActiveUser]
+
+    def get(self, request):
+        """Get volume trends data"""
+        from django.db.models import Count
+        from django.db.models.functions import TruncDate, TruncWeek, TruncMonth
+
+        user = request.user
+        preset = request.query_params.get('preset', 'month')
+
+        # Base queryset
+        queryset = Transaction.objects.filter(is_deleted=False)
+
+        # Apply role-based filtering
+        if user.role == 'client':
+            queryset = queryset.filter(client=user)
+        elif user.role == 'editor':
+            queryset = queryset.filter(
+                Q(assigned_to=user) | Q(created_by=user)
+            )
+
+        # Determine time period and truncation
+        now = timezone.now()
+        if preset == 'today':
+            start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            trunc_func = TruncDate
+        elif preset == 'week':
+            start_date = now - timedelta(days=7)
+            trunc_func = TruncDate
+        elif preset == 'month':
+            start_date = now - timedelta(days=30)
+            trunc_func = TruncDate
+        elif preset == 'quarter':
+            start_date = now - timedelta(days=90)
+            trunc_func = TruncWeek
+        elif preset == 'year':
+            start_date = now - timedelta(days=365)
+            trunc_func = TruncMonth
+        else:
+            start_date = now - timedelta(days=30)
+            trunc_func = TruncDate
+
+        # Get volume data
+        volume_data = (
+            queryset.filter(created_at__gte=start_date)
+            .annotate(period=trunc_func('created_at'))
+            .values('period')
+            .annotate(count=Count('id'))
+            .order_by('period')
+        )
+
+        # Format the response
+        trends = []
+        for item in volume_data:
+            period_str = item['period'].strftime('%Y-%m-%d') if preset in ['today', 'week', 'month'] else item['period'].strftime('%Y-%m')
+            trends.append({
+                'period': period_str,
+                'count': item['count'],
+                'change': 0  # Calculate if needed
+            })
+
+        return create_success_response(
+            message="Volume trends retrieved successfully",
+            data=trends
+        )
+
+
+class StatusDistributionView(APIView):
+    """
+    Get distribution of transactions by status
+    """
+    permission_classes = [IsActiveUser]
+
+    def get(self, request):
+        """Get status distribution data"""
+        user = request.user
+
+        # Base queryset
+        queryset = Transaction.objects.filter(is_deleted=False)
+
+        # Apply role-based filtering
+        if user.role == 'client':
+            queryset = queryset.filter(client=user)
+        elif user.role == 'editor':
+            queryset = queryset.filter(
+                Q(assigned_to=user) | Q(created_by=user)
+            )
+
+        # Get status counts
+        total = queryset.count()
+        status_counts = queryset.values('status').annotate(count=Count('id'))
+
+        # Format the response
+        distribution = []
+        status_display_map = {
+            'draft': 'Draft',
+            'submitted': 'Submitted',
+            'under_review': 'Under Review',
+            'approved': 'Approved',
+            'in_progress': 'In Progress',
+            'completed': 'Completed',
+            'cancelled': 'Cancelled',
+            'on_hold': 'On Hold'
+        }
+
+        for item in status_counts:
+            percentage = (item['count'] / total * 100) if total > 0 else 0
+            distribution.append({
+                'status': status_display_map.get(item['status'], item['status']),
+                'count': item['count'],
+                'percentage': round(percentage, 1)
+            })
+
+        return create_success_response(
+            message="Status distribution retrieved successfully",
+            data=distribution
+        )
+
+
+class DepartmentPerformanceView(APIView):
+    """
+    Get performance metrics by department
+    """
+    permission_classes = [IsActiveUser]
+
+    def get(self, request):
+        """Get department performance data"""
+        user = request.user
+
+        # Base queryset
+        queryset = Transaction.objects.filter(is_deleted=False)
+
+        # Apply role-based filtering
+        if user.role == 'client':
+            queryset = queryset.filter(client=user)
+        elif user.role == 'editor':
+            queryset = queryset.filter(
+                Q(assigned_to=user) | Q(created_by=user)
+            )
+
+        # Get department data
+        departments = queryset.values('department').annotate(
+            total=Count('id'),
+            completed=Count('id', filter=Q(status='completed')),
+            pending=Count('id', filter=Q(status__in=['submitted', 'under_review', 'in_progress']))
+        )
+
+        # Calculate average time for each department
+        performance_data = []
+        for dept in departments:
+            dept_transactions = queryset.filter(
+                department=dept['department'],
+                status='completed'
+            )
+
+            avg_time = 0
+            if dept_transactions.exists():
+                avg_delta = dept_transactions.aggregate(
+                    avg_time=Avg(F('updated_at') - F('created_at'))
+                ).get('avg_time')
+                if avg_delta:
+                    avg_time = avg_delta.days + (avg_delta.seconds / 86400)
+
+            performance_data.append({
+                'department': dept['department'] or 'Unassigned',
+                'completed': dept['completed'],
+                'pending': dept['pending'],
+                'avgTime': round(avg_time, 1)
+            })
+
+        return create_success_response(
+            message="Department performance retrieved successfully",
+            data=performance_data
+        )
+
+
+class ProcessingTimeView(APIView):
+    """
+    Get average processing time by transaction type
+    """
+    permission_classes = [IsActiveUser]
+
+    def get(self, request):
+        """Get processing time data"""
+        user = request.user
+
+        # Base queryset for completed transactions
+        queryset = Transaction.objects.filter(
+            is_deleted=False,
+            status='completed'
+        )
+
+        # Apply role-based filtering
+        if user.role == 'client':
+            queryset = queryset.filter(client=user)
+        elif user.role == 'editor':
+            queryset = queryset.filter(
+                Q(assigned_to=user) | Q(created_by=user)
+            )
+
+        # Get processing time by type
+        types = queryset.values('transaction_type').annotate(
+            count=Count('id')
+        ).distinct()
+
+        processing_data = []
+        for type_item in types:
+            type_transactions = queryset.filter(transaction_type=type_item['transaction_type'])
+
+            avg_delta = type_transactions.aggregate(
+                avg_time=Avg(F('updated_at') - F('created_at'))
+            ).get('avg_time')
+
+            avg_days = 0
+            if avg_delta:
+                avg_days = avg_delta.days + (avg_delta.seconds / 86400)
+
+            processing_data.append({
+                'type': type_item['transaction_type'] or 'General',
+                'avgDays': round(avg_days, 1)
+            })
+
+        return create_success_response(
+            message="Processing time data retrieved successfully",
+            data=processing_data
+        )
+
+
+class TopPerformersView(APIView):
+    """
+    Get top performing users based on completed transactions
+    """
+    permission_classes = [IsEditorOrAdmin]
+
+    def get(self, request):
+        """Get top performers data"""
+        limit = int(request.query_params.get('limit', 5))
+
+        # Get users with completed transaction counts
+        top_users = User.objects.filter(
+            assigned_transactions__status='completed',
+            assigned_transactions__is_deleted=False
+        ).annotate(
+            completed_count=Count('assigned_transactions')
+        ).order_by('-completed_count')[:limit]
+
+        performers = []
+        rank = 1
+
+        for user in top_users:
+            # Calculate average processing time
+            user_transactions = Transaction.objects.filter(
+                assigned_to=user,
+                status='completed',
+                is_deleted=False
+            )
+
+            avg_delta = user_transactions.aggregate(
+                avg_time=Avg(F('updated_at') - F('created_at'))
+            ).get('avg_time')
+
+            avg_days = 0
+            if avg_delta:
+                avg_days = avg_delta.days + (avg_delta.seconds / 86400)
+
+            # Calculate efficiency (simple metric: lower avg time = higher efficiency)
+            max_days = 10  # Baseline
+            efficiency = max(0, min(100, (1 - avg_days / max_days) * 100))
+
+            performers.append({
+                'rank': rank,
+                'user': user.get_full_name() or user.username,
+                'department': user.department or 'General',
+                'completed': user.completed_count,
+                'avgTime': f"{round(avg_days, 1)} days",
+                'efficiency': round(efficiency)
+            })
+            rank += 1
+
+        return create_success_response(
+            message="Top performers retrieved successfully",
+            data=performers
+        )
 
 
 class TransactionReportView(APIView):

@@ -45,7 +45,7 @@ const AdvancedFilterModal: React.FC<AdvancedFilterModalProps> = ({
   }, [show]);
 
   useEffect(() => {
-    setFilters(prev => ({ ...prev, ...currentFilters }));
+    setFilters((prev: typeof filters) => ({ ...prev, ...currentFilters }));
   }, [currentFilters]);
 
   const fetchFilterOptions = async () => {
@@ -68,7 +68,7 @@ const AdvancedFilterModal: React.FC<AdvancedFilterModalProps> = ({
   };
 
   const handleFilterChange = (field: string, value: any) => {
-    setFilters(prev => ({ ...prev, [field]: value }));
+    setFilters((prev: typeof filters) => ({ ...prev, [field]: value }));
   };
 
   const handleApply = () => {
@@ -144,7 +144,7 @@ const AdvancedFilterModal: React.FC<AdvancedFilterModalProps> = ({
                     <option value="">{isRTL ? 'جميع الحالات' : 'All Status'}</option>
                     {TRANSACTION_STATUSES.map(status => (
                       <option key={status.value} value={status.value}>
-                        {isRTL ? status.labelAr : status.label}
+                        {status.label}
                       </option>
                     ))}
                   </select>
@@ -162,7 +162,7 @@ const AdvancedFilterModal: React.FC<AdvancedFilterModalProps> = ({
                     <option value="">{isRTL ? 'جميع الأولويات' : 'All Priorities'}</option>
                     {TRANSACTION_PRIORITIES.map(priority => (
                       <option key={priority.value} value={priority.value}>
-                        {isRTL ? priority.labelAr : priority.label}
+                        {priority.label}
                       </option>
                     ))}
                   </select>
@@ -180,7 +180,7 @@ const AdvancedFilterModal: React.FC<AdvancedFilterModalProps> = ({
                     <option value="">{isRTL ? 'جميع الأنواع' : 'All Types'}</option>
                     {TRANSACTION_TYPES.map(type => (
                       <option key={type.value} value={type.value}>
-                        {isRTL ? type.labelAr : type.label}
+                        {type.label}
                       </option>
                     ))}
                   </select>

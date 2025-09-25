@@ -389,7 +389,9 @@ class AssignmentService {
 
     const assignments: Assignment[] = results.map((item: any) => ({
       id: String(item.id), // Use the actual database ID as string
-      externalId: item.transaction_id || item.external_id || `EXT-${item.id}`,
+      transactionId: item.transaction_id || `TRX-${item.id}`, // The TRX-YYYY-NNNNN format ID
+      referenceNumber: item.reference_number || '', // External reference number from admin/editor
+      title: item.title || '', // Transaction title
       clientName: item.client_name || item.created_by_name || 'Unknown Client',
       clientId: item.client?.id || item.client_id || item.created_by,
       type: item.transaction_type || item.type || 'Document Review',
@@ -406,6 +408,7 @@ class AssignmentService {
         role: typeof item.assigned_to === 'object' ? item.assigned_to.role : undefined,
         fullName: typeof item.assigned_to === 'object' ? item.assigned_to.full_name : undefined
       } : undefined,
+      assignedToName: item.assigned_to_name || (item.assigned_to?.full_name) || undefined, // Name for display
       assignedDate: item.assigned_at || item.created_at,
       dueDate: item.due_date || '',
       progress: this.calculateProgress(item.status),

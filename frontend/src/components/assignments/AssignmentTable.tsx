@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Assignment, AssignmentPriority, AssignmentStatus } from '../../types/assignment';
 import assignmentService from '../../services/assignmentService';
-import { api } from '../../utils/api';
+import apiClient from '../../services/api/client';
 
 interface AssignmentTableProps {
   assignments: Assignment[];
@@ -61,13 +61,13 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
       // Use the assignment service to get only editors and admins (excluding clients)
       const users = await assignmentService.getAvailableAssignees();
       console.log('Available assignees:', users); // Debug log
-      
+
       // Filter out duplicates based on user.id and ensure valid IDs
       const uniqueUsers = users.filter((user: any, index: number, self: any[]) => {
-        return user && user.id && 
+        return user && user.id &&
                self.findIndex((u: any) => u.id === user.id) === index;
       });
-      
+
       setAvailableUsers(uniqueUsers);
     } catch (error) {
       console.error('Failed to fetch available assignees:', error);
@@ -82,27 +82,20 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
 
   const handleStatusUpdate = async () => {
     if (!selectedAssignment) return;
-    
+
     setUpdating(true);
     try {
       // The assignment.id is already the database ID (as a string), just use it
       const transactionId = selectedAssignment.id;
-      
-      const response = await apiRequest(
+
+      const response = await apiClient.post(
         `/transactions/${transactionId}/status/`,
-        'POST',
         { status: newStatus }
       );
-      
-      if (response.ok) {
-        onStatusUpdate(selectedAssignment.id, newStatus);
-        setShowStatusModal(false);
-        setSelectedAssignment(null);
-      } else {
-        const error = await response.json();
-        console.error('Failed to update status:', error);
-        alert(isRTL ? 'فشل تحديث الحالة' : 'Failed to update status');
-      }
+
+      onStatusUpdate(selectedAssignment.id, newStatus);
+      setShowStatusModal(false);
+      setSelectedAssignment(null);
     } catch (error) {
       console.error('Failed to update status:', error);
       alert(isRTL ? 'حدث خطأ أثناء تحديث الحالة' : 'An error occurred while updating status');
@@ -113,7 +106,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
 
   const handleReassign = async () => {
     if (!newAssigneeId) return;
-    
+
     setUpdating(true);
     try {
       // Check if bulk reassignment or single
@@ -121,7 +114,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
         // Bulk reassignment
         // The IDs are already database IDs as strings, just convert to numbers
         const transactionIds = selectedIds.map(id => Number(id));
-        
+
         // Use assignmentService for bulk reassignment
         await assignmentService.bulkReassignTransactions(
           transactionIds,
@@ -140,7 +133,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
         // Single reassignment
         // The assignment.id is already the database ID (as a string), just convert to number
         const transactionId = Number(selectedAssignment.id);
-        
+
         // Use assignmentService for single reassignment
         await assignmentService.reassignTransaction(
           transactionId,
@@ -165,41 +158,34 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
 
   const handleBulkStatusUpdate = async (status: AssignmentStatus) => {
     if (selectedIds.length === 0) return;
-    
-    const confirmMessage = isRTL ? 
+
+    const confirmMessage = isRTL ?
       `هل تريد تحديث حالة ${selectedIds.length} مهمة؟` :
       `Update status for ${selectedIds.length} tasks?`;
-    
+
     if (!window.confirm(confirmMessage)) return;
-    
+
     setUpdating(true);
     try {
       // The IDs are already database IDs as strings, just convert to numbers
       const transactionIds = selectedIds.map(id => Number(id));
-      
-      const response = await apiRequest(
+
+      await apiClient.post(
         '/transactions/bulk-operations/',
-        'POST',
         {
           operation: 'change_status',
           transaction_ids: transactionIds,
           status: status
         }
       );
-      
-      if (response.ok) {
-        // Update all selected assignments
-        selectedIds.forEach(id => {
-          onStatusUpdate(id, status);
-        });
-        onSelectionChange([]);
-        setSelectAll(false);
-        alert(isRTL ? 'تم تحديث الحالة بنجاح' : 'Status updated successfully');
-      } else {
-        const error = await response.json();
-        console.error('Failed to update status:', error);
-        alert(isRTL ? 'فشل تحديث الحالة' : 'Failed to update status');
-      }
+
+      // Update all selected assignments
+      selectedIds.forEach(id => {
+        onStatusUpdate(id, status);
+      });
+      onSelectionChange([]);
+      setSelectAll(false);
+      alert(isRTL ? 'تم تحديث الحالة بنجاح' : 'Status updated successfully');
     } catch (error) {
       console.error('Failed to update status:', error);
       alert(isRTL ? 'حدث خطأ أثناء تحديث الحالة' : 'An error occurred while updating status');
@@ -210,7 +196,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
 
   const handleBulkReassign = () => {
     if (selectedIds.length === 0) return;
-    
+
     // For bulk reassign, we'll show a modal similar to single reassign
     // but apply to all selected items
     setShowAssignModal(true);
@@ -221,6 +207,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
     const badges = {
       urgent: { color: 'danger', icon: 'bi-exclamation-triangle-fill' },
       high: { color: 'warning', icon: 'bi-exclamation-circle' },
+      normal: { color: 'info', icon: 'bi-dash-circle' },
       medium: { color: 'info', icon: 'bi-dash-circle' },
       low: { color: 'secondary', icon: 'bi-dash' }
     };
@@ -228,8 +215,8 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
     return (
       <span className={`badge bg-${badge.color}`}>
         <i className={`bi ${badge.icon} me-1`}></i>
-        {isRTL ? 
-          ({'urgent': 'عاجل', 'high': 'عالي', 'medium': 'متوسط', 'low': 'منخفض'}[priority]) : 
+        {isRTL ?
+          ({'urgent': 'عاجل', 'high': 'عالي', 'normal': 'عادي', 'medium': 'متوسط', 'low': 'منخفض'}[priority]) :
           priority.charAt(0).toUpperCase() + priority.slice(1)
         }
       </span>
@@ -259,11 +246,11 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
     const today = new Date();
     const diffTime = d.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays < 0) {
       return (
         <span className="text-danger">
-          {d.toLocaleDateString()} 
+          {d.toLocaleDateString()}
           <small className="d-block">{isRTL ? 'متأخر' : 'Overdue'}</small>
         </span>
       );
@@ -308,9 +295,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
       <div className="card-header d-flex justify-content-between align-items-center">
         <div>
           <div className="form-check d-inline-block me-3">
-            <input 
-              className="form-check-input" 
-              type="checkbox" 
+            <input
+              className="form-check-input"
+              type="checkbox"
               id="selectAllTasks"
               checked={selectAll}
               onChange={(e) => handleSelectAll(e.target.checked)}
@@ -327,24 +314,24 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
         </div>
         <div className="d-flex gap-2">
           <div className="btn-group btn-group-sm" role="group">
-            <button 
-              className="btn btn-outline-secondary" 
+            <button
+              className="btn btn-outline-secondary"
               title={isRTL ? 'وضع علامة كمكتمل' : 'Mark as Complete'}
               disabled={selectedIds.length === 0}
               onClick={() => handleBulkStatusUpdate('completed')}
             >
               <i className="bi bi-check-circle"></i>
             </button>
-            <button 
-              className="btn btn-outline-secondary" 
+            <button
+              className="btn btn-outline-secondary"
               title={isRTL ? 'وضع علامة قيد التنفيذ' : 'Mark as In Progress'}
               disabled={selectedIds.length === 0}
               onClick={() => handleBulkStatusUpdate('in_progress')}
             >
               <i className="bi bi-play-circle"></i>
             </button>
-            <button 
-              className="btn btn-outline-secondary" 
+            <button
+              className="btn btn-outline-secondary"
               title={isRTL ? 'إعادة تعيين المحدد' : 'Reassign Selected'}
               disabled={selectedIds.length === 0}
               onClick={handleBulkReassign}
@@ -360,72 +347,72 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
           </button>
         </div>
       </div>
-      
+
       <div className="card-body p-0">
         <div className="table-responsive">
           <table className="table table-hover mb-0">
             <thead>
               <tr>
                 <th style={{ width: '40px' }}>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="form-check-input"
                     checked={selectAll}
                     onChange={(e) => handleSelectAll(e.target.checked)}
                   />
                 </th>
-                <th 
-                  className="sortable" 
-                  onClick={() => onSort('priority')}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {isRTL ? 'الأولوية' : 'Priority'} 
-                  <i className={`bi ${getSortIcon('priority')} ms-1`}></i>
-                </th>
-                <th 
-                  className="sortable" 
+                <th
+                  className="sortable"
                   onClick={() => onSort('id')}
                   style={{ cursor: 'pointer' }}
                 >
-                  {isRTL ? 'الرقم المرجعي' : 'Reference Number'} 
+                  {isRTL ? 'الرقم المرجعي' : 'Reference Number'}
                   <i className={`bi ${getSortIcon('id')} ms-1`}></i>
                 </th>
                 <th>
                   {isRTL ? 'رقم المعاملة' : 'Transaction ID'}
                 </th>
-                <th 
-                  className="sortable" 
+                <th style={{ minWidth: '200px', maxWidth: '300px' }}>
+                  {isRTL ? 'عنوان المعاملة' : 'Transaction Title'}
+                </th>
+                <th
+                  className="sortable"
                   onClick={() => onSort('clientName')}
                   style={{ cursor: 'pointer' }}
                 >
-                  {isRTL ? 'العميل' : 'Client'} 
+                  {isRTL ? 'العميل' : 'Client'}
                   <i className={`bi ${getSortIcon('clientName')} ms-1`}></i>
                 </th>
                 <th>{isRTL ? 'النوع' : 'Type'}</th>
-                <th className="d-none d-lg-table-cell">
-                  {isRTL ? 'الوصف' : 'Description'}
+                <th
+                  className="sortable"
+                  onClick={() => onSort('priority')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {isRTL ? 'الأولوية' : 'Priority'}
+                  <i className={`bi ${getSortIcon('priority')} ms-1`}></i>
                 </th>
-                <th 
-                  className="sortable" 
+                <th
+                  className="sortable"
                   onClick={() => onSort('status')}
                   style={{ cursor: 'pointer' }}
                 >
-                  {isRTL ? 'الحالة' : 'Status'} 
+                  {isRTL ? 'الحالة' : 'Status'}
                   <i className={`bi ${getSortIcon('status')} ms-1`}></i>
                 </th>
                 <th className="d-none d-md-table-cell">
                   {isRTL ? 'مسند إلى' : 'Assigned To'}
                 </th>
-                <th 
-                  className="sortable" 
-                  onClick={() => onSort('dueDate')}
+                <th
+                  className="sortable"
+                  onClick={() => onSort('assignedDate')}
                   style={{ cursor: 'pointer' }}
                 >
-                  {isRTL ? 'تاريخ الاستحقاق' : 'Due Date'} 
-                  <i className={`bi ${getSortIcon('dueDate')} ms-1`}></i>
+                  {isRTL ? 'التاريخ' : 'Date'}
+                  <i className={`bi ${getSortIcon('assignedDate')} ms-1`}></i>
                 </th>
-                <th className="d-none d-lg-table-cell">
-                  {isRTL ? 'التقدم' : 'Progress'}
+                <th>
+                  {isRTL ? 'المرفقات' : 'Attachments'}
                 </th>
                 <th style={{ width: '60px' }}>
                   {isRTL ? 'الإجراءات' : 'Actions'}
@@ -435,7 +422,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
             <tbody>
               {assignments.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="text-center py-4">
+                  <td colSpan={11} className="text-center py-4">
                     <p className="text-muted mb-0">
                       {isRTL ? 'لا توجد مهام مسندة' : 'No assignments found'}
                     </p>
@@ -445,130 +432,94 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 assignments.map(assignment => (
                   <tr key={assignment.id}>
                     <td>
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         className="form-check-input"
                         checked={selectedIds.includes(assignment.id)}
                         onChange={() => handleSelectOne(assignment.id)}
                       />
                     </td>
-                    <td>{getPriorityBadge(assignment.priority)}</td>
                     <td>
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         onClick={(e) => {
                           e.preventDefault();
                           onAssignmentClick(assignment);
                         }}
                         className="text-primary text-decoration-none fw-semibold"
                       >
-                        {assignment.id}
+                        {assignment.referenceNumber || '-'}
                       </a>
                     </td>
                     <td>
-                      <span className="text-muted">
-                        {assignment.externalId || `TXN-${assignment.id.split('-').pop()}`}
-                      </span>
+                      <code className="text-primary">
+                        {assignment.transactionId}
+                      </code>
                     </td>
-                    <td>
-                      <div>
-                        <span className="fw-medium">{assignment.clientName}</span>
-                        {assignment.commentsCount > 0 && (
-                          <span className="badge bg-secondary-subtle text-secondary ms-2">
-                            <i className="bi bi-chat-dots"></i> {assignment.commentsCount}
-                          </span>
-                        )}
-                        {assignment.attachmentsCount > 0 && (
-                          <span className="badge bg-secondary-subtle text-secondary ms-1">
-                            <i className="bi bi-paperclip"></i> {assignment.attachmentsCount}
-                          </span>
-                        )}
+                    <td style={{
+                      minWidth: '200px',
+                      maxWidth: '300px',
+                      wordWrap: 'break-word',
+                      whiteSpace: 'normal'
+                    }}>
+                      <div className="text-truncate" title={assignment.title || ''}>
+                        {assignment.title || '-'}
                       </div>
                     </td>
+                    <td>{assignment.clientName}</td>
                     <td>
                       <span className="badge bg-light text-dark">
                         {assignment.type}
                       </span>
                     </td>
-                    <td className="d-none d-lg-table-cell">
-                      <div className="text-truncate" style={{ maxWidth: '200px' }}>
-                        {assignment.description || '-'}
+                    <td>{getPriorityBadge(assignment.priority)}</td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        {getStatusBadge(assignment.status)}
+                        {/* Progress indicator for in-progress status */}
+                        {assignment.status === 'in_progress' && (
+                          <div className="progress ms-2" style={{ width: '60px', height: '6px' }}>
+                            <div className="progress-bar" role="progressbar" style={{ width: '60%' }}></div>
+                          </div>
+                        )}
                       </div>
                     </td>
-                    <td>{getStatusBadge(assignment.status)}</td>
-                    <td className="d-none d-md-table-cell">
-                      {assignment.assignedTo ? (
-                        <div className="d-flex align-items-center">
-                          <div className="avatar-sm bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-2">
-                            {(() => {
-                              const firstName = assignment.assignedTo.firstName?.trim();
-                              const lastName = assignment.assignedTo.lastName?.trim();
-                              const username = assignment.assignedTo.username?.trim();
-                              const email = assignment.assignedTo.email?.trim();
-                              
-                              if (firstName && lastName) {
-                                return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-                              } else if (firstName) {
-                                return firstName.charAt(0).toUpperCase() + (username?.charAt(0).toUpperCase() || 'U');
-                              } else if (lastName) {
-                                return (username?.charAt(0).toUpperCase() || 'U') + lastName.charAt(0).toUpperCase();
-                              } else if (username && username.length >= 2) {
-                                return username.substring(0, 2).toUpperCase();
-                              } else if (username) {
-                                return username.charAt(0).toUpperCase() + 'U';
-                              } else if (email && email.length >= 2) {
-                                return email.substring(0, 2).toUpperCase();
-                              } else if (email) {
-                                return email.charAt(0).toUpperCase() + 'E';
-                              }
-                              return 'UN';
-                            })()}
-                          </div>
-                          <div>
-                            <small className="d-block">
-                              {(() => {
-                                const firstName = assignment.assignedTo.firstName?.trim();
-                                const lastName = assignment.assignedTo.lastName?.trim();
-                                const username = assignment.assignedTo.username?.trim();
-                                const email = assignment.assignedTo.email?.trim();
-                                
-                                if (firstName && lastName) {
-                                  return `${firstName} ${lastName}`;
-                                } else if (firstName) {
-                                  return firstName;
-                                } else if (lastName) {
-                                  return lastName;
-                                } else if (username) {
-                                  return username;
-                                } else if (email) {
-                                  return email.split('@')[0];
-                                }
-                                return 'Unknown User';
-                              })()}
-                            </small>
-                          </div>
-                        </div>
+                    <td>
+                      {assignment.assignedToName || assignment.assignedTo ? (
+                        <span className="badge bg-info text-dark">
+                          <i className="bi bi-person-check me-1"></i>
+                          {assignment.assignedToName || (assignment.assignedTo && (
+                            assignment.assignedTo.firstName && assignment.assignedTo.lastName
+                              ? `${assignment.assignedTo.firstName} ${assignment.assignedTo.lastName}`
+                              : assignment.assignedTo.username || assignment.assignedTo.email?.split('@')[0] || 'Unknown'
+                          ))}
+                        </span>
                       ) : (
                         <span className="text-muted">-</span>
                       )}
                     </td>
-                    <td>{formatDate(assignment.dueDate)}</td>
-                    <td className="d-none d-lg-table-cell">
-                      <div className="progress" style={{ height: '6px' }}>
-                        <div 
-                          className="progress-bar" 
-                          style={{ width: `${assignment.progress}%` }}
-                          aria-valuenow={assignment.progress} 
-                          aria-valuemin={0} 
-                          aria-valuemax={100}
-                        ></div>
+                    <td>{formatDate(assignment.assignedDate)}</td>
+                    <td>
+                      <div className="d-flex gap-1">
+                        {assignment.attachmentsCount > 0 ? (
+                          <span className="badge bg-secondary">
+                            <i className="bi bi-paperclip"></i> {assignment.attachmentsCount}
+                          </span>
+                        ) : null}
+                        {assignment.commentsCount && assignment.commentsCount > 0 ? (
+                          <span className="badge bg-info">
+                            <i className="bi bi-chat"></i> {assignment.commentsCount}
+                          </span>
+                        ) : null}
+                        {!assignment.attachmentsCount && !assignment.commentsCount && (
+                          <span className="text-muted">-</span>
+                        )}
                       </div>
-                      <small className="text-muted">{assignment.progress}%</small>
                     </td>
                     <td>
                       <div className="dropdown">
-                        <button 
-                          className="btn btn-sm btn-link text-dark" 
+                        <button
+                          className="btn btn-sm btn-link text-dark"
                           type="button"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"
@@ -577,21 +528,21 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                         </button>
                         <ul className="dropdown-menu dropdown-menu-end">
                           <li>
-                            <a 
-                              className="dropdown-item" 
+                            <a
+                              className="dropdown-item"
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
                                 onAssignmentClick(assignment);
                               }}
                             >
-                              <i className="bi bi-eye me-2"></i> 
+                              <i className="bi bi-eye me-2"></i>
                               {isRTL ? 'عرض التفاصيل' : 'View Details'}
                             </a>
                           </li>
                           <li>
-                            <a 
-                              className="dropdown-item" 
+                            <a
+                              className="dropdown-item"
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
@@ -600,13 +551,13 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                                 setShowStatusModal(true);
                               }}
                             >
-                              <i className="bi bi-pencil me-2"></i> 
+                              <i className="bi bi-pencil me-2"></i>
                               {isRTL ? 'تحديث الحالة' : 'Update Status'}
                             </a>
                           </li>
                           <li>
-                            <a 
-                              className="dropdown-item" 
+                            <a
+                              className="dropdown-item"
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
@@ -614,21 +565,21 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                                 setShowAssignModal(true);
                               }}
                             >
-                              <i className="bi bi-person-plus me-2"></i> 
+                              <i className="bi bi-person-plus me-2"></i>
                               {isRTL ? 'إعادة التعيين' : 'Reassign'}
                             </a>
                           </li>
                           <li><hr className="dropdown-divider" /></li>
                           <li>
-                            <a 
-                              className="dropdown-item" 
+                            <a
+                              className="dropdown-item"
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
                                 onStatusUpdate(assignment.id, 'completed');
                               }}
                             >
-                              <i className="bi bi-check-circle me-2"></i> 
+                              <i className="bi bi-check-circle me-2"></i>
                               {isRTL ? 'وضع علامة كمكتمل' : 'Mark Complete'}
                             </a>
                           </li>
@@ -652,9 +603,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 <h5 className="modal-title">
                   {isRTL ? 'تحديث حالة المهمة' : 'Update Task Status'}
                 </h5>
-                <button 
-                  type="button" 
-                  className="btn-close" 
+                <button
+                  type="button"
+                  className="btn-close"
                   onClick={() => {
                     setShowStatusModal(false);
                     setSelectedAssignment(null);
@@ -670,8 +621,8 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                   <label className="form-label">
                     {isRTL ? 'الحالة الجديدة' : 'New Status'}
                   </label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     value={newStatus}
                     onChange={(e) => setNewStatus(e.target.value as AssignmentStatus)}
                   >
@@ -685,9 +636,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 </div>
               </div>
               <div className="modal-footer">
-                <button 
-                  type="button" 
-                  className="btn btn-secondary" 
+                <button
+                  type="button"
+                  className="btn btn-secondary"
                   onClick={() => {
                     setShowStatusModal(false);
                     setSelectedAssignment(null);
@@ -696,9 +647,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 >
                   {isRTL ? 'إلغاء' : 'Cancel'}
                 </button>
-                <button 
-                  type="button" 
-                  className="btn btn-primary" 
+                <button
+                  type="button"
+                  className="btn btn-primary"
                   onClick={handleStatusUpdate}
                   disabled={updating}
                 >
@@ -718,7 +669,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
       )}
 
       {/* Reassign Modal */}
-      {showAssignModal && selectedAssignment && (
+      {showAssignModal && (selectedAssignment || selectedIds.length > 0) && (
         <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <div className="modal-dialog">
             <div className="modal-content">
@@ -726,9 +677,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 <h5 className="modal-title">
                   {isRTL ? 'إعادة تعيين المهمة' : 'Reassign Task'}
                 </h5>
-                <button 
-                  type="button" 
-                  className="btn-close" 
+                <button
+                  type="button"
+                  className="btn-close"
                   onClick={() => {
                     setShowAssignModal(false);
                     setSelectedAssignment(null);
@@ -753,8 +704,8 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                   <label className="form-label">
                     {isRTL ? 'تعيين إلى' : 'Assign To'}
                   </label>
-                  <select 
-                    className="form-select" 
+                  <select
+                    className="form-select"
                     value={newAssigneeId}
                     onChange={(e) => setNewAssigneeId(e.target.value)}
                   >
@@ -762,7 +713,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                     {availableUsers.map((user, index) => {
                       // Create a truly unique key using all available identifiers
                       const uniqueKey = `reassign-user-${user.id || 'no-id'}-${user.email || 'no-email'}-${index}`;
-                      
+
                       return (
                         <option key={uniqueKey} value={user.id}>
                           {(() => {
@@ -770,7 +721,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                             const lastName = (user.last_name || user.lastName)?.trim();
                             const username = user.username?.trim();
                             const email = user.email?.trim();
-                            
+
                             if (firstName && lastName) {
                               return `${firstName} ${lastName} (${email})`;
                             } else if (firstName) {
@@ -789,7 +740,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                     })}
                   </select>
                 </div>
-                {selectedAssignment.assignedTo && (
+                {selectedAssignment?.assignedTo && (
                   <div className="alert alert-info">
                     <small>
                       {isRTL ? 'مسند حالياً إلى: ' : 'Currently assigned to: '}
@@ -799,7 +750,7 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                           const lastName = selectedAssignment.assignedTo.lastName?.trim();
                           const username = selectedAssignment.assignedTo.username?.trim();
                           const email = selectedAssignment.assignedTo.email?.trim();
-                          
+
                           if (firstName && lastName) {
                             return `${firstName} ${lastName}`;
                           } else if (firstName) {
@@ -819,9 +770,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 )}
               </div>
               <div className="modal-footer">
-                <button 
-                  type="button" 
-                  className="btn btn-secondary" 
+                <button
+                  type="button"
+                  className="btn btn-secondary"
                   onClick={() => {
                     setShowAssignModal(false);
                     setSelectedAssignment(null);
@@ -831,9 +782,9 @@ const AssignmentTable: React.FC<AssignmentTableProps> = ({
                 >
                   {isRTL ? 'إلغاء' : 'Cancel'}
                 </button>
-                <button 
-                  type="button" 
-                  className="btn btn-primary" 
+                <button
+                  type="button"
+                  className="btn btn-primary"
                   onClick={handleReassign}
                   disabled={updating || !newAssigneeId}
                 >

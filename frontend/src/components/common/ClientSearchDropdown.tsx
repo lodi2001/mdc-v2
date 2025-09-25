@@ -52,7 +52,7 @@ const ClientSearchDropdown: React.FC<ClientSearchDropdownProps> = ({
   }, [isOpen]);
 
   // Debounce helper
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const debouncedSearchClients = useCallback((search: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);

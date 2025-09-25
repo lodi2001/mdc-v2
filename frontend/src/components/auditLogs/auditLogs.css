@@ -1,0 +1,41 @@
+.log-entry {
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.log-entry:hover {
+  background-color: #f8f9fa;
+}
+
+.log-entry.success {
+  border-left-color: #10b981;
+}
+
+.log-entry.warning {
+  border-left-color: #f59e0b;
+}
+
+.log-entry.error {
+  border-left-color: #ef4444;
+}
+
+.log-entry.info {
+  border-left-color: #3b82f6;
+}
+
+.log-details {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  background: #f1f3f5;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

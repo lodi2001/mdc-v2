@@ -138,8 +138,8 @@ class AdminDashboardView(APIView):
         transactions_by_priority = dict(
             all_transactions.values('priority').annotate(count=Count('id')).values_list('priority', 'count')
         )
-        transactions_by_category = dict(
-            all_transactions.values('category').annotate(count=Count('id')).values_list('category', 'count')
+        transactions_by_department = dict(
+            all_transactions.values('department').annotate(count=Count('id')).values_list('department', 'count')
         )
         
         # Performance metrics
@@ -202,8 +202,8 @@ class AdminDashboardView(APIView):
             ).order_by('-transaction_count')[:5]
         )
         
-        busiest_categories = list(
-            all_transactions.values('category')
+        busiest_departments = list(
+            all_transactions.values('department')
             .annotate(count=Count('id'))
             .order_by('-count')[:5]
         )
@@ -280,14 +280,14 @@ class AdminDashboardView(APIView):
             'storage_usage': storage_usage,
             'transactions_by_status': transactions_by_status,
             'transactions_by_priority': transactions_by_priority,
-            'transactions_by_category': transactions_by_category,
+            'transactions_by_department': transactions_by_department,
             'avg_completion_time': avg_completion_time,
             'completion_rate': completion_rate,
             'transactions_created_trend': transactions_created_trend,
             'transactions_completed_trend': transactions_completed_trend,
             'top_clients': top_clients,
             'top_editors': top_editors,
-            'busiest_categories': busiest_categories,
+            'busiest_departments': busiest_departments,
             'recent_transactions': recent_transactions,
             'recent_users': recent_users,
             'recent_uploads': recent_uploads,
@@ -531,8 +531,8 @@ class ClientDashboardView(APIView):
         my_transactions_by_status = dict(
             my_transactions.values('status').annotate(count=Count('id')).values_list('status', 'count')
         )
-        my_transactions_by_category = dict(
-            my_transactions.values('category').annotate(count=Count('id')).values_list('category', 'count')
+        my_transactions_by_department = dict(
+            my_transactions.values('department').annotate(count=Count('id')).values_list('department', 'count')
         )
         
         # Transaction timeline
@@ -593,7 +593,7 @@ class ClientDashboardView(APIView):
         # Service history
         service_history = {
             'total_services_used': my_total_transactions,
-            'most_used_category': my_transactions.values('category').annotate(
+            'most_used_department': my_transactions.values('department').annotate(
                 count=Count('id')
             ).order_by('-count').first() if my_transactions.exists() else None,
             'satisfaction_rating': 4.5  # Placeholder - would come from surveys
@@ -627,7 +627,7 @@ class ClientDashboardView(APIView):
             'my_completed_transactions': my_completed_transactions,
             'my_draft_transactions': my_draft_transactions,
             'my_transactions_by_status': my_transactions_by_status,
-            'my_transactions_by_category': my_transactions_by_category,
+            'my_transactions_by_department': my_transactions_by_department,
             'transaction_timeline': transaction_timeline,
             'estimated_completions': estimated_completions,
             'total_files_uploaded': total_files_uploaded,

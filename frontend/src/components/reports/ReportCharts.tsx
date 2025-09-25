@@ -13,6 +13,7 @@ import {
   ChartOptions
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import { getChartColor } from '../../config/statusColors';
 import type {
   TransactionVolume,
   StatusDistribution,
@@ -91,20 +92,12 @@ interface StatusChartProps extends ChartProps {
 }
 
 export const StatusChart: React.FC<StatusChartProps> = ({ data, isRTL = false }) => {
-  const statusColors = {
-    'Completed': '#10b981',
-    'In Progress': '#3b82f6',
-    'Pending': '#f59e0b',
-    'Cancelled': '#ef4444',
-    'Under Review': '#8b5cf6'
-  };
-
   const chartData = {
     labels: data.map(item => item.status),
     datasets: [
       {
         data: data.map(item => item.percentage),
-        backgroundColor: data.map(item => statusColors[item.status as keyof typeof statusColors] || '#6b7280'),
+        backgroundColor: data.map(item => getChartColor(item.status)),
         borderWidth: 0
       }
     ]

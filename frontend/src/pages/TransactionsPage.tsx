@@ -6,9 +6,10 @@ import apiClient from '../services/api/client';
 import TransactionFilters from '../components/transactions/TransactionFilters';
 import AdvancedFilterModal from '../components/transactions/AdvancedFilterModal';
 import { debounce } from 'lodash';
+import { getStatusColor, getPriorityColor } from '../config/statusColors';
 
 interface Transaction {
-  id: string;
+  id: number;
   transaction_id: string;  // The TRX-YYYY-NNNNN format ID
   title: string;  // Transaction title
   reference_number: string;  // External reference number
@@ -20,6 +21,7 @@ interface Transaction {
   assigned_to_name: string | null;  // Name of assigned person
   created_at: string;
   attachment_count: number;
+  comments_count?: number;  // Number of comments
 }
 
 const TransactionsPage: React.FC = () => {
@@ -34,7 +36,7 @@ const TransactionsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [totalCount, setTotalCount] = useState(0);
-  const [selectedTransactions, setSelectedTransactions] = useState<string[]>([]);
+  const [selectedTransactions, setSelectedTransactions] = useState<number[]>([]);
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState<any>({});
   const [exportLoading, setExportLoading] = useState(false);
@@ -75,8 +77,8 @@ const TransactionsPage: React.FC = () => {
       setTotalCount(response.data.count || 0);
     } catch (error) {
       console.error('Error fetching transactions:', error);
-      setTransactions(getMockTransactions());
-      setTotalCount(234);
+      setTransactions([]);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
@@ -84,7 +86,7 @@ const TransactionsPage: React.FC = () => {
 
   const getMockTransactions = (): Transaction[] => {
     return Array.from({ length: pageSize }, (_, i) => ({
-      id: `${i + 1}`,  // Database ID
+      id: i + 1,  // Database ID
       transaction_id: `TRX-2025-${String(i + 1).padStart(5, '0')}`,  // TRX format ID
       title: ['مراجعة تصريح البلدية', 'تصميم معماري للفيلا', 'رخصة بناء تجاري', 'نقل ملكية أرض', 'دراسة جدوى مشروع'][i % 5],
       reference_number: `REF-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
@@ -96,6 +98,7 @@ const TransactionsPage: React.FC = () => {
       assigned_to_name: i % 2 === 0 ? ['Ahmad Hassan', 'Noura Al-Sheikh'][i % 2] : null,
       created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
       attachment_count: Math.floor(Math.random() * 5),
+      comments_count: Math.floor(Math.random() * 10),
     }));
   };
 
@@ -107,7 +110,7 @@ const TransactionsPage: React.FC = () => {
     }
   };
 
-  const handleSelectTransaction = (id: string) => {
+  const handleSelectTransaction = (id: number) => {
     setSelectedTransactions(prev =>
       prev.includes(id)
         ? prev.filter(tid => tid !== id)
@@ -115,27 +118,46 @@ const TransactionsPage: React.FC = () => {
     );
   };
 
-  const getStatusBadgeClass = (status: string) => {
-    const statusClasses: { [key: string]: string } = {
-      'draft': 'bg-secondary',
-      'submitted': 'bg-info',
-      'approved': 'bg-success',
-      'in-progress': 'bg-warning',
-      'pending': 'bg-warning',
-      'completed': 'bg-success',
-      'cancelled': 'bg-danger',
-      'on-hold': 'bg-secondary'
+  const getStatusBadge = (status: string) => {
+    // Normalize status to handle both formats (in_progress and in-progress)
+    const normalizedStatus = status.replace('-', '_');
+
+    const badges: Record<string, { color: string; text: string }> = {
+      draft: { color: 'secondary', text: 'Draft' },
+      submitted: { color: 'info', text: 'Submitted' },
+      pending: { color: 'warning', text: 'Pending' },
+      in_progress: { color: 'primary', text: 'In Progress' },
+      'in-progress': { color: 'primary', text: 'In Progress' }, // Support both formats
+      review: { color: 'info', text: 'Under Review' },
+      approved: { color: 'success', text: 'Approved' },
+      rejected: { color: 'danger', text: 'Rejected' },
+      completed: { color: 'success', text: 'Completed' },
+      on_hold: { color: 'secondary', text: 'On Hold' },
+      cancelled: { color: 'danger', text: 'Cancelled' }
     };
-    return statusClasses[status] || 'bg-secondary';
+    const badge = badges[status] || badges[normalizedStatus] || { color: 'secondary', text: status };
+    return (
+      <span className={`badge bg-${badge.color}-subtle text-${badge.color}`}>
+        {badge.text}
+      </span>
+    );
   };
 
-  const getPriorityBadgeClass = (priority: string) => {
-    const priorityClasses: { [key: string]: string } = {
-      'high': 'bg-danger',
-      'medium': 'bg-warning',
-      'low': 'bg-info'
+  const getPriorityBadge = (priority: string) => {
+    const badges: Record<string, { color: string; icon: string; text: string }> = {
+      urgent: { color: 'danger', icon: 'bi-exclamation-triangle-fill', text: isRTL ? 'عاجل' : 'Urgent' },
+      high: { color: 'warning', icon: 'bi-exclamation-circle', text: isRTL ? 'عالي' : 'High' },
+      normal: { color: 'info', icon: 'bi-dash-circle', text: isRTL ? 'عادي' : 'Normal' },
+      medium: { color: 'info', icon: 'bi-dash-circle', text: isRTL ? 'متوسط' : 'Medium' },
+      low: { color: 'secondary', icon: 'bi-dash', text: isRTL ? 'منخفض' : 'Low' }
     };
-    return priorityClasses[priority] || 'bg-secondary';
+    const badge = badges[priority] || { color: 'secondary', icon: 'bi-dash', text: priority };
+    return (
+      <span className={`badge bg-${badge.color}`}>
+        <i className={`bi ${badge.icon} me-1`}></i>
+        {badge.text}
+      </span>
+    );
   };
 
   const handleExport = async (format: 'excel' | 'csv') => {
@@ -378,14 +400,14 @@ const TransactionsPage: React.FC = () => {
                         onChange={handleSelectAll}
                       />
                     </th>
-                    <th>Title</th>
-                    <th>الرقم المرجعي</th>
-                    <th>رقم المعاملة</th>
+                    <th>Reference Number</th>
+                    <th>Transaction ID</th>
+                    <th style={{ minWidth: '200px', maxWidth: '300px' }}>Transaction Title</th>
                     <th>Client</th>
                     <th>Type</th>
-                    <th>معين إلى</th>
                     <th>Priority</th>
                     <th>Status</th>
+                    <th>Assigned To</th>
                     <th>Date</th>
                     <th>Attachments</th>
                     <th>Actions</th>
@@ -394,7 +416,7 @@ const TransactionsPage: React.FC = () => {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={12} className="text-center py-4">
+                      <td colSpan={13} className="text-center py-4">
                         <div className="spinner-border text-primary" role="status">
                           <span className="visually-hidden">Loading...</span>
                         </div>
@@ -402,7 +424,7 @@ const TransactionsPage: React.FC = () => {
                     </tr>
                   ) : transactions.length === 0 ? (
                     <tr>
-                      <td colSpan={12} className="text-center py-4 text-muted">
+                      <td colSpan={13} className="text-center py-4 text-muted">
                         No transactions found
                       </td>
                     </tr>
@@ -417,19 +439,42 @@ const TransactionsPage: React.FC = () => {
                             onChange={() => handleSelectTransaction(transaction.id)}
                           />
                         </td>
-                        <td className="fw-medium">
-                          <Link to={`/transactions/${transaction.id}`} className="text-decoration-none">
-                            {transaction.title}
+                        <td>
+                          <Link to={`/transactions/${transaction.id}`} className="text-decoration-none text-primary fw-medium">
+                            {transaction.reference_number || '-'}
                           </Link>
                         </td>
                         <td>
                           <code className="text-primary">{transaction.transaction_id}</code>
                         </td>
-                        <td>
-                          <span className="text-muted">{transaction.reference_number || '-'}</span>
+                        <td style={{
+                          minWidth: '200px',
+                          maxWidth: '300px',
+                          wordWrap: 'break-word',
+                          whiteSpace: 'normal'
+                        }}>
+                          <div className="text-truncate" title={transaction.title || ''}>
+                            {transaction.title || '-'}
+                          </div>
                         </td>
                         <td>{transaction.client_name}</td>
-                        <td>{transaction.transaction_type}</td>
+                        <td>
+                          <span className="badge bg-light text-dark">
+                            {transaction.transaction_type}
+                          </span>
+                        </td>
+                        <td>{getPriorityBadge(transaction.priority)}</td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            {getStatusBadge(transaction.status)}
+                            {/* Progress indicator for in-progress status */}
+                            {(transaction.status === 'in-progress' || transaction.status === 'in_progress') && (
+                              <div className="progress ms-2" style={{ width: '60px', height: '6px' }}>
+                                <div className="progress-bar" role="progressbar" style={{ width: '60%' }}></div>
+                              </div>
+                            )}
+                          </div>
+                        </td>
                         <td>
                           {transaction.assigned_to_name ? (
                             <span className="badge bg-info text-dark">
@@ -440,23 +485,23 @@ const TransactionsPage: React.FC = () => {
                             <span className="text-muted">-</span>
                           )}
                         </td>
-                        <td>
-                          <span className={`badge ${getPriorityBadgeClass(transaction.priority)}`}>
-                            {transaction.priority}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`badge ${getStatusBadgeClass(transaction.status)}`}>
-                            {transaction.status}
-                          </span>
-                        </td>
                         <td>{new Date(transaction.created_at).toLocaleDateString()}</td>
                         <td>
-                          {transaction.attachment_count > 0 && (
-                            <span className="badge bg-secondary">
-                              <i className="bi bi-paperclip"></i> {transaction.attachment_count}
-                            </span>
-                          )}
+                          <div className="d-flex gap-1">
+                            {transaction.attachment_count > 0 ? (
+                              <span className="badge bg-secondary">
+                                <i className="bi bi-paperclip"></i> {transaction.attachment_count}
+                              </span>
+                            ) : null}
+                            {transaction.comments_count && transaction.comments_count > 0 ? (
+                              <span className="badge bg-info">
+                                <i className="bi bi-chat"></i> {transaction.comments_count}
+                              </span>
+                            ) : null}
+                            {!transaction.attachment_count && !transaction.comments_count && (
+                              <span className="text-muted">-</span>
+                            )}
+                          </div>
                         </td>
                         <td>
                           <div className="dropdown">

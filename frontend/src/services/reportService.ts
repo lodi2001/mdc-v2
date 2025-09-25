@@ -209,19 +209,19 @@ class ReportService {
       }
     }
 
-    // Transform department performance (using categories as departments for now)
-    const departmentPerformance = data.busiest_categories ? 
-      data.busiest_categories.map((cat: any) => ({
-        department: cat.category || 'Unknown',
+    // Transform department performance
+    const departmentPerformance = data.busiest_departments ?
+      data.busiest_departments.map((dept: any) => ({
+        department: dept.department || 'Unknown',
         completed: Math.floor(Math.random() * 100), // Placeholder - backend doesn't provide this breakdown
         pending: Math.floor(Math.random() * 20),
         avgTime: Math.random() * 5
       })) : [];
 
-    // Transform processing time (using category data)
-    const processingTime = data.busiest_categories ?
-      data.busiest_categories.map((cat: any) => ({
-        type: cat.category || 'Unknown',
+    // Transform processing time (using department data)
+    const processingTime = data.busiest_departments ?
+      data.busiest_departments.map((dept: any) => ({
+        type: dept.department || 'Unknown',
         avgDays: data.avg_completion_time || Math.random() * 5
       })) : [];
 

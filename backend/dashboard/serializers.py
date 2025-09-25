@@ -32,7 +32,7 @@ class AdminDashboardSerializer(DashboardStatsSerializer):
     # Transaction statistics by status
     transactions_by_status = serializers.DictField()
     transactions_by_priority = serializers.DictField()
-    transactions_by_category = serializers.DictField()
+    transactions_by_department = serializers.DictField()
     
     # Performance metrics
     avg_completion_time = serializers.FloatField()
@@ -45,7 +45,7 @@ class AdminDashboardSerializer(DashboardStatsSerializer):
     # Top statistics
     top_clients = serializers.ListField()
     top_editors = serializers.ListField()
-    busiest_categories = serializers.ListField()
+    busiest_departments = serializers.ListField()
     
     # Recent activity
     recent_transactions = serializers.ListField()
@@ -95,7 +95,7 @@ class ClientDashboardSerializer(DashboardStatsSerializer):
     
     # My transaction statistics
     my_transactions_by_status = serializers.DictField()
-    my_transactions_by_category = serializers.DictField()
+    my_transactions_by_department = serializers.DictField()
     
     # Timeline
     transaction_timeline = serializers.ListField()

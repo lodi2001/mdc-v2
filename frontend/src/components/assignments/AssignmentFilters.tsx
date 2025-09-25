@@ -19,8 +19,7 @@ const AssignmentFilters: React.FC<AssignmentFiltersProps> = ({
     priority: '',
     status: '',
     assignedTo: '',
-    dueDate: '',
-    category: ''
+    dueDate: ''
   });
 
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -39,7 +38,6 @@ const AssignmentFilters: React.FC<AssignmentFiltersProps> = ({
       if (editor) newActiveFilters.push(`Assigned to: ${editor.firstName} ${editor.lastName}`);
     }
     if (newFilter.dueDate) newActiveFilters.push(`Due: ${newFilter.dueDate}`);
-    if (newFilter.category) newActiveFilters.push(`Category: ${newFilter.category}`);
     setActiveFilters(newActiveFilters);
     
     onFilterChange(newFilter);
@@ -51,8 +49,7 @@ const AssignmentFilters: React.FC<AssignmentFiltersProps> = ({
       priority: '',
       status: '',
       assignedTo: '',
-      dueDate: '',
-      category: ''
+      dueDate: ''
     };
     setFilter(emptyFilter);
     setActiveFilters([]);

@@ -49,27 +49,53 @@ const TransactionDetailPage: React.FC = () => {
     }
   };
 
-  const getStatusBadgeClass = (status: string) => {
-    const statusClasses: { [key: string]: string } = {
-      'draft': 'bg-secondary',
-      'submitted': 'bg-primary',
-      'in-progress': 'bg-info',
-      'pending': 'bg-warning',
-      'completed': 'bg-success',
-      'cancelled': 'bg-danger',
-      'on-hold': 'bg-secondary'
+  const getStatusBadge = (status: string) => {
+    const badges: Record<string, { color: string; text: string }> = {
+      draft: { color: 'secondary', text: isRTL ? 'مسودة' : 'Draft' },
+      pending: { color: 'warning', text: isRTL ? 'معلق' : 'Pending' },
+      in_progress: { color: 'primary', text: isRTL ? 'قيد التنفيذ' : 'In Progress' },
+      review: { color: 'info', text: isRTL ? 'قيد المراجعة' : 'Under Review' },
+      approved: { color: 'success', text: isRTL ? 'موافق عليه' : 'Approved' },
+      rejected: { color: 'danger', text: isRTL ? 'مرفوض' : 'Rejected' },
+      completed: { color: 'success', text: isRTL ? 'مكتمل' : 'Completed' },
+      cancelled: { color: 'secondary', text: isRTL ? 'ملغي' : 'Cancelled' }
     };
-    return statusClasses[status] || 'bg-secondary';
+    const badge = badges[status] || { color: 'secondary', text: status };
+
+    // Add progress bar for in_progress status
+    if (status === 'in_progress') {
+      return (
+        <span className={`badge bg-${badge.color}-subtle text-${badge.color}`}>
+          {badge.text}
+          <div className="progress ms-2" style={{ width: '60px', height: '4px', display: 'inline-block' }}>
+            <div className="progress-bar progress-bar-striped progress-bar-animated" style={{ width: '60%' }}></div>
+          </div>
+        </span>
+      );
+    }
+
+    return (
+      <span className={`badge bg-${badge.color}-subtle text-${badge.color}`}>
+        {badge.text}
+      </span>
+    );
   };
 
-  const getPriorityBadgeClass = (priority: string) => {
-    const priorityClasses: { [key: string]: string } = {
-      'low': 'bg-success',
-      'normal': 'bg-info',
-      'high': 'bg-warning',
-      'urgent': 'bg-danger'
+  const getPriorityBadge = (priority: string) => {
+    const badges: Record<string, { color: string; icon: string; text: string }> = {
+      urgent: { color: 'danger', icon: 'bi-exclamation-triangle-fill', text: isRTL ? 'عاجل' : 'Urgent' },
+      high: { color: 'warning', icon: 'bi-exclamation-circle', text: isRTL ? 'عالي' : 'High' },
+      normal: { color: 'info', icon: 'bi-dash-circle', text: isRTL ? 'عادي' : 'Normal' },
+      medium: { color: 'info', icon: 'bi-dash-circle', text: isRTL ? 'متوسط' : 'Medium' },
+      low: { color: 'secondary', icon: 'bi-dash', text: isRTL ? 'منخفض' : 'Low' }
     };
-    return priorityClasses[priority] || 'bg-info';
+    const badge = badges[priority] || { color: 'secondary', icon: 'bi-dash', text: priority };
+    return (
+      <span className={`badge bg-${badge.color}`}>
+        <i className={`bi ${badge.icon} me-1`}></i>
+        {badge.text}
+      </span>
+    );
   };
 
   if (loading) {
@@ -110,12 +136,8 @@ const TransactionDetailPage: React.FC = () => {
             </h2>
             <div className="d-flex align-items-center gap-2">
               <span className="text-muted">#{transaction.transaction_id}</span>
-              <span className={`badge ${getStatusBadgeClass(transaction.status)}`}>
-                {transaction.status}
-              </span>
-              <span className={`badge ${getPriorityBadgeClass(transaction.priority)}`}>
-                {transaction.priority}
-              </span>
+              {getStatusBadge(transaction.status)}
+              {getPriorityBadge(transaction.priority)}
             </div>
           </div>
           <div>
@@ -163,7 +185,7 @@ const TransactionDetailPage: React.FC = () => {
               onClick={() => setActiveTab('attachments')}
             >
               {isRTL ? 'المرفقات' : 'Attachments'}
-              {transaction.attachments_count > 0 && (
+              {transaction.attachments_count && transaction.attachments_count > 0 && (
                 <span className="badge bg-secondary ms-2">{transaction.attachments_count}</span>
               )}
             </button>

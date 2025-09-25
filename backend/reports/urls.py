@@ -8,6 +8,14 @@ from . import views
 app_name = 'reports'
 
 urlpatterns = [
+    # Analytics API endpoints for dashboard
+    path('analytics/metrics/', views.AnalyticsMetricsView.as_view(), name='analytics-metrics'),
+    path('analytics/volume-trends/', views.VolumeTrendsView.as_view(), name='volume-trends'),
+    path('analytics/status-distribution/', views.StatusDistributionView.as_view(), name='status-distribution'),
+    path('analytics/department-performance/', views.DepartmentPerformanceView.as_view(), name='department-performance'),
+    path('analytics/processing-time/', views.ProcessingTimeView.as_view(), name='processing-time'),
+    path('analytics/top-performers/', views.TopPerformersView.as_view(), name='top-performers'),
+
     # Existing report generation endpoints
     path('transactions/', views.TransactionReportView.as_view(), name='transaction-report'),
     path('analytics/', views.AnalyticsReportView.as_view(), name='analytics-report'),
