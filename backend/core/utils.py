@@ -144,14 +144,14 @@ def send_bulk_notification_emails(recipients, subject, template_name, context, f
     return success_count
 
 
-def create_audit_log_entry(user, action, object_type, object_id, details=None):
+def create_audit_log_entry(user, action, object_type, object_id, details=None, request=None):
     """
-    Create audit log entry
+    Create audit log entry with proper request context
     """
     try:
         from audit.models import AuditLog
         from django.contrib.contenttypes.models import ContentType
-        
+
         # Map actions to valid choices
         action_map = {
             'upload': 'file_upload',
@@ -163,14 +163,26 @@ def create_audit_log_entry(user, action, object_type, object_id, details=None):
             'bulk_delete': 'delete',
             'bulk_toggle_visibility': 'update',
             'bulk_update_description': 'update',
+            'status_change': 'update',
         }
         mapped_action = action_map.get(action, action)
-        
+
         # Ensure action is valid
         valid_actions = dict(AuditLog.ACTION_CHOICES).keys()
         if mapped_action not in valid_actions:
             mapped_action = 'other'
-        
+
+        # Get IP and user agent from request if available
+        ip_address = '127.0.0.1'
+        user_agent = 'MDC-System/1.0'
+
+        if request:
+            ip_address = get_client_ip(request)
+            user_agent = get_user_agent(request)
+        elif hasattr(user, '_ip_address'):
+            ip_address = user._ip_address
+            user_agent = getattr(user, '_user_agent', 'MDC-System/1.0')
+
         # Create audit log with available fields
         AuditLog.objects.create(
             user=user,
@@ -179,10 +191,10 @@ def create_audit_log_entry(user, action, object_type, object_id, details=None):
             record_id=int(object_id) if object_id and str(object_id).isdigit() else None,
             new_values=details or {},
             description=f"{action} {object_type} {object_id}",
-            ip_address=getattr(user, '_ip_address', None) or '127.0.0.1',
-            user_agent=getattr(user, '_user_agent', None) or 'MDC-System/1.0'
+            ip_address=ip_address,
+            user_agent=user_agent
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to create audit log: {str(e)}")
 

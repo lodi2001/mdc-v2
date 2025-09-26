@@ -168,7 +168,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 'transaction_id': transaction.transaction_id,
                 'client_name': transaction.client_name,
                 'status': transaction.status
-            }
+            },
+            request=self.request
         )
         
         # Send notification to assigned user
@@ -262,7 +263,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 'updated_fields': list(serializer.validated_data.keys()),
                 'old_status': old_instance.status,
                 'new_status': transaction.status
-            }
+            },
+            request=self.request
         )
 
         # Send notification if assignment changed
@@ -391,7 +393,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
             details={
                 'transaction_id': instance.transaction_id,
                 'client_name': instance.client_name
-            }
+            },
+            request=self.request
         )
 
         # Self-notification for admin who deleted the transaction

@@ -54,7 +54,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">{t('notifications.settings')}</h5>
+              <h5 className="modal-title">Notification Settings</h5>
               <button 
                 type="button" 
                 className="btn-close" 
@@ -65,7 +65,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
             
             <div className="modal-body">
               {/* Email Notifications */}
-              <h6 className="mb-3">{t('notifications.emailNotifications')}</h6>
+              <h6 className="mb-3">Email Notifications</h6>
               <div className="form-check form-switch mb-2">
                 <input 
                   className="form-check-input" 
@@ -75,7 +75,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   onChange={(e) => setEmailTransactions(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="emailTransactions">
-                  {t('notifications.transactionUpdates')}
+                  Transaction Updates
                 </label>
               </div>
               <div className="form-check form-switch mb-2">
@@ -87,7 +87,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   onChange={(e) => setEmailSystem(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="emailSystem">
-                  {t('notifications.systemAlerts')}
+                  System Alerts
                 </label>
               </div>
               <div className="form-check form-switch mb-4">
@@ -99,12 +99,12 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   onChange={(e) => setEmailUsers(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="emailUsers">
-                  {t('notifications.userActivities')}
+                  User Activities
                 </label>
               </div>
               
               {/* Push Notifications */}
-              <h6 className="mb-3">{t('notifications.pushNotifications')}</h6>
+              <h6 className="mb-3">Push Notifications</h6>
               <div className="form-check form-switch mb-2">
                 <input 
                   className="form-check-input" 
@@ -114,7 +114,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   onChange={(e) => setPushTransactions(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="pushTransactions">
-                  {t('notifications.transactionUpdates')}
+                  Transaction Updates
                 </label>
               </div>
               <div className="form-check form-switch mb-2">
@@ -126,7 +126,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   onChange={(e) => setPushSystem(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="pushSystem">
-                  {t('notifications.systemAlerts')}
+                  System Alerts
                 </label>
               </div>
               <div className="form-check form-switch">
@@ -138,7 +138,7 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                   onChange={(e) => setPushUsers(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="pushUsers">
-                  {t('notifications.userActivities')}
+                  User Activities
                 </label>
               </div>
             </div>
@@ -149,14 +149,14 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
                 className="btn btn-secondary" 
                 onClick={onClose}
               >
-                {t('common.cancel')}
+                Cancel
               </button>
               <button 
                 type="button" 
                 className="btn btn-primary"
                 onClick={handleSave}
               >
-                {t('notifications.saveSettings')}
+                Save Settings
               </button>
             </div>
           </div>
