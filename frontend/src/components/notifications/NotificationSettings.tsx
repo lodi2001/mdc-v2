@@ -3,7 +3,8 @@
  */
 
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// TODO: Configure react-i18next properly before using useTranslation
+// import { useTranslation } from 'react-i18next';
 
 interface NotificationSettingsProps {
   open: boolean;
@@ -14,7 +15,8 @@ const NotificationSettings: React.FC<NotificationSettingsProps> = ({
   open,
   onClose
 }) => {
-  const { t } = useTranslation();
+  // TODO: Re-enable when react-i18next is properly configured
+  // const { t } = useTranslation();
   
   // Simple state for basic settings like the prototype
   const [emailTransactions, setEmailTransactions] = useState(true);

@@ -34,9 +34,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     loadNotificationCount();
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(loadNotificationCount, 30000);
-    return () => clearInterval(interval);
+    // TODO: Replace polling with WebSocket or manual refresh to reduce API calls
+    // Temporarily disabled automatic polling to prevent rate limit issues
+    // const interval = setInterval(loadNotificationCount, 30000);
+    // return () => clearInterval(interval);
   }, []);
 
   const getMenuItems = (): MenuItem[] => {

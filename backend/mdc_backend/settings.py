@@ -206,11 +206,18 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/minute',
-        'user': '100/minute',
-        'auth': '10/minute',
-        'upload': '5/minute',
-        'bulk': '2/minute',
+        'anon': '60/minute',        # Increased from 10 to 60 for anonymous users
+        'user': '1000/minute',      # CRITICAL FIX: Increased from 100 to 1000 for authenticated users
+        'auth': '60/minute',        # Increased from 10 to 60 for auth endpoints
+        'upload': '30/minute',      # Increased from 5 to 30 for upload endpoints
+        'bulk': '10/minute',        # Increased from 2 to 10 for bulk operations
+    } if not DEBUG else {
+        # Development mode: Very generous limits to prevent throttling during development
+        'anon': '1000/minute',      # Very high limit for anonymous users in development
+        'user': '5000/minute',      # Very high limit for authenticated users in development
+        'auth': '1000/minute',      # Very high limit for auth endpoints in development
+        'upload': '500/minute',     # Very high limit for upload endpoints in development
+        'bulk': '200/minute',       # Very high limit for bulk operations in development
     },
     'EXCEPTION_HANDLER': 'mdc_backend.utils.exception_handler.custom_exception_handler',
     'DEFAULT_FILTER_BACKENDS': [
